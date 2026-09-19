@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+//Configuracion base de axios conectada con la URL de Render
 const axiosClient = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
     headers: {
@@ -8,6 +9,7 @@ const axiosClient = axios.create({
     timeout: 10000,
 });
 
+//Adjuntar JWT en cada peticion
 axiosClient.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('auth_token');
@@ -19,6 +21,12 @@ axiosClient.interceptors.request.use(
     (error) => Promise.reject(error)
 );
 
+/*Manejar errores de sesion (401 / 403) y devolver a la seccion de Inicio de Sesion.
+
+Resumen: cuando el token expira, este codigo lo interpreta automaticamente y 
+pide iniciar sesion nuevamente.
+
+Los tiempos de expiracion de tokens son configurados en el backend.*/
 axiosClient.interceptors.response.use(
     (response) => response,
     (error) => {
