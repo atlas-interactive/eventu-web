@@ -1,7 +1,7 @@
 //Data transfer object a enviar para registrar un usuario
 export interface RegisterDTO {
     nombre: string;
-    email: string;
+    correo: string;
     password: string;
 }
 
