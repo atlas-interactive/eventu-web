@@ -1,5 +1,81 @@
 @import 'tailwindcss';
 
+@theme {
+  --color-eventu-brand: #b51221;
+  --color-eventu-brand-hover: #970f1b;
+  --color-eventu-focus: #0ea5e9;
+  --color-eventu-border: #e5e7eb;
+  --color-eventu-surface: #ffffff;
+  --color-eventu-canvas: #f3f4f6;
+  --color-eventu-text: #111827;
+  --color-eventu-text-label: #1f2937;
+  --color-eventu-muted: #6b7280;
+  --color-eventu-danger-border: #fca5a5;
+  --color-eventu-danger-surface: #fef2f2;
+  --color-eventu-danger-text: #b91c1c;
+  --color-eventu-success-border: #86efac;
+  --color-eventu-success-surface: #f0fdf4;
+  --color-eventu-success-text: #15803d;
+}
+
+.register-form {
+  border-color: var(--color-eventu-focus);
+  background-color: var(--color-eventu-surface);
+  color: var(--color-eventu-text);
+}
+
+.register-subtitle {
+  color: var(--color-eventu-muted);
+}
+
+.register-alert-error {
+  border-color: var(--color-eventu-danger-border);
+  background-color: var(--color-eventu-danger-surface);
+  color: var(--color-eventu-danger-text);
+}
+
+.register-alert-success {
+  border-color: var(--color-eventu-success-border);
+  background-color: var(--color-eventu-success-surface);
+  color: var(--color-eventu-success-text);
+}
+
+.register-label {
+  color: var(--color-eventu-text-label);
+}
+
+.register-input {
+  border-color: var(--color-eventu-border);
+  color: var(--color-eventu-text-label);
+}
+
+.register-input::placeholder {
+  color: var(--color-eventu-muted);
+}
+
+.register-input:focus {
+  border-color: var(--color-eventu-focus);
+  box-shadow: 0 0 0 1px var(--color-eventu-focus);
+}
+
+.register-submit {
+  background-color: var(--color-eventu-brand);
+  color: var(--color-eventu-surface);
+}
+
+.register-submit:hover {
+  background-color: var(--color-eventu-brand-hover);
+}
+
+.register-submit:focus-visible {
+  outline: 0.125rem solid var(--color-eventu-brand);
+  outline-offset: 0.125rem;
+}
+
+.register-login-link {
+  color: var(--color-eventu-brand);
+}
+
 #root {
   min-height: 100vh;
 }

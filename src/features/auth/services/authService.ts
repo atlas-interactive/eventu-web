@@ -1,7 +1,7 @@
 import { axiosClient } from "../../../api"; //Importar cliente axios
-import type { RegisterDTO, RegisterResponse } from "../../../types/auth"; //Importar DTOs
+import type { RegistroDTO, RespuestaRegistro } from "../../../types/auth"; //Importar DTOs
 
-export const registerUser = async (data: RegisterDTO): Promise<RegisterResponse> => {
-    const response = await axiosClient.post<RegisterResponse>('/auth/registro', data);
+export const registrarUsuario = async (data: RegistroDTO): Promise<RespuestaRegistro> => {
+    const response = await axiosClient.post<RespuestaRegistro>('/auth/registro', data);
     return response.data;
 };

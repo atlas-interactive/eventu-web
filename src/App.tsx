@@ -1,10 +1,10 @@
 // src/App.tsx
-import { RegisterForm } from './features/auth/RegisterForm';
+import { FormularioRegistro } from './features/auth/FormularioRegistro';
 
 function App() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100 p-2.5">
-      <RegisterForm />
+    <div className="flex min-h-screen items-center justify-center bg-eventu-canvas p-2.5">
+      <FormularioRegistro />
     </div>
   );
 }
