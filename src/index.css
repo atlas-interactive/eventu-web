@@ -20,7 +20,9 @@
 }
 
 .register-form {
-  border-color: var(--color-eventu-institutional-red);
+  border-color: var(--color-eventu-border);
+  border-radius: 1rem;
+  box-shadow: inset 0 0 1px 1px var(--color-eventu-border);
   background-color: var(--color-eventu-white-surface);
   color: var(--color-eventu-main-ink);
 }

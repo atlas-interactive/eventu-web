@@ -3,6 +3,8 @@ import { isAxiosError } from 'axios';
 import { registrarUsuario } from './services/authService';
 import type { RegistroDTO } from '../../types/auth';
 
+const correoInstitucionalRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.(edu|edu\.[a-z]{2})$/;
+
 export const FormularioRegistro: React.FC = () => {
     const [formData, setFormData] = useState<RegistroDTO>({
         nombre: '',
@@ -27,9 +29,15 @@ export const FormularioRegistro: React.FC = () => {
     // Maneja el envío del formulario
     const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setLoading(true);
         setMensajeError(null);
         setMensajeExito(null);
+
+        if (!correoInstitucionalRegex.test(formData.correo)) {
+            setMensajeError('Debe ingresar un correo institucional educativo válido.');
+            return;
+        }
+
+        setLoading(true);
 
         try {
             const response = await registrarUsuario(formData);
