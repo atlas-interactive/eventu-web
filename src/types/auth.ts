@@ -1,15 +1,14 @@
 //Data transfer object a enviar para registrar un usuario
-export interface RegisterDTO {
+export interface RegistroDTO {
     nombre: string;
     correo: string;
     password: string;
 }
 
 //Respuesta del servidor cuando el registro sea exitoso
-export interface RegisterResponse {
-    id: string | number;
-    nombre: string;
+export interface RespuestaRegistro {
+    mensaje: string;
+    usuarioId: bigint;
     correo: string;
-    token?: string;
-    message?: string;
+    rol: string;
 }

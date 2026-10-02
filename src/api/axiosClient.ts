@@ -21,20 +21,19 @@ axiosClient.interceptors.request.use(
     (error) => Promise.reject(error)
 );
 
-/*Manejar errores de sesion (401 / 403) y devolver a la seccion de Inicio de Sesion.
-
-Resumen: cuando el token expira, este codigo lo interpreta automaticamente y 
-pide iniciar sesion nuevamente.
-
-Los tiempos de expiracion de tokens son configurados en el backend.*/
+// Redirigir errores de autenticacion y autorizacion a sus pantallas correspondientes.
 axiosClient.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+        const status = error.response?.status;
+
+        if (status === 401) {
             localStorage.removeItem('auth_token');
             if (window.location.pathname !== '/login') {
                 window.location.href = '/login';
             }
+        } else if (status === 403 && window.location.pathname !== '/no-autorizado') {
+            window.location.href = '/no-autorizado';
         }
         return Promise.reject(error);
     }
