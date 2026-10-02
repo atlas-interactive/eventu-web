@@ -8,7 +8,7 @@ export interface RegistroDTO {
 //Respuesta del servidor cuando el registro sea exitoso
 export interface RespuestaRegistro {
     mensaje: string;
-    usuarioId: BigInt;
+    usuarioId: bigint;
     correo: string;
     rol: string;
 }
