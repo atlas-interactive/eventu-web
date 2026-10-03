@@ -58,6 +58,7 @@
 
 .register-input:focus {
   border-color: var(--color-eventu-border);
+  outline: none;
   box-shadow: 0 0 0 1px var(--color-eventu-border);
 }
 

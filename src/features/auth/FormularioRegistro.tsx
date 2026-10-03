@@ -16,20 +16,17 @@ export const FormularioRegistro: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [mensajeError, setMensajeError] = useState<string | null>(null);
     const [mensajeExito, setMensajeExito] = useState<string | null>(null);
-    const [camposVisitados, setCamposVisitados] = useState<Set<keyof RegistroDTO>>(new Set());
-    const [intentoEnvio, setIntentoEnvio] = useState<boolean>(false);
 
     // Validación de campos del formulario
     const campoInvalido = {
-        nombre: formData.nombre.length === 0,
+        nombre: formData.nombre.trim().length === 0,
         correo: !correoInstitucionalRegex.test(formData.correo),
         password: formData.password.length < 8 || formData.password.length > 72,
     };
 
     // Función para determinar si un campo debe mostrar un estado de error
     const mostrarCampoInvalido = (campo: keyof RegistroDTO) =>
-        campoInvalido[campo] &&
-        (camposVisitados.has(campo) || intentoEnvio || formData[campo].length > 0);
+        formData[campo].length > 0 && campoInvalido[campo];
 
     // Maneja los cambios en los campos del formulario
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,18 +37,9 @@ export const FormularioRegistro: React.FC = () => {
         }));
     };
 
-    // Maneja el evento de desenfoque para marcar los campos como visitados
-    const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-        const campo = e.target.name;
-        if (campo === 'nombre' || campo === 'correo' || campo === 'password') {
-            setCamposVisitados((prev) => new Set(prev).add(campo));
-        }
-    };
-
     // Maneja el envío del formulario
     const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setIntentoEnvio(true);
         setMensajeError(null);
         setMensajeExito(null);
 
@@ -71,8 +59,6 @@ export const FormularioRegistro: React.FC = () => {
             const response = await registrarUsuario(formData);
             setMensajeExito(response.mensaje || 'Usuario registrado exitosamente.');
             setFormData({ nombre: '', correo: '', password: '' });
-            setCamposVisitados(new Set());
-            setIntentoEnvio(false);
         } catch (err: unknown) {
             if (isAxiosError<{ error?: string }>(err) && err.response?.data.error) {
                 setMensajeError(err.response.data.error);
@@ -106,7 +92,7 @@ export const FormularioRegistro: React.FC = () => {
                 </div>
             )}
 
-            <form onSubmit={handleSubmit} onInvalid={() => setIntentoEnvio(true)} className="space-y-1">
+            <form onSubmit={handleSubmit} className="space-y-1">
                 <div>
                     <label htmlFor="nombre" className="register-label block text-[0.625rem] font-medium leading-[0.8125rem]">Nombre completo</label>
                     <input
@@ -115,7 +101,6 @@ export const FormularioRegistro: React.FC = () => {
                         name="nombre"
                         value={formData.nombre}
                         onChange={handleChange}
-                        onBlur={handleBlur}
                         aria-invalid={mostrarCampoInvalido('nombre') || undefined}
                         className={`register-input mt-1 h-[1.9375rem] w-full rounded-md border px-2.5 text-[0.6875rem] outline-none${mostrarCampoInvalido('nombre') ? ' register-input-invalid' : ''}`}
                         placeholder="Ej. Laura Gomez"
@@ -131,7 +116,6 @@ export const FormularioRegistro: React.FC = () => {
                         name="correo"
                         value={formData.correo}
                         onChange={handleChange}
-                        onBlur={handleBlur}
                         aria-invalid={mostrarCampoInvalido('correo') || undefined}
                         className={`register-input mt-1 h-[1.9375rem] w-full rounded-md border px-2.5 text-[0.6875rem] outline-none${mostrarCampoInvalido('correo') ? ' register-input-invalid' : ''}`}
                         placeholder="nombre@unillanos.edu.co"
@@ -147,7 +131,6 @@ export const FormularioRegistro: React.FC = () => {
                         name="password"
                         value={formData.password}
                         onChange={handleChange}
-                        onBlur={handleBlur}
                         aria-invalid={mostrarCampoInvalido('password') || undefined}
                         className={`register-input mt-1 h-[1.9375rem] w-full rounded-md border px-2.5 text-[0.6875rem] outline-none${mostrarCampoInvalido('password') ? ' register-input-invalid' : ''}`}
                         placeholder="Mínimo 8 caracteres"
