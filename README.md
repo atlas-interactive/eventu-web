@@ -15,4 +15,4 @@ Módulo Web desarrollado en React orientado principalmente a los **Organizadores
 Crea un archivo `.env` en la raíz del proyecto apuntando a la API backend:
 
 ```env
-REACT_APP_API_URL=http://localhost:8080/api
+VITE_API_URL=http://localhost:8080/api
