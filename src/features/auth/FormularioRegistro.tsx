@@ -3,7 +3,7 @@ import { isAxiosError } from 'axios';
 import { registrarUsuario } from './services/authService';
 import type { RegistroDTO } from '../../types/auth';
 
-const correoInstitucionalRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.(edu|edu\.[a-z]{2})$/;
+const correoInstitucionalRegex = /^[a-zA-Z0-9._%+-]+@unillanos\.edu\.co$/;
 
 export const FormularioRegistro: React.FC = () => {
     const [formData, setFormData] = useState<RegistroDTO>({
@@ -16,6 +16,17 @@ export const FormularioRegistro: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [mensajeError, setMensajeError] = useState<string | null>(null);
     const [mensajeExito, setMensajeExito] = useState<string | null>(null);
+
+    // Validación de campos del formulario
+    const campoInvalido = {
+        nombre: formData.nombre.trim().length === 0,
+        correo: !correoInstitucionalRegex.test(formData.correo),
+        password: formData.password.length < 8 || formData.password.length > 72,
+    };
+
+    // Función para determinar si un campo debe mostrar un estado de error
+    const mostrarCampoInvalido = (campo: keyof RegistroDTO) =>
+        formData[campo].length > 0 && campoInvalido[campo];
 
     // Maneja los cambios en los campos del formulario
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,6 +45,11 @@ export const FormularioRegistro: React.FC = () => {
 
         if (!correoInstitucionalRegex.test(formData.correo)) {
             setMensajeError('Debe ingresar un correo institucional educativo válido.');
+            return;
+        }
+
+        if (formData.password.length < 8 || formData.password.length > 72) {
+            setMensajeError('La contraseña debe tener entre 8 y 72 caracteres.');
             return;
         }
 
@@ -85,7 +101,8 @@ export const FormularioRegistro: React.FC = () => {
                         name="nombre"
                         value={formData.nombre}
                         onChange={handleChange}
-                        className="register-input mt-1 h-[1.9375rem] w-full rounded-md border px-2.5 text-[0.6875rem] outline-none"
+                        aria-invalid={mostrarCampoInvalido('nombre') || undefined}
+                        className={`register-input mt-1 h-[1.9375rem] w-full rounded-md border px-2.5 text-[0.6875rem] outline-none${mostrarCampoInvalido('nombre') ? ' register-input-invalid' : ''}`}
                         placeholder="Ej. Laura Gomez"
                         required
                     />
@@ -99,7 +116,8 @@ export const FormularioRegistro: React.FC = () => {
                         name="correo"
                         value={formData.correo}
                         onChange={handleChange}
-                        className="register-input mt-1 h-[1.9375rem] w-full rounded-md border px-2.5 text-[0.6875rem] outline-none"
+                        aria-invalid={mostrarCampoInvalido('correo') || undefined}
+                        className={`register-input mt-1 h-[1.9375rem] w-full rounded-md border px-2.5 text-[0.6875rem] outline-none${mostrarCampoInvalido('correo') ? ' register-input-invalid' : ''}`}
                         placeholder="nombre@unillanos.edu.co"
                         required
                     />
@@ -113,9 +131,11 @@ export const FormularioRegistro: React.FC = () => {
                         name="password"
                         value={formData.password}
                         onChange={handleChange}
-                        className="register-input mt-1 h-[1.9375rem] w-full rounded-md border px-2.5 text-[0.6875rem] outline-none"
+                        aria-invalid={mostrarCampoInvalido('password') || undefined}
+                        className={`register-input mt-1 h-[1.9375rem] w-full rounded-md border px-2.5 text-[0.6875rem] outline-none${mostrarCampoInvalido('password') ? ' register-input-invalid' : ''}`}
                         placeholder="Mínimo 8 caracteres"
                         minLength={8}
+                        maxLength={72}
                         required
                     />
                 </div>
@@ -134,4 +154,3 @@ export const FormularioRegistro: React.FC = () => {
         </section>
     );
 };
-

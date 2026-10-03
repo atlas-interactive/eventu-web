@@ -57,6 +57,13 @@
 }
 
 .register-input:focus {
+  border-color: var(--color-eventu-border);
+  outline: none;
+  box-shadow: 0 0 0 1px var(--color-eventu-border);
+}
+
+.register-input-invalid,
+.register-input-invalid:focus {
   border-color: var(--color-eventu-institutional-red);
   box-shadow: 0 0 0 1px var(--color-eventu-institutional-red);
 }
