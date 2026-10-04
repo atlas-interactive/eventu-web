@@ -17,7 +17,7 @@ export interface RespuestaRegistro {
 export interface AutenticacionDTO {
     correo: string;
     password: string;
-}
+}   
 
 //Respuesta del servidor cuando la autenticación sea exitosa
 export interface RespuestaAutenticacion {
