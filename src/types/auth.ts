@@ -12,3 +12,18 @@ export interface RespuestaRegistro {
     correo: string;
     rol: string;
 }
+
+//Data transfer object a enviar para autenticar un usuario
+export interface AutenticacionDTO {
+    correo: string;
+    password: string;
+}
+
+//Respuesta del servidor cuando la autenticación sea exitosa
+export interface RespuestaAutenticacion {
+    token: string;
+    usuarioId: bigint;
+    nombre: string
+    correo: string;
+    rol: string;
+}
