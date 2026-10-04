@@ -27,6 +27,11 @@
   color: var(--color-eventu-main-ink);
 }
 
+.login-form {
+  border-color: var(--color-eventu-border);
+  box-shadow: inset 0 0 1px 1px var(--color-eventu-border);
+}
+
 .register-subtitle {
   color: var(--color-eventu-secondary-text);
 }
@@ -83,6 +88,10 @@
 }
 
 .register-login-link {
+  color: var(--color-eventu-institutional-red);
+}
+
+.login-meta {
   color: var(--color-eventu-institutional-red);
 }
 
