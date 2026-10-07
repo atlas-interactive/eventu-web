@@ -2,7 +2,6 @@ import { isAxiosError } from 'axios';
 import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import type { Categoria } from '../../types/categoria';
-import { obtenerSesion } from '../sesion/sesion';
 import { ModalAccesible } from './components/ModalAccesible';
 import {
     activarCategoria,
@@ -239,19 +238,14 @@ function FormularioCategoria({ categoria, onCerrar, onGuardado }: FormularioCate
             setError('El nombre de la categoría es obligatorio.');
             return;
         }
-        const administradorId = obtenerSesion()?.usuarioId;
-        if (administradorId === undefined) {
-            setError('Tu sesión expiró. Inicia sesión de nuevo.');
-            return;
-        }
 
         setGuardando(true);
         setError('');
         try {
             if (categoria) {
-                await editarCategoria(categoria.id, { nombre: nombreLimpio }, administradorId);
+                await editarCategoria(categoria.id, { nombre: nombreLimpio });
             } else {
-                await crearCategoria({ nombre: nombreLimpio }, administradorId);
+                await crearCategoria({ nombre: nombreLimpio });
             }
             onGuardado();
         } catch (err: unknown) {
@@ -314,16 +308,11 @@ function ConfirmarEstado({ categoria, onCerrar, onConfirmado }: ConfirmarEstadoP
     const desactivando = categoria.activo;
 
     const confirmar = async () => {
-        const administradorId = obtenerSesion()?.usuarioId;
-        if (administradorId === undefined) {
-            setError('Tu sesión expiró. Inicia sesión de nuevo.');
-            return;
-        }
         setProcesando(true);
         setError('');
         try {
-            // Solo se envía el id: el backend tiene un endpoint para cada acción
-            await (categoria.activo ? desactivarCategoria : activarCategoria)(categoria.id, administradorId);
+            // Solo se envía el id: el backend saca al administrador del token y tiene un endpoint para cada acción
+            await (categoria.activo ? desactivarCategoria : activarCategoria)(categoria.id);
             onConfirmado();
         } catch (err: unknown) {
             setError(mensajeDeError(err));

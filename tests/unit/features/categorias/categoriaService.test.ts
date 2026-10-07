@@ -45,37 +45,37 @@ describe('categoriaService', () => {
         expect(clienteMock.get).toHaveBeenCalledWith('/categorias', { params: { soloActivas: true } });
     });
 
-    it('crea enviando el administrador en la consulta', async () => {
+    it('crea sin enviar el id del administrador (va en el token)', async () => {
         clienteMock.post.mockResolvedValue({ data: { id: 9, nombre: 'Arte' } });
 
-        const resultado = await crearCategoria({ nombre: 'Arte' }, 1);
+        const resultado = await crearCategoria({ nombre: 'Arte' });
 
-        expect(clienteMock.post).toHaveBeenCalledWith('/categorias', { nombre: 'Arte' }, { params: { administradorId: 1 } });
+        expect(clienteMock.post).toHaveBeenCalledWith('/categorias', { nombre: 'Arte' });
         expect(resultado.id).toBe(9);
     });
 
-    it('edita el nombre por id enviando el administrador en la consulta', async () => {
+    it('edita el nombre por id', async () => {
         clienteMock.put.mockResolvedValue({ data: { id: 5, nombre: 'Arte' } });
 
-        await editarCategoria(5, { nombre: 'Arte' }, 1);
+        await editarCategoria(5, { nombre: 'Arte' });
 
-        expect(clienteMock.put).toHaveBeenCalledWith('/categorias/5', { nombre: 'Arte' }, { params: { administradorId: 1 } });
+        expect(clienteMock.put).toHaveBeenCalledWith('/categorias/5', { nombre: 'Arte' });
     });
 
     it('desactiva solo con el id, sin cuerpo', async () => {
         clienteMock.patch.mockResolvedValue({ data: { id: 5, activo: false } });
 
-        const resultado = await desactivarCategoria(5, 1);
+        const resultado = await desactivarCategoria(5);
 
-        expect(clienteMock.patch).toHaveBeenCalledWith('/categorias/5/desactivar', null, { params: { administradorId: 1 } });
+        expect(clienteMock.patch).toHaveBeenCalledWith('/categorias/5/desactivar');
         expect(resultado.activo).toBe(false);
     });
 
     it('activa solo con el id, sin cuerpo', async () => {
         clienteMock.patch.mockResolvedValue({ data: { id: 5, activo: true } });
 
-        await activarCategoria(5, 1);
+        await activarCategoria(5);
 
-        expect(clienteMock.patch).toHaveBeenCalledWith('/categorias/5/activar', null, { params: { administradorId: 1 } });
+        expect(clienteMock.patch).toHaveBeenCalledWith('/categorias/5/activar');
     });
 });

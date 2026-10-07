@@ -1,8 +1,8 @@
 import { axiosClient } from '../../../api';
 import type { Categoria, CategoriaSolicitud } from '../../../types/categoria';
 
-// Mientras el JWT no esté integrado, el backend recibe quién actúa en ?administradorId=
-// Al integrarlo, basta con quitar el parámetro `params` de las cinco llamadas.
+// El administrador se identifica con el token JWT (el interceptor de axios lo envía en Authorization),
+// por eso ninguna llamada necesita el id del usuario.
 
 // soloActivas=true es lo que usa el selector de "Crear evento" (HU-05)
 export const listarCategorias = async (soloActivas = false): Promise<Categoria[]> => {
@@ -14,19 +14,15 @@ export const listarCategorias = async (soloActivas = false): Promise<Categoria[]
     return data;
 };
 
-export const crearCategoria = async (data: CategoriaSolicitud, administradorId: number): Promise<Categoria> =>
-    (await axiosClient.post<Categoria>('/categorias', data, { params: { administradorId } })).data;
+export const crearCategoria = async (data: CategoriaSolicitud): Promise<Categoria> =>
+    (await axiosClient.post<Categoria>('/categorias', data)).data;
 
-export const editarCategoria = async (
-    id: number,
-    data: CategoriaSolicitud,
-    administradorId: number,
-): Promise<Categoria> =>
-    (await axiosClient.put<Categoria>(`/categorias/${id}`, data, { params: { administradorId } })).data;
+export const editarCategoria = async (id: number, data: CategoriaSolicitud): Promise<Categoria> =>
+    (await axiosClient.put<Categoria>(`/categorias/${id}`, data)).data;
 
 // Desactivar no elimina: los eventos que ya usan la categoría la conservan. Solo necesitan el id, sin cuerpo
-export const desactivarCategoria = async (id: number, administradorId: number): Promise<Categoria> =>
-    (await axiosClient.patch<Categoria>(`/categorias/${id}/desactivar`, null, { params: { administradorId } })).data;
+export const desactivarCategoria = async (id: number): Promise<Categoria> =>
+    (await axiosClient.patch<Categoria>(`/categorias/${id}/desactivar`)).data;
 
-export const activarCategoria = async (id: number, administradorId: number): Promise<Categoria> =>
-    (await axiosClient.patch<Categoria>(`/categorias/${id}/activar`, null, { params: { administradorId } })).data;
+export const activarCategoria = async (id: number): Promise<Categoria> =>
+    (await axiosClient.patch<Categoria>(`/categorias/${id}/activar`)).data;
