@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { isAxiosError } from 'axios';
 import { Link } from 'react-router-dom';
+import iconoEventU from '../../assets/icons/iconoEventU.png';
 import { registrarUsuario } from './services/authService';
 import type { RegistroDTO } from '../../types/auth';
 
@@ -72,30 +73,31 @@ export const FormularioRegistro: React.FC = () => {
     };
 
     return (
-        <section className="register-form w-full max-w-[26.25rem] border-[0.125rem] px-8 py-6">
+        <section className="register-form w-full max-w-[34rem] border-[0.125rem] px-8 py-6">
             <header className="mb-3 text-center">
-            <p className="text-[0.9375rem] font-semibold leading-[1.125rem]">EventU</p>
-            <h1 className="mt-2 text-[0.875rem] font-semibold leading-[1.0625rem]">Crea tu cuenta</h1>
-            <p className="register-subtitle mt-0.5 text-[0.625rem] leading-[0.75rem]">Usa tu correo institucional para registrarte</p>
+                <img src={iconoEventU} alt="" aria-hidden="true" className="mx-auto mb-2 h-9 w-9" />
+                <h1 className="text-2xl font-semibold leading-7">EventU</h1>
+                <p className="mt-2 text-base font-semibold leading-5">Crea tu cuenta</p>
+                <p className="register-subtitle mt-0.5 text-sm leading-7">Usa tu correo institucional para registrarte</p>
             </header>
 
             {/* Alerta visual de Error */}
             {mensajeError && (
-                <div role="alert" className="register-alert-error mb-2 rounded border p-2 text-xs">
+                <div role="alert" className="register-alert-error mb-2 rounded border p-2 text-sm">
                     {mensajeError}
                 </div>
             )}
 
             {/* Alerta visual de Éxito */}
             {mensajeExito && (
-                <div role="status" className="register-alert-success mb-2 rounded border p-2 text-xs">
+                <div role="status" className="register-alert-success mb-2 rounded border p-2 text-sm">
                     {mensajeExito}
                 </div>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-1">
                 <div>
-                    <label htmlFor="nombre" className="register-label block text-[0.625rem] font-medium leading-[0.8125rem]">Nombre completo</label>
+                    <label htmlFor="nombre" className="register-label block text-sm font-medium leading-5">Nombre completo</label>
                     <input
                         type="text"
                         id="nombre"
@@ -103,14 +105,14 @@ export const FormularioRegistro: React.FC = () => {
                         value={formData.nombre}
                         onChange={handleChange}
                         aria-invalid={mostrarCampoInvalido('nombre') || undefined}
-                        className={`register-input mt-1 h-[1.9375rem] w-full rounded-md border px-2.5 text-[0.6875rem] outline-none${mostrarCampoInvalido('nombre') ? ' register-input-invalid' : ''}`}
+                        className={`register-input mt-1 h-11 w-full rounded-md border px-2.5 text-base leading-6 outline-none${mostrarCampoInvalido('nombre') ? ' register-input-invalid' : ''}`}
                         placeholder="Ej. Laura Gomez"
                         required
                     />
                 </div>
 
                 <div>
-                    <label htmlFor="correo" className="register-label block text-[0.625rem] font-medium leading-[0.8125rem]">Correo institucional</label>
+                    <label htmlFor="correo" className="register-label block text-sm font-medium leading-5">Correo institucional</label>
                     <input
                         type="email"
                         id="correo"
@@ -118,14 +120,14 @@ export const FormularioRegistro: React.FC = () => {
                         value={formData.correo}
                         onChange={handleChange}
                         aria-invalid={mostrarCampoInvalido('correo') || undefined}
-                        className={`register-input mt-1 h-[1.9375rem] w-full rounded-md border px-2.5 text-[0.6875rem] outline-none${mostrarCampoInvalido('correo') ? ' register-input-invalid' : ''}`}
+                        className={`register-input mt-1 h-11 w-full rounded-md border px-2.5 text-base leading-6 outline-none${mostrarCampoInvalido('correo') ? ' register-input-invalid' : ''}`}
                         placeholder="nombre@unillanos.edu.co"
                         required
                     />
                 </div>
 
                 <div>
-                    <label htmlFor="password" className="register-label block text-[0.625rem] font-medium leading-[0.8125rem]">Contraseña</label>
+                    <label htmlFor="password" className="register-label block text-sm font-medium leading-5">Contraseña</label>
                     <input
                         type="password"
                         id="password"
@@ -133,7 +135,7 @@ export const FormularioRegistro: React.FC = () => {
                         value={formData.password}
                         onChange={handleChange}
                         aria-invalid={mostrarCampoInvalido('password') || undefined}
-                        className={`register-input mt-1 h-[1.9375rem] w-full rounded-md border px-2.5 text-[0.6875rem] outline-none${mostrarCampoInvalido('password') ? ' register-input-invalid' : ''}`}
+                        className={`register-input mt-1 h-11 w-full rounded-md border px-2.5 text-base leading-6 outline-none${mostrarCampoInvalido('password') ? ' register-input-invalid' : ''}`}
                         placeholder="Mínimo 8 caracteres"
                         minLength={8}
                         maxLength={72}
@@ -144,12 +146,12 @@ export const FormularioRegistro: React.FC = () => {
                 <button
                     type="submit"
                     disabled={loading}
-                    className="register-submit mt-1 h-[2.125rem] w-full rounded-md text-[0.75rem] font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+                    className="register-submit mt-1 h-11 w-full rounded-md text-base font-semibold leading-6 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
                 >
                     {loading ? 'Validando...' : 'Crear cuenta'}
                 </button>
             </form>
-            <p className="register-login-link mt-2 text-center text-[0.625rem] leading-[0.75rem]">
+            <p className="register-login-link mt-2 text-center text-sm leading-5">
                 ¿Ya tienes cuenta?{' '}
                 <Link to="/login" className="font-medium hover:underline">
                     Inicia sesión
