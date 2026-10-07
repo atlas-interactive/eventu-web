@@ -92,7 +92,7 @@ describe('GestionCategorias (HU-04)', () => {
         await user.type(screen.getByLabelText('Nombre de la categoría'), '  Deportivo  ');
         await user.click(screen.getByRole('button', { name: 'Guardar' }));
 
-        expect(crearMock).toHaveBeenCalledWith({ nombre: 'Deportivo' }, ADMIN_ID);
+        expect(crearMock).toHaveBeenCalledWith({ nombre: 'Deportivo' });
         expect(await screen.findByRole('status')).toHaveTextContent('Categoría creada correctamente.');
         expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
         await waitFor(() => expect(listarMock).toHaveBeenCalledTimes(2));
@@ -137,7 +137,7 @@ describe('GestionCategorias (HU-04)', () => {
         await user.type(campo, 'Arte');
         await user.click(screen.getByRole('button', { name: 'Guardar' }));
 
-        expect(editarMock).toHaveBeenCalledWith(2, { nombre: 'Arte' }, ADMIN_ID);
+        expect(editarMock).toHaveBeenCalledWith(2, { nombre: 'Arte' });
         expect(await screen.findByRole('status')).toHaveTextContent('Categoría actualizada correctamente.');
     });
 
@@ -169,7 +169,7 @@ describe('GestionCategorias (HU-04)', () => {
         await user.click(within(dialogo).getByRole('button', { name: 'Desactivar' }));
 
         // Solo viaja el id: no se reenvía el nombre
-        expect(desactivarMock).toHaveBeenCalledWith(2, ADMIN_ID);
+        expect(desactivarMock).toHaveBeenCalledWith(2);
         expect(editarMock).not.toHaveBeenCalled();
         expect(await screen.findByRole('status')).toHaveTextContent('Categoría desactivada correctamente.');
     });
@@ -182,7 +182,7 @@ describe('GestionCategorias (HU-04)', () => {
         await user.click(screen.getByRole('button', { name: 'Activar categoría Bienestar Universitario' }));
         await user.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Activar' }));
 
-        expect(activarMock).toHaveBeenCalledWith(3, ADMIN_ID);
+        expect(activarMock).toHaveBeenCalledWith(3);
         expect(await screen.findByRole('status')).toHaveTextContent('Categoría activada correctamente.');
     });
 

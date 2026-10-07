@@ -48,7 +48,8 @@ describe('FormularioRegistro', () => {
     it('muestra los campos y el enlace para iniciar sesión', () => {
         renderFormulario();
 
-        expect(screen.getByRole('heading', { name: 'Crea tu cuenta' })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: 'EventU' })).toBeInTheDocument();
+        expect(screen.getByText('Crea tu cuenta')).toBeInTheDocument();
         expect(screen.getByLabelText('Nombre completo')).toBeInTheDocument();
         expect(screen.getByLabelText('Correo institucional')).toBeInTheDocument();
         expect(screen.getByLabelText('Contraseña')).toBeInTheDocument();
