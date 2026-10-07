@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { isAxiosError } from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { autenticarUsuario } from './services/authService';
+import { esAdministrador, guardarSesion } from '../sesion/sesion';
 import type { AutenticacionDTO } from '../../types/auth';
 
 const correoInstitucionalRegex = /^[a-zA-Z0-9._%+-]+@unillanos\.edu\.co$/;
 
 export const FormularioLogin: React.FC = () => {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState<AutenticacionDTO>({
         correo: '',
         password: '',
@@ -51,8 +53,17 @@ export const FormularioLogin: React.FC = () => {
 
         try {
             const response = await autenticarUsuario(formData);
-            setMensajeExito(response.nombre || 'Inicio de sesión exitoso.');
+            // usuarioId llega tipado como bigint; en la sesión se guarda como número
+            const sesion = { ...response, usuarioId: Number(response.usuarioId) };
+            guardarSesion(sesion);
             setFormData({ correo: '', password: '' });
+
+            if (esAdministrador(sesion)) {
+                navigate('/admin/categorias', { replace: true });
+                return;
+            }
+            // Aún no hay pantalla de inicio para los demás roles
+            setMensajeExito(response.nombre || 'Inicio de sesión exitoso.');
         } catch (err: unknown) {
             if (isAxiosError<{ error?: string }>(err) && err.response?.data.error) {
                 setMensajeError(err.response.data.error);
