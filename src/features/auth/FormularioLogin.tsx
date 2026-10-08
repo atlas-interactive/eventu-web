@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { isAxiosError } from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import iconoEventU from '../../assets/icons/iconoEventU.png';
 import { autenticarUsuario } from './services/authService';
+import { esAdministrador, guardarSesion } from '../sesion/sesion';
 import type { AutenticacionDTO } from '../../types/auth';
 
 const correoInstitucionalRegex = /^[a-zA-Z0-9._%+-]+@unillanos\.edu\.co$/;
 
 export const FormularioLogin: React.FC = () => {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState<AutenticacionDTO>({
         correo: '',
         password: '',
@@ -32,7 +35,7 @@ export const FormularioLogin: React.FC = () => {
         }));
     };
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
         setMensajeError(null);
         setMensajeExito(null);
@@ -51,8 +54,17 @@ export const FormularioLogin: React.FC = () => {
 
         try {
             const response = await autenticarUsuario(formData);
-            setMensajeExito(response.nombre || 'Inicio de sesión exitoso.');
+            // usuarioId llega tipado como bigint; en la sesión se guarda como número
+            const sesion = { ...response, usuarioId: Number(response.usuarioId) };
+            guardarSesion(sesion);
             setFormData({ correo: '', password: '' });
+
+            if (esAdministrador(sesion)) {
+                navigate('/admin/categorias', { replace: true });
+                return;
+            }
+            // Aún no hay pantalla de inicio para los demás roles
+            setMensajeExito(response.nombre || 'Inicio de sesión exitoso.');
         } catch (err: unknown) {
             if (isAxiosError<{ error?: string }>(err) && err.response?.data.error) {
                 setMensajeError(err.response.data.error);
@@ -65,28 +77,29 @@ export const FormularioLogin: React.FC = () => {
     };
 
     return (
-        <section className="login-form register-form w-full max-w-[26.25rem] border-[0.125rem] px-8 py-6">
+        <section className="login-form register-form w-full max-w-[34rem] border-[0.125rem] px-8 py-6">
             <header className="mb-3 text-center">
-                <p className="text-[0.9375rem] font-semibold leading-[1.125rem]">EventU</p>
-                <h1 className="mt-2 text-[0.875rem] font-semibold leading-[1.0625rem]">Inicia sesión</h1>
-                <p className="register-subtitle mt-0.5 text-[0.625rem] leading-[0.75rem]">Ingresa con tu correo institucional</p>
+                <img src={iconoEventU} alt="" aria-hidden="true" className="mx-auto mb-2 h-9 w-9" />
+                <h1 className="text-2xl font-semibold leading-7">EventU</h1>
+                <p className="mt-2 text-base font-semibold leading-5">Inicia sesión</p>
+                <p className="register-subtitle mt-0.5 text-sm leading-5">Ingresa con tu correo institucional</p>
             </header>
 
             {mensajeError && (
-                <div role="alert" className="register-alert-error mb-2 rounded border p-2 text-xs">
+                <div role="alert" className="register-alert-error mb-2 rounded border p-2 text-sm">
                     {mensajeError}
                 </div>
             )}
 
             {mensajeExito && (
-                <div role="status" className="register-alert-success mb-2 rounded border p-2 text-xs">
+                <div role="status" className="register-alert-success mb-2 rounded border p-2 text-sm">
                     {mensajeExito}
                 </div>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-1">
                 <div>
-                    <label htmlFor="correo" className="register-label block text-[0.625rem] font-medium leading-[0.8125rem]">
+                    <label htmlFor="correo" className="register-label block text-sm font-medium leading-5">
                         Correo institucional
                     </label>
                     <input
@@ -96,14 +109,14 @@ export const FormularioLogin: React.FC = () => {
                         value={formData.correo}
                         onChange={handleChange}
                         aria-invalid={mostrarCampoInvalido('correo') || undefined}
-                        className={`register-input mt-1 h-[1.9375rem] w-full rounded-md border px-2.5 text-[0.6875rem] outline-none${mostrarCampoInvalido('correo') ? ' register-input-invalid' : ''}`}
+                        className={`register-input mt-1 h-11 w-full rounded-md border px-2.5 text-base leading-6 outline-none${mostrarCampoInvalido('correo') ? ' register-input-invalid' : ''}`}
                         placeholder="nombre@unillanos.edu.co"
                         required
                     />
                 </div>
 
                 <div>
-                    <label htmlFor="password" className="register-label block text-[0.625rem] font-medium leading-[0.8125rem]">
+                    <label htmlFor="password" className="register-label block text-sm font-medium leading-5">
                         Contraseña
                     </label>
                     <input
@@ -113,7 +126,7 @@ export const FormularioLogin: React.FC = () => {
                         value={formData.password}
                         onChange={handleChange}
                         aria-invalid={mostrarCampoInvalido('password') || undefined}
-                        className={`register-input mt-1 h-[1.9375rem] w-full rounded-md border px-2.5 text-[0.6875rem] outline-none${mostrarCampoInvalido('password') ? ' register-input-invalid' : ''}`}
+                        className={`register-input mt-1 h-11 w-full rounded-md border px-2.5 text-base leading-6 outline-none${mostrarCampoInvalido('password') ? ' register-input-invalid' : ''}`}
                         placeholder="Mínimo 8 caracteres"
                         minLength={8}
                         maxLength={72}
@@ -124,13 +137,13 @@ export const FormularioLogin: React.FC = () => {
                 <button
                     type="submit"
                     disabled={loading}
-                    className="register-submit mt-1 h-[2.125rem] w-full rounded-md text-[0.75rem] font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+                    className="register-submit mt-1 h-11 w-full rounded-md text-base font-semibold leading-6 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
                 >
                     {loading ? 'Validando...' : 'Iniciar sesión'}
                 </button>
             </form>
 
-            <p className="register-login-link mt-2 text-center text-[0.625rem] leading-[0.75rem]">
+            <p className="register-login-link mt-2 text-center text-sm leading-5">
                 ¿No tienes cuenta?{' '}
                 <Link to="/registro" className="font-medium hover:underline">
                     Regístrate
