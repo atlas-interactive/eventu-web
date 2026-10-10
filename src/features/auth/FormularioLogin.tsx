@@ -67,7 +67,7 @@ export const FormularioLogin: React.FC = () => {
                 navigate('/organizador/eventos', { replace: true });
                 return;
             }
-            // Aún no hay pantalla de inicio para el rol USUARIO (el listado de eventos es la HU-07)
+            // Aún no hay pantalla de inicio para el rol USUARIO
             setMensajeExito(
                 `Sesión iniciada${response.nombre ? `, ${response.nombre}` : ''}. El listado de eventos estará disponible en la próxima versión.`,
             );        } catch (err: unknown) {
