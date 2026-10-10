@@ -146,7 +146,7 @@ export const FormularioRegistro: React.FC = () => {
                 <button
                     type="submit"
                     disabled={loading}
-                    className="register-submit mt-1 h-11 w-full rounded-md text-base font-semibold leading-6 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+                    className="register-submit mt-1 h-11 w-full rounded-md text-base font-normal leading-6 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
                 >
                     {loading ? 'Validando...' : 'Crear cuenta'}
                 </button>

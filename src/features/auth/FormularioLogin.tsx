@@ -3,7 +3,7 @@ import { isAxiosError } from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import iconoEventU from '../../assets/icons/iconoEventU.png';
 import { autenticarUsuario } from './services/authService';
-import { esAdministrador, guardarSesion } from '../sesion/sesion';
+import { esAdministrador, esOrganizador, guardarSesion } from '../sesion/sesion';
 import type { AutenticacionDTO } from '../../types/auth';
 
 const correoInstitucionalRegex = /^[a-zA-Z0-9._%+-]+@unillanos\.edu\.co$/;
@@ -63,9 +63,14 @@ export const FormularioLogin: React.FC = () => {
                 navigate('/admin/categorias', { replace: true });
                 return;
             }
-            // Aún no hay pantalla de inicio para los demás roles
-            setMensajeExito(response.nombre || 'Inicio de sesión exitoso.');
-        } catch (err: unknown) {
+            if (esOrganizador(sesion)) {
+                navigate('/organizador/eventos', { replace: true });
+                return;
+            }
+            // Aún no hay pantalla de inicio para el rol USUARIO (el listado de eventos es la HU-07)
+            setMensajeExito(
+                `Sesión iniciada${response.nombre ? `, ${response.nombre}` : ''}. El listado de eventos estará disponible en la próxima versión.`,
+            );        } catch (err: unknown) {
             if (isAxiosError<{ error?: string }>(err) && err.response?.data.error) {
                 setMensajeError(err.response.data.error);
             } else {
@@ -137,7 +142,7 @@ export const FormularioLogin: React.FC = () => {
                 <button
                     type="submit"
                     disabled={loading}
-                    className="register-submit mt-1 h-11 w-full rounded-md text-base font-semibold leading-6 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+                    className="register-submit mt-1 h-11 w-full rounded-md text-base font-normal leading-6 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
                 >
                     {loading ? 'Validando...' : 'Iniciar sesión'}
                 </button>
