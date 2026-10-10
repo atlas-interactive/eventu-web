@@ -70,7 +70,9 @@ describe('FormularioLogin: sesión y redirección', () => {
 
         await iniciarSesion();
 
-        expect(await screen.findByRole('status')).toHaveTextContent('Ana');
+        expect(await screen.findByRole('status')).toHaveTextContent(
+            'Sesión iniciada, Ana. El listado de eventos estará disponible en la próxima versión.',
+        );
         expect(screen.queryByText('Pantalla de categorías')).not.toBeInTheDocument();
         expect(obtenerSesion()?.rol).toBe('USUARIO');
     });
