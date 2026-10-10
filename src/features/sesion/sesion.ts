@@ -35,3 +35,10 @@ export const obtenerSesion = (): SesionUsuario | null => {
 
 export const esAdministrador = (sesion: SesionUsuario | null): boolean =>
     sesion?.rol.toUpperCase() === 'ADMIN';
+
+export const esOrganizador = (sesion: SesionUsuario | null): boolean =>
+    sesion?.rol.toUpperCase() === 'ORGANIZADOR';
+
+// Mismo criterio que @PreAuthorize en EventoController
+export const puedeGestionarEventos = (sesion: SesionUsuario | null): boolean =>
+    esOrganizador(sesion) || esAdministrador(sesion);
