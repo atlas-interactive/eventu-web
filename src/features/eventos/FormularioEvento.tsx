@@ -145,7 +145,7 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
         <form
             onSubmit={alEnviar}
             noValidate
-            className="flex flex-col gap-3 rounded-lg border border-eventu-border bg-eventu-white-surface p-5"
+            className="flex flex-col gap-3 rounded-lg border border-eventu-border bg-eventu-white-surface p-7"
         >
             <div>
                 <label htmlFor="titulo" className="mb-1 block text-sm font-medium text-eventu-main-ink">
