@@ -97,6 +97,7 @@ function App() {
                     <Route path="/registro" element={<FormularioRegistro />} />
                 </Route>
 
+                {/* Cada guardia y layout se aplica a todas las rutas anidadas en su grupo. */}
                 <Route element={<RutaAdministrador />}>
                     <Route element={<LayoutAplicacion />}>
                         <Route path="/admin/categorias" element={<GestionCategorias />} />

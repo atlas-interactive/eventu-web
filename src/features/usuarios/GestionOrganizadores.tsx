@@ -51,6 +51,7 @@ export function GestionOrganizadores() {
     const [recarga, setRecarga] = useState(0);
 
     useEffect(() => {
+        // Evita actualizar el estado si la respuesta llega después de desmontar la pantalla.
         let vigente = true;
         listarOrganizadores()
             .then((lista) => {

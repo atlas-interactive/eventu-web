@@ -65,6 +65,7 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
     const inscritos = evento ? evento.cuposMaximos - evento.cuposDisponibles : 0;
 
     useEffect(() => {
+        // Evita actualizar el estado si la respuesta llega después de desmontar el formulario.
         let vigente = true;
         // Solo las activas: es el selector de HU-05 (criterio 2.0)
         listarCategorias(true)

@@ -15,18 +15,22 @@ export const FormularioLogin: React.FC = () => {
         password: '',
     });
 
+    // Estado de carga y mensajes del formulario
     const [loading, setLoading] = useState(false);
     const [mensajeError, setMensajeError] = useState<string | null>(null);
     const [mensajeExito, setMensajeExito] = useState<string | null>(null);
 
+    // Validación del correo institucional y la contraseña
     const campoInvalido = {
         correo: formData.correo.length > 0 && !correoInstitucionalRegex.test(formData.correo),
         password: formData.password.length > 0 && formData.password.length < 8,
     };
 
+    // Determina si el campo debe mostrarse como inválido
     const mostrarCampoInvalido = (campo: keyof AutenticacionDTO) =>
         formData[campo].length > 0 && campoInvalido[campo];
 
+    // Actualiza el campo modificado sin alterar los demás valores
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
@@ -35,6 +39,7 @@ export const FormularioLogin: React.FC = () => {
         }));
     };
 
+    // Valida las credenciales y gestiona el inicio de sesión
     const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
         setMensajeError(null);

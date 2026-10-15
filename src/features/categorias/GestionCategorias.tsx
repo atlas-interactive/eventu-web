@@ -53,6 +53,7 @@ export function GestionCategorias() {
     const [mensajeExito, setMensajeExito] = useState('');
 
     useEffect(() => {
+        // Evita actualizar el estado si la respuesta llega después de desmontar la pantalla.
         let vigente = true;
         listarCategorias(false)
             .then((datos) => {
