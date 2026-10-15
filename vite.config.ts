@@ -12,6 +12,7 @@ export default defineConfig({
   ],
   test: {
     globals: true,
+    // Usa DOM simulado y prepara MSW antes de ejecutar las pruebas.
     environment: 'jsdom',
     setupFiles: './tests/setupTests.ts',
   }

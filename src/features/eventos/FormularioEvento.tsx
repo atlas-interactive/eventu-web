@@ -16,9 +16,9 @@ interface FormularioEventoProps {
 }
 
 const botonPrimario =
-    'rounded-[0.4375rem] bg-eventu-institutional-red px-4 py-2 text-sm font-medium text-eventu-white-surface hover:bg-eventu-institutional-red-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red disabled:opacity-60';
+    'rounded-[0.4375rem] bg-eventu-institutional-red px-4 py-1.5 text-sm font-medium text-eventu-white-surface hover:bg-eventu-institutional-red-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red disabled:opacity-60';
 const botonSecundario =
-    'rounded-[0.4375rem] border border-eventu-field-border bg-eventu-white-surface px-4 py-2 text-sm font-medium text-eventu-main-ink hover:bg-eventu-page-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red';
+    'rounded-[0.4375rem] border border-eventu-field-border bg-eventu-white-surface px-4 py-1.5 text-sm font-medium text-eventu-main-ink hover:bg-eventu-page-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red';
 
 const clasesCampo = (conError: boolean) =>
     `w-full rounded-md border px-3 text-sm text-eventu-main-ink outline-none focus:ring-1 ${
@@ -65,6 +65,7 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
     const inscritos = evento ? evento.cuposMaximos - evento.cuposDisponibles : 0;
 
     useEffect(() => {
+        // Evita actualizar el estado si la respuesta llega después de desmontar el formulario.
         let vigente = true;
         // Solo las activas: es el selector de HU-05 (criterio 2.0)
         listarCategorias(true)
@@ -138,13 +139,18 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
                 {errores[campo]}
             </p>
         );
-    const describir = (campo: keyof CamposEvento) => (errores[campo] ? `error-${campo}` : undefined);
+    const describir = (campo: keyof CamposEvento, idAdicional?: string) =>
+        [errores[campo] ? `error-${campo}` : undefined, idAdicional].filter(Boolean).join(' ') || undefined;
 
     return (
-        <form onSubmit={alEnviar} noValidate className="space-y-5">
+        <form
+            onSubmit={alEnviar}
+            noValidate
+            className="flex flex-col gap-3 rounded-lg border border-eventu-border bg-eventu-white-surface p-7"
+        >
             <div>
                 <label htmlFor="titulo" className="mb-1 block text-sm font-medium text-eventu-main-ink">
-                    Título
+                    Título <span aria-hidden="true">*</span>
                 </label>
                 <input
                     id="titulo"
@@ -153,15 +159,17 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
                     value={campos.titulo}
                     onChange={alCambiar('titulo')}
                     aria-invalid={errores.titulo ? true : undefined}
+                    aria-required="true"
                     aria-describedby={describir('titulo')}
-                    className={`h-10 ${clasesCampo(Boolean(errores.titulo))}`}
+                    className={`h-8 ${clasesCampo(Boolean(errores.titulo))}`}
+                    placeholder='Ej. Feria de proyectos de ingeniería'
                 />
                 {mensajeCampo('titulo')}
             </div>
 
             <div>
                 <label htmlFor="descripcion" className="mb-1 block text-sm font-medium text-eventu-main-ink">
-                    Descripción
+                    Descripción <span aria-hidden="true">*</span>
                 </label>
                 <textarea
                     id="descripcion"
@@ -170,15 +178,17 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
                     onChange={alCambiar('descripcion')}
                     aria-invalid={errores.descripcion ? true : undefined}
                     aria-describedby={describir('descripcion')}
-                    className={`py-2 ${clasesCampo(Boolean(errores.descripcion))}`}
+                    className={`h-14 resize-y py-2 ${clasesCampo(Boolean(errores.descripcion))}`}
+                    placeholder='Describe brevemente el evento...'
+                    aria-required="true"
                 />
                 {mensajeCampo('descripcion')}
             </div>
 
-            <div className="grid gap-5 sm:grid-cols-2">
-                <div>
+            <div className="grid gap-4 sm:grid-cols-2">
+                <div className="order-3">
                     <label htmlFor="fechaInicio" className="mb-1 block text-sm font-medium text-eventu-main-ink">
-                        Fecha y hora de inicio
+                        Fecha y hora <span aria-hidden="true">*</span>
                     </label>
                     <input
                         id="fechaInicio"
@@ -186,15 +196,21 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
                         value={campos.fechaInicio}
                         onChange={alCambiar('fechaInicio')}
                         aria-invalid={errores.fechaInicio ? true : undefined}
-                        aria-describedby={describir('fechaInicio')}
-                        className={`h-10 ${clasesCampo(Boolean(errores.fechaInicio))}`}
+                        aria-describedby={describir('fechaInicio', !editando ? 'ayuda-fecha-futura' : undefined)}
+                        className={`h-8 ${clasesCampo(Boolean(errores.fechaInicio))}`}
+                        aria-required="true"
                     />
+                    {!editando && (
+                        <p id="ayuda-fecha-futura" className="mt-1 text-xs text-eventu-secondary-text">
+                            La fecha debe ser futura.
+                        </p>
+                    )}
                     {mensajeCampo('fechaInicio')}
                 </div>
 
-                <div>
+                <div className="order-4">
                     <label htmlFor="ubicacion" className="mb-1 block text-sm font-medium text-eventu-main-ink">
-                        Ubicación
+                        Ubicación <span aria-hidden="true">*</span>
                     </label>
                     <input
                         id="ubicacion"
@@ -203,15 +219,17 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
                         value={campos.ubicacion}
                         onChange={alCambiar('ubicacion')}
                         aria-invalid={errores.ubicacion ? true : undefined}
+                        aria-required="true"
                         aria-describedby={describir('ubicacion')}
-                        className={`h-10 ${clasesCampo(Boolean(errores.ubicacion))}`}
+                        className={`h-8 ${clasesCampo(Boolean(errores.ubicacion))}`}
+                        placeholder='Ej. Auditorio Eduardo Carranza'
                     />
                     {mensajeCampo('ubicacion')}
                 </div>
 
-                <div>
+                <div className="order-2">
                     <label htmlFor="cuposMaximos" className="mb-1 block text-sm font-medium text-eventu-main-ink">
-                        Cupo máximo
+                        Cupo máximo <span aria-hidden="true">*</span>
                     </label>
                     <input
                         id="cuposMaximos"
@@ -221,8 +239,10 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
                         value={campos.cuposMaximos}
                         onChange={alCambiar('cuposMaximos')}
                         aria-invalid={errores.cuposMaximos ? true : undefined}
+                        aria-required="true"
                         aria-describedby={describir('cuposMaximos')}
-                        className={`h-10 ${clasesCampo(Boolean(errores.cuposMaximos))}`}
+                        className={`h-8 ${clasesCampo(Boolean(errores.cuposMaximos))}`}
+                        placeholder='Ej. 100'
                     />
                     {editando && (
                         <p className="mt-1 text-xs text-eventu-secondary-text">
@@ -232,9 +252,9 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
                     {mensajeCampo('cuposMaximos')}
                 </div>
 
-                <div>
+                <div className="order-1">
                     <label htmlFor="categoriaId" className="mb-1 block text-sm font-medium text-eventu-main-ink">
-                        Categoría
+                        Categoría <span aria-hidden="true">*</span>
                     </label>
                     <select
                         id="categoriaId"
@@ -242,8 +262,9 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
                         onChange={alCambiar('categoriaId')}
                         disabled={cargandoCategorias}
                         aria-invalid={errores.categoriaId ? true : undefined}
+                        aria-required="true"
                         aria-describedby={describir('categoriaId')}
-                        className={`h-10 bg-eventu-white-surface ${clasesCampo(Boolean(errores.categoriaId))}`}
+                        className={`h-8 bg-eventu-white-surface ${clasesCampo(Boolean(errores.categoriaId))}`}
                     >
                         <option value="">{cargandoCategorias ? 'Cargando…' : 'Selecciona una categoría'}</option>
                         {opciones.map((categoria) => (
@@ -267,7 +288,7 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
                 </p>
             )}
 
-            <div className="flex justify-end gap-3">
+            <div className="flex justify-end gap-3 border-t border-eventu-border pt-3">
                 <button type="button" className={botonSecundario} onClick={onCancelar}>
                     Cancelar
                 </button>

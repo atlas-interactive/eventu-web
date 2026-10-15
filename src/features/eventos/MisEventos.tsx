@@ -20,6 +20,7 @@ export function MisEventos() {
     const [error, setError] = useState('');
 
     useEffect(() => {
+        // Evita actualizar el estado si la respuesta llega después de desmontar la pantalla.
         let vigente = true;
         const sesion = obtenerSesion();
         listarEventos()

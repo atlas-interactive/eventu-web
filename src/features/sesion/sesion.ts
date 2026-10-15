@@ -29,6 +29,7 @@ export const obtenerSesion = (): SesionUsuario | null => {
         const crudo = localStorage.getItem(CLAVE_USUARIO);
         return crudo ? (JSON.parse(crudo) as SesionUsuario) : null;
     } catch {
+        // Si el dato guardado está dañado, se trata como una sesión inexistente.
         return null;
     }
 };
