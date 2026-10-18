@@ -15,18 +15,22 @@ export const FormularioLogin: React.FC = () => {
         password: '',
     });
 
+    // Estado de carga y mensajes del formulario
     const [loading, setLoading] = useState(false);
     const [mensajeError, setMensajeError] = useState<string | null>(null);
     const [mensajeExito, setMensajeExito] = useState<string | null>(null);
 
+    // Validación del correo institucional y la contraseña
     const campoInvalido = {
         correo: formData.correo.length > 0 && !correoInstitucionalRegex.test(formData.correo),
         password: formData.password.length > 0 && formData.password.length < 8,
     };
 
+    // Determina si el campo debe mostrarse como inválido
     const mostrarCampoInvalido = (campo: keyof AutenticacionDTO) =>
         formData[campo].length > 0 && campoInvalido[campo];
 
+    // Actualiza el campo modificado sin alterar los demás valores
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
@@ -35,6 +39,7 @@ export const FormularioLogin: React.FC = () => {
         }));
     };
 
+    // Valida las credenciales y gestiona el inicio de sesión
     const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
         setMensajeError(null);
@@ -85,8 +90,8 @@ export const FormularioLogin: React.FC = () => {
         <section className="login-form register-form w-full max-w-[34rem] border-[0.125rem] px-8 py-6">
             <header className="mb-3 text-center">
                 <img src={iconoEventU} alt="" aria-hidden="true" className="mx-auto mb-2 h-9 w-9" />
-                <h1 className="text-2xl font-semibold leading-7">EventU</h1>
-                <p className="mt-2 text-base font-semibold leading-5">Inicia sesión</p>
+                <p className="text-2xl font-semibold leading-5">EventU</p>
+                <h1 className="mt-2 text-base font-semibold leading-7">Inicia sesión</h1>
                 <p className="register-subtitle mt-0.5 text-sm leading-5">Ingresa con tu correo institucional</p>
             </header>
 

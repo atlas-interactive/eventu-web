@@ -13,6 +13,7 @@ export function EditarEvento() {
     const [error, setError] = useState('');
 
     useEffect(() => {
+        // Evita actualizar el estado si la respuesta llega después de desmontar la pantalla.
         let vigente = true;
         // No hay consulta por id en el backend: se busca en los eventos publicados (un evento cancelado no aparece)
         listarEventos()

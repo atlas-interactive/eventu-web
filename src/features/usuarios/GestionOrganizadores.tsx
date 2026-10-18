@@ -10,7 +10,7 @@ const botonPrimario =
 const botonSecundario =
     'rounded-[0.4375rem] border border-eventu-field-border bg-eventu-white-surface px-4 py-2 text-sm font-medium text-eventu-main-ink hover:bg-eventu-page-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red';
 const botonFila =
-    'inline-flex h-11 items-center justify-center rounded-[0.4375rem] border px-4 text-sm font-normal bg-eventu-white-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red';
+    'inline-flex h-10 items-center justify-center rounded-[0.4375rem] border px-4 text-sm font-normal bg-eventu-white-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red';
 const botonAsignar = `${botonFila} border-eventu-success text-eventu-success hover:bg-eventu-green-background`;
 const botonRevocar = `${botonFila} border-eventu-institutional-red text-eventu-institutional-red hover:bg-eventu-soft-red-background`;
 
@@ -51,6 +51,7 @@ export function GestionOrganizadores() {
     const [recarga, setRecarga] = useState(0);
 
     useEffect(() => {
+        // Evita actualizar el estado si la respuesta llega después de desmontar la pantalla.
         let vigente = true;
         listarOrganizadores()
             .then((lista) => {

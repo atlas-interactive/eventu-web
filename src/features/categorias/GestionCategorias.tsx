@@ -53,6 +53,7 @@ export function GestionCategorias() {
     const [mensajeExito, setMensajeExito] = useState('');
 
     useEffect(() => {
+        // Evita actualizar el estado si la respuesta llega después de desmontar la pantalla.
         let vigente = true;
         listarCategorias(false)
             .then((datos) => {
@@ -271,11 +272,10 @@ function FormularioCategoria({ categoria, onCerrar, onGuardado }: FormularioCate
                     onChange={(evento) => setNombre(evento.target.value)}
                     aria-invalid={error ? true : undefined}
                     aria-describedby={error ? 'error-nombre-categoria' : undefined}
-                    className={`h-10 w-full rounded-md border px-3 text-sm text-eventu-main-ink outline-none focus:ring-1 ${
-                        error
+                    className={`h-10 w-full rounded-md border px-3 text-sm text-eventu-main-ink outline-none focus:ring-1 ${error
                             ? 'border-eventu-institutional-red focus:ring-eventu-institutional-red'
                             : 'border-eventu-field-border focus:ring-eventu-field-border'
-                    }`}
+                        }`}
                 />
                 {error && (
                     <p id="error-nombre-categoria" role="alert" className="mt-2 text-sm text-eventu-error">

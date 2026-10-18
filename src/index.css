@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 
+/* Tokens de color y tipografía compartidos por los estilos de la aplicación. */
 @theme {
   --color-eventu-institutional-red: #b3141f;
   --color-eventu-institutional-red-hover: #8f0f18;
