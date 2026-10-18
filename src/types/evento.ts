@@ -11,8 +11,8 @@ export interface Evento {
     estado: string;
     organizadorId: number;
     organizadorNombre: string;
-    categoriaId: number | null;
-    categoriaNombre: string | null;
+    categoriaId: number;
+    categoriaNombre: string;
 }
 
 // Cuerpo de POST /eventos (todos los campos son obligatorios)
