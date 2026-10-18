@@ -87,7 +87,7 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
     // Si la categoría actual del evento se desactivó, sigue apareciendo para no perderla al editar otros campos
     const opciones =
         evento?.categoriaId && !categorias.some((c) => c.id === evento.categoriaId)
-            ? [...categorias, { id: evento.categoriaId, nombre: `${evento.categoriaNombre ?? 'Categoría actual'} (inactiva)` }]
+            ? [...categorias, { id: evento.categoriaId, nombre: `${evento.categoriaNombre} (inactiva)` }]
             : categorias;
 
     const alCambiar = (campo: keyof CamposEvento) => (e: { target: { value: string } }) =>
