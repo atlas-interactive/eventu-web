@@ -73,7 +73,7 @@ export const FormularioRegistro: React.FC = () => {
     };
 
     return (
-        <section className="register-form w-full max-w-[34rem] border-[0.125rem] px-8 py-6">
+        <section className="register-form w-full max-w-[34rem] border-[0.125rem] px-5 py-6 sm:px-8">
             <header className="mb-3 text-center">
                 <img src={iconoEventU} alt="" aria-hidden="true" className="mx-auto mb-2 h-9 w-9" />
                 <p className="text-2xl font-semibold leading-5">EventU</p>

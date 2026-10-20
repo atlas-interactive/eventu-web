@@ -12,7 +12,7 @@ import { RutaOrganizador } from './features/sesion/RutaOrganizador';
 // Pantallas de autenticación: tarjeta centrada
 function LayoutAutenticacion() {
     return (
-        <div className="flex min-h-screen items-center justify-center bg-eventu-page-background p-2.5">
+        <div className="flex min-h-screen items-center justify-center bg-eventu-page-background p-4">
             <Outlet />
         </div>
     );
@@ -43,10 +43,10 @@ function LayoutAplicacion() {
     return (
         <div className="min-h-screen bg-eventu-page-background">
             <header className="border-b border-eventu-border bg-eventu-white-surface">
-                <div className="flex h-[58px] flex-wrap items-stretch gap-x-8 gap-y-1 px-8">
+                <div className="flex min-h-[58px] flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3 sm:gap-x-8 sm:px-8 sm:py-0">
                     <p className="self-center text-[1.0625rem] font-semibold text-eventu-main-ink">EventU</p>
                     {sesion && (
-                        <nav aria-label="Principal" className="flex flex-wrap items-stretch gap-x-6 self-stretch">
+                        <nav aria-label="Principal" className="flex flex-wrap items-center gap-x-4 gap-y-1 sm:gap-x-6 sm:self-stretch">
                             {esAdministrador(sesion) && (
                                 <>
                                     <NavLink to="/admin/categorias" className={claseEnlace}>
@@ -65,8 +65,8 @@ function LayoutAplicacion() {
                         </nav>
                     )}
                     {sesion && (
-                        <div className="ml-auto flex items-center gap-3 self-center">
-                            <span className="text-sm text-eventu-secondary-text">{sesion.nombre}</span>
+                        <div className="ml-auto flex max-w-full flex-wrap items-center justify-end gap-2 sm:gap-3">
+                            <span className="max-w-full break-words text-sm text-eventu-secondary-text">{sesion.nombre}</span>
                             {ETIQUETA_ROL[sesion.rol.toUpperCase()] && (
                                 <span className="rounded bg-eventu-soft-red-background px-2 py-0.5 text-xs text-eventu-institutional-red">
                                     {ETIQUETA_ROL[sesion.rol.toUpperCase()]}
@@ -75,7 +75,7 @@ function LayoutAplicacion() {
                             <button
                                 type="button"
                                 onClick={salir}
-                                className="h-9 rounded-[0.4375rem] border border-eventu-field-border bg-eventu-white-surface px-4 text-sm text-eventu-main-ink hover:bg-eventu-page-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red"
+                                className="min-h-9 rounded-[0.4375rem] border border-eventu-field-border bg-eventu-white-surface px-3 py-1 text-sm text-eventu-main-ink hover:bg-eventu-page-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red sm:px-4"
                             >
                                 Cerrar sesión
                             </button>
@@ -117,7 +117,7 @@ function App() {
                     <Route
                         path="/no-autorizado"
                         element={
-                            <main className="mx-auto max-w-[70rem] px-8 py-8">
+                            <main className="mx-auto w-full max-w-[70rem] px-4 py-8 sm:px-8">
                                 <h1 className="text-[1.375rem] font-semibold text-eventu-main-ink">Sin permiso</h1>
                                 <p className="mt-1 text-sm text-eventu-secondary-text">
                                     No tienes permisos para ver esta pantalla.

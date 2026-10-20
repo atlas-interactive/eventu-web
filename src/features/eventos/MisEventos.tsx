@@ -74,7 +74,7 @@ export function MisEventos() {
                             key={evento.id}
                             className="flex flex-col gap-3 rounded-lg border border-eventu-border bg-eventu-white-surface p-4 sm:flex-row sm:items-center sm:justify-between"
                         >
-                            <div>
+                            <div className="min-w-0 break-words">
                                 <h2 className="text-base font-semibold text-eventu-main-ink">{evento.titulo}</h2>
                                 <p className="text-sm text-eventu-secondary-text">
                                     {formatoFecha.format(new Date(evento.fechaInicio))} · {evento.ubicacion}

@@ -6,7 +6,7 @@ export function CrearEvento() {
     const navigate = useNavigate();
 
     return (
-        <main className="mx-auto w-full max-w-[50rem] px-1 pt-4 pb-1">
+        <main className="mx-auto w-full max-w-[50rem] px-4 py-6 sm:px-8 sm:py-8">
             <h1 className="text-xl font-semibold text-eventu-main-ink">Crear evento</h1>
             <p className="mt-1 mb-4 text-sm text-eventu-secondary-text">
                 Completa los datos. El evento queda publicado con todos los cupos disponibles.

@@ -31,7 +31,7 @@ const textoEventos = (cantidad: number) => `${cantidad} ${cantidad === 1 ? 'even
 
 // En móvil la celda muestra su etiqueta (data-label) a la izquierda y el valor a la derecha
 const celdaMovil =
-    'flex items-center justify-between before:text-xs before:font-medium before:uppercase before:text-eventu-secondary-text before:content-[attr(data-label)] md:before:content-none';
+    'flex items-center justify-between before:text-xs before:font-medium before:uppercase before:text-eventu-secondary-text before:content-[attr(data-label)] lg:before:content-none';
 
 const botonPrimario =
     'rounded-[0.4375rem] bg-eventu-institutional-red px-4 py-2 text-sm font-medium text-eventu-white-surface hover:bg-eventu-institutional-red-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red disabled:opacity-60';
@@ -114,9 +114,9 @@ export function GestionCategorias() {
 
             <div className="rounded-xl border border-eventu-border bg-eventu-white-surface">
                 {/* En móvil cada fila se muestra como tarjeta; desde md es una tabla */}
-                <table className="block w-full border-collapse text-left md:table">
+                <table className="block w-full border-collapse text-left lg:table">
                     <caption className="sr-only">Listado de categorías de eventos</caption>
-                    <thead className="hidden md:table-header-group">
+                    <thead className="hidden lg:table-header-group">
                         <tr className="border-b border-eventu-border text-xs uppercase tracking-wide text-eventu-secondary-text">
                             <th scope="col" className="px-6 py-4 font-medium">Nombre</th>
                             <th scope="col" className="px-6 py-4 font-medium">Eventos activos</th>
@@ -124,7 +124,7 @@ export function GestionCategorias() {
                             <th scope="col" className="px-6 py-4 font-medium">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody className="block md:table-row-group">
+                    <tbody className="block lg:table-row-group">
                         {cargando && (
                             <tr>
                                 <td colSpan={4} className="px-6 py-6 text-sm text-eventu-secondary-text">
@@ -142,18 +142,18 @@ export function GestionCategorias() {
                         {categorias.map((categoria) => (
                             <tr
                                 key={categoria.id}
-                                className="block space-y-2 border-b border-eventu-border p-4 last:border-b-0 md:table-row md:space-y-0 md:p-0"
+                                className="block space-y-2 border-b border-eventu-border p-4 last:border-b-0 lg:table-row lg:space-y-0 lg:p-0"
                             >
-                                <th scope="row" className="block text-left text-base font-medium text-eventu-main-ink md:table-cell md:px-6 md:py-4 md:text-sm">
+                                <th scope="row" className="block break-words text-left text-base font-medium text-eventu-main-ink lg:table-cell lg:px-6 lg:py-4 lg:text-sm">
                                     {categoria.nombre}
                                 </th>
                                 <td
                                     data-label="Eventos activos"
-                                    className={`${celdaMovil} text-sm text-eventu-secondary-text md:table-cell md:px-6 md:py-4`}
+                                    className={`${celdaMovil} text-sm text-eventu-secondary-text lg:table-cell lg:px-6 lg:py-4`}
                                 >
                                     {textoEventos(categoria.eventosActivos)}
                                 </td>
-                                <td data-label="Estado" className={`${celdaMovil} md:table-cell md:px-6 md:py-4`}>
+                                <td data-label="Estado" className={`${celdaMovil} lg:table-cell lg:px-6 lg:py-4`}>
                                     <span
                                         className={
                                             categoria.activo
@@ -164,7 +164,7 @@ export function GestionCategorias() {
                                         {categoria.activo ? 'Activa' : 'Inactiva'}
                                     </span>
                                 </td>
-                                <td className="block pt-1 md:table-cell md:px-6 md:py-4">
+                                <td className="block pt-1 lg:table-cell lg:px-6 lg:py-4">
                                     <div className="flex flex-wrap gap-3">
                                         <button
                                             type="button"
@@ -282,7 +282,7 @@ function FormularioCategoria({ categoria, onCerrar, onGuardado }: FormularioCate
                         {error}
                     </p>
                 )}
-                <div className="mt-6 flex justify-end gap-3">
+                <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
                     <button type="button" className={botonSecundario} onClick={onCerrar}>
                         Cancelar
                     </button>
@@ -326,13 +326,13 @@ function ConfirmarEstado({ categoria, onCerrar, onConfirmado }: ConfirmarEstadoP
             idTitulo="titulo-confirmar-estado"
             onCerrar={onCerrar}
         >
-            <p className="text-sm text-eventu-main-ink">
+            <p className="break-words text-sm text-eventu-main-ink">
                 {desactivando
                     ? `¿Desactivar la categoría «${categoria.nombre}»? Dejará de aparecer al crear eventos nuevos.`
                     : `¿Activar la categoría «${categoria.nombre}»? Volverá a estar disponible al crear eventos.`}
             </p>
             {desactivando && categoria.eventosActivos > 0 && (
-                <p className="mt-2 text-sm text-eventu-secondary-text">
+                <p className="mt-2 break-words text-sm text-eventu-secondary-text">
                     Los {textoEventos(categoria.eventosActivos)} activos que ya la usan conservarán su categoría.
                 </p>
             )}
@@ -341,7 +341,7 @@ function ConfirmarEstado({ categoria, onCerrar, onConfirmado }: ConfirmarEstadoP
                     {error}
                 </p>
             )}
-            <div className="mt-6 flex justify-end gap-3">
+            <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
                 <button type="button" className={botonSecundario} onClick={onCerrar}>
                     Cancelar
                 </button>

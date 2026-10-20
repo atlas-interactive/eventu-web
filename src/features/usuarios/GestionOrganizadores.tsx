@@ -13,6 +13,8 @@ const botonFila =
     'inline-flex h-10 items-center justify-center rounded-[0.4375rem] border px-4 text-sm font-normal bg-eventu-white-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red';
 const botonAsignar = `${botonFila} border-eventu-success text-eventu-success hover:bg-eventu-green-background`;
 const botonRevocar = `${botonFila} border-eventu-institutional-red text-eventu-institutional-red hover:bg-eventu-soft-red-background`;
+const celdaMovil =
+    'flex items-start justify-between gap-4 before:shrink-0 before:text-xs before:font-medium before:uppercase before:text-eventu-secondary-text before:content-[attr(data-label)] lg:before:content-none';
 
 const ETIQUETA_ROL: Record<string, string> = {
     USUARIO: 'Usuario',
@@ -223,9 +225,9 @@ export function GestionOrganizadores() {
                                     >
                                         {iniciales(usuario.nombre)}
                                     </span>
-                                    <div>
+                                    <div className="min-w-0">
                                         <p className="text-sm font-medium text-eventu-main-ink">{usuario.nombre}</p>
-                                        <p className="text-sm text-eventu-secondary-text">
+                                        <p className="break-all text-sm text-eventu-secondary-text">
                                             {usuario.correo} · {ETIQUETA_ROL[usuario.rol] ?? usuario.rol}
                                         </p>
                                     </div>
@@ -278,24 +280,28 @@ export function GestionOrganizadores() {
                 ) : (
                     organizadores.length > 0 && (
                         <div className="mt-4 overflow-x-auto">
-                            <table className="w-full text-left text-sm">
+                            <table className="block w-full text-left text-sm lg:table">
                                 <caption className="sr-only">Usuarios con rol de organizador</caption>
-                                <thead>
+                                <thead className="hidden lg:table-header-group">
                                     <tr className="border-b border-eventu-border text-eventu-secondary-text">
                                         <th scope="col" className="py-2 pr-4 font-normal">Nombre</th>
                                         <th scope="col" className="py-2 pr-4 font-normal">Correo</th>
                                         <th scope="col" className="py-2 text-right font-normal">Acción</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody className="block lg:table-row-group">
                                     {organizadores.map((organizador) => (
-                                        <tr key={organizador.id} className="border-b border-eventu-border last:border-0">
-                                            <td className="py-3 pr-4 text-eventu-main-ink">{organizador.nombre}</td>
-                                            <td className="py-3 pr-4 text-eventu-secondary-text">{organizador.correo}</td>
-                                            <td className="py-3 text-right">
+                                        <tr key={organizador.id} className="block space-y-2 border-b border-eventu-border p-4 last:border-0 lg:table-row lg:space-y-0 lg:p-0">
+                                            <td data-label="Nombre" className={`${celdaMovil} py-1 text-eventu-main-ink lg:table-cell lg:py-3 lg:pr-4`}>
+                                                <span className="break-words text-right lg:text-left">{organizador.nombre}</span>
+                                            </td>
+                                            <td data-label="Correo" className={`${celdaMovil} py-1 text-eventu-secondary-text lg:table-cell lg:py-3 lg:pr-4`}>
+                                                <span className="break-all text-right lg:text-left">{organizador.correo}</span>
+                                            </td>
+                                            <td data-label="Acción" className={`${celdaMovil} py-1 lg:table-cell lg:py-3 lg:text-right`}>
                                                 <button
                                                     type="button"
-                                                    className={botonRevocar}
+                                                    className={`${botonRevocar} w-full sm:w-auto`}
                                                     aria-label={`Revocar rol de ${organizador.nombre}`}
                                                     onClick={() => {
                                                         setMensajeExito('');
@@ -325,7 +331,7 @@ export function GestionOrganizadores() {
                         {aRevocar.nombre} dejará de poder crear y gestionar eventos. Conservará el acceso a su cuenta con rol
                         Usuario. Sus eventos se conservarán y, desde ahora, solo un administrador podrá editarlos.
                     </p>
-                    <div className="mt-6 flex justify-end gap-3">
+                    <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
                         <button type="button" className={botonSecundario} onClick={() => setARevocar(null)}>
                             Cancelar
                         </button>

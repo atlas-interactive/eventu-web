@@ -55,13 +55,13 @@ export function ModalAccesible({ titulo, idTitulo, onCerrar, children }: ModalAc
     }, []);
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-eventu-main-ink/50 p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-eventu-main-ink/50 p-3 sm:p-4">
             <div
                 ref={contenedor}
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby={idTitulo}
-                className="w-full max-w-[26rem] rounded-xl border border-eventu-border bg-eventu-white-surface p-6 text-eventu-main-ink shadow-lg"
+                className="max-h-[calc(100dvh-1.5rem)] w-full max-w-[26rem] overflow-y-auto rounded-xl border border-eventu-border bg-eventu-white-surface p-5 text-eventu-main-ink shadow-lg sm:max-h-[calc(100dvh-2rem)] sm:p-6"
             >
                 <h2 id={idTitulo} className="mb-4 text-lg font-semibold">
                     {titulo}
