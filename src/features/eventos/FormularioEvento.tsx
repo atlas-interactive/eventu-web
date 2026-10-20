@@ -146,7 +146,7 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
         <form
             onSubmit={alEnviar}
             noValidate
-            className="flex flex-col gap-3 rounded-lg border border-eventu-border bg-eventu-white-surface p-7"
+            className="flex flex-col gap-3 rounded-lg border border-eventu-border bg-eventu-white-surface p-4 sm:p-7"
         >
             <div>
                 <label htmlFor="titulo" className="mb-1 block text-sm font-medium text-eventu-main-ink">
@@ -185,7 +185,7 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
                 {mensajeCampo('descripcion')}
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-4 md:grid-cols-2">
                 <div className="order-3">
                     <label htmlFor="fechaInicio" className="mb-1 block text-sm font-medium text-eventu-main-ink">
                         Fecha y hora <span aria-hidden="true">*</span>
@@ -288,7 +288,7 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
                 </p>
             )}
 
-            <div className="flex justify-end gap-3 border-t border-eventu-border pt-3">
+            <div className="flex flex-col-reverse gap-3 border-t border-eventu-border pt-3 sm:flex-row sm:justify-end">
                 <button type="button" className={botonSecundario} onClick={onCancelar}>
                     Cancelar
                 </button>
