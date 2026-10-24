@@ -1,5 +1,5 @@
 import { BrowserRouter, Navigate, NavLink, Outlet, Route, Routes, useNavigate } from 'react-router-dom';
-import { cerrarSesion, esAdministrador, obtenerSesion, puedeGestionarEventos } from './features/sesion/sesion';import { FormularioLogin } from './features/auth/FormularioLogin';
+import { cerrarSesion, esAdministrador, obtenerRutaInicio, obtenerSesion, puedeGestionarEventos } from './features/sesion/sesion';import { FormularioLogin } from './features/auth/FormularioLogin';
 import { FormularioRegistro } from './features/auth/FormularioRegistro';
 import { GestionCategorias } from './features/categorias/GestionCategorias';
 import { RutaAdministrador } from './features/sesion/RutaAdministrador';
@@ -8,6 +8,7 @@ import { CrearEvento } from './features/eventos/CrearEvento';
 import { EditarEvento } from './features/eventos/EditarEvento';
 import { MisEventos } from './features/eventos/MisEventos';
 import { RutaOrganizador } from './features/sesion/RutaOrganizador';
+import { InicioUsuario, RutaUsuario } from './features/sesion/RutaUsuario';
 
 // Pantallas de autenticación: tarjeta centrada
 function LayoutAutenticacion() {
@@ -16,6 +17,14 @@ function LayoutAutenticacion() {
             <Outlet />
         </div>
     );
+}
+
+function RutaLogin() {
+    const sesion = obtenerSesion();
+    if (sesion) {
+        return <Navigate to={obtenerRutaInicio(sesion)} replace />;
+    }
+    return <FormularioLogin />;
 }
 
 const ETIQUETA_ROL: Record<string, string> = {
@@ -105,7 +114,7 @@ function App() {
         <BrowserRouter>
             <Routes>
                 <Route element={<LayoutAutenticacion />}>
-                    <Route path="/login" element={<FormularioLogin />} />
+                    <Route path="/login" element={<RutaLogin />} />
                     <Route path="/registro" element={<FormularioRegistro />} />
                 </Route>
 
@@ -122,6 +131,12 @@ function App() {
                         <Route path="/organizador/eventos" element={<MisEventos />} />
                         <Route path="/organizador/eventos/nuevo" element={<CrearEvento />} />
                         <Route path="/organizador/eventos/:id/editar" element={<EditarEvento />} />
+                    </Route>
+                </Route>
+
+                <Route element={<RutaUsuario />}>
+                    <Route element={<LayoutAplicacion />}>
+                        <Route path="/usuario" element={<InicioUsuario />} />
                     </Route>
                 </Route>
 
