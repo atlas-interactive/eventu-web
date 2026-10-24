@@ -3,7 +3,7 @@ import { isAxiosError } from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import iconoEventU from '../../assets/icons/iconoEventU.png';
 import { autenticarUsuario } from './services/authService';
-import { esAdministrador, esOrganizador, guardarSesion } from '../sesion/sesion';
+import { obtenerRutaInicio, guardarSesion } from '../sesion/sesion';
 import type { AutenticacionDTO } from '../../types/auth';
 
 const correoInstitucionalRegex = /^[a-zA-Z0-9._%+-]+@unillanos\.edu\.co$/;
@@ -64,18 +64,9 @@ export const FormularioLogin: React.FC = () => {
             guardarSesion(sesion);
             setFormData({ correo: '', password: '' });
 
-            if (esAdministrador(sesion)) {
-                navigate('/admin/categorias', { replace: true });
-                return;
-            }
-            if (esOrganizador(sesion)) {
-                navigate('/organizador/eventos', { replace: true });
-                return;
-            }
-            // Aún no hay pantalla de inicio para el rol USUARIO
-            setMensajeExito(
-                `Sesión iniciada${response.nombre ? `, ${response.nombre}` : ''}. El listado de eventos estará disponible en la próxima versión.`,
-            );        } catch (err: unknown) {
+            navigate(obtenerRutaInicio(sesion), { replace: true });
+
+        } catch (err: unknown) {
             if (isAxiosError<{ error?: string }>(err) && err.response?.data.error) {
                 setMensajeError(err.response.data.error);
             } else {

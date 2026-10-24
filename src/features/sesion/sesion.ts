@@ -34,11 +34,25 @@ export const obtenerSesion = (): SesionUsuario | null => {
     }
 };
 
+//Fijar las rutas predeterminadas para cada rol.
+export const obtenerRutaInicio = (sesion: SesionUsuario): string => {
+    if (esAdministrador(sesion)) return '/admin/categorias';
+    if (esOrganizador(sesion)) return '/organizador/eventos';
+    if (esUsuario(sesion)) return '/usuario';
+
+    return '/no-autorizado';
+};
+
+
 export const esAdministrador = (sesion: SesionUsuario | null): boolean =>
     sesion?.rol.toUpperCase() === 'ADMIN';
 
 export const esOrganizador = (sesion: SesionUsuario | null): boolean =>
     sesion?.rol.toUpperCase() === 'ORGANIZADOR';
+
+export const esUsuario = (sesion: SesionUsuario | null): boolean =>
+    sesion?.rol.toUpperCase() === 'USUARIO';
+
 
 // Mismo criterio que @PreAuthorize en EventoController
 export const puedeGestionarEventos = (sesion: SesionUsuario | null): boolean =>
