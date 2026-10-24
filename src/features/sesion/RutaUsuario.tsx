@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from 'react-router-dom';
-import { cerrarSesion, esUsuario, obtenerRutaInicio, obtenerSesion } from './sesion';
+import { esUsuario, obtenerRutaInicio, obtenerSesion } from './sesion';
 
 export function RutaUsuario() {
     const sesion = obtenerSesion();
