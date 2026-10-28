@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { isAxiosError } from 'axios';
 import type { UsuarioBuscado } from '../../types/usuario';
-import { ModalAccesible } from '../categorias/components/ModalAccesible';
+import { ModalAccesible } from '../../components/layout/ModalAccesible';
 import { mensajeDeError } from '../eventos/mensajeDeError';
 import { asignarOrganizador, buscarUsuarios, listarOrganizadores, revocarOrganizador } from './services/usuarioService';
 

@@ -2,13 +2,13 @@ import { BrowserRouter, Navigate, NavLink, Outlet, Route, Routes, useNavigate } 
 import { cerrarSesion, esAdministrador, obtenerRutaInicio, obtenerSesion, puedeGestionarEventos } from './features/sesion/sesion';import { FormularioLogin } from './features/auth/FormularioLogin';
 import { FormularioRegistro } from './features/auth/FormularioRegistro';
 import { GestionCategorias } from './features/categorias/GestionCategorias';
-import { RutaAdministrador } from './features/sesion/RutaAdministrador';
-import { GestionOrganizadores } from './features/usuarios/GestionOrganizadores';
+import { RutaAdministrador } from './features/sesion/GuardiaRutaAdministrador';
+import { GestionOrganizadores } from './features/users/GestionOrganizadores';
 import { CrearEvento } from './features/eventos/CrearEvento';
 import { EditarEvento } from './features/eventos/EditarEvento';
 import { MisEventos } from './features/eventos/MisEventos';
-import { RutaOrganizador } from './features/sesion/RutaOrganizador';
-import { InicioUsuario, RutaUsuario } from './features/sesion/RutaUsuario';
+import { RutaOrganizador } from './features/sesion/GuardiaRutaOrganizador';
+import { InicioUsuario, RutaUsuario } from './features/sesion/GuardiaRutaUsuario';
 
 // Pantallas de autenticación: tarjeta centrada
 function LayoutAutenticacion() {
