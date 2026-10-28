@@ -17,3 +17,6 @@ export const crearEvento = async (data: EventoSolicitud): Promise<RespuestaEvent
 
 export const editarEvento = async (id: number, data: EventoActualizacion): Promise<RespuestaEvento> =>
     (await axiosClient.put<RespuestaEvento>(`/eventos/${id}`, data)).data;
+
+export const cancelarEvento = async (id: number): Promise<RespuestaEvento> =>
+    (await axiosClient.patch<RespuestaEvento>(`/eventos/${id}`)).data;
