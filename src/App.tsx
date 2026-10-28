@@ -3,7 +3,7 @@ import { cerrarSesion, esAdministrador, obtenerRutaInicio, obtenerSesion, puedeG
 import { FormularioRegistro } from './features/auth/FormularioRegistro';
 import { GestionCategorias } from './features/categorias/GestionCategorias';
 import { RutaAdministrador } from './features/sesion/GuardiaRutaAdministrador';
-import { GestionOrganizadores } from './features/users/GestionOrganizadores';
+import { GestionOrganizadores } from './features/usuarios/GestionOrganizadores';
 import { CrearEvento } from './features/eventos/CrearEvento';
 import { EditarEvento } from './features/eventos/EditarEvento';
 import { MisEventos } from './features/eventos/MisEventos';
