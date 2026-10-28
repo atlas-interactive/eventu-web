@@ -120,7 +120,7 @@ export function MisEventos() {
                                     Cupos: {evento.cuposDisponibles} disponibles de {evento.cuposMaximos}
                                 </p>
                                 <p className="text-sm text-eventu-secondary-text">
-                                    {evento.estado.toUpperCase() === 'CANCELADO' ? 'Cancelado' : 'Publicado'}
+                                    Estado: {estaCancelado(evento) ? 'CANCELADO' : 'PUBLICADO'}
                                 </p>
                             </div>
                             <div className="flex flex-col gap-2 sm:flex-row sm:shrink-0">
@@ -156,11 +156,16 @@ export function MisEventos() {
                     titulo="¿Cancelar evento?"
                     idTitulo="titulo-cancelar-evento"
                     onCerrar={cerrarModalCancelar}
+                    icono={
+                        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-red-50 text-xl font-bold text-red-700">
+                            !
+                        </span>
+                    }
                 >
-                    <p className="break-words text-sm font-medium text-eventu-main-ink">{aCancelar.titulo}</p>
+                    <h3 className="break-words text-sm font-medium text-eventu-main-ink">{aCancelar.titulo}</h3>
                     <p className="mt-2 text-sm text-eventu-secondary-text">
-                        Esta acción no se puede deshacer. El evento quedará cancelado y ya no aceptará nuevas
-                        inscripciones.
+                        Se notificará por correo a los {aCancelar.cuposMaximos - aCancelar.cuposDisponibles} usuarios inscritos, sus inscripciones
+                        pasaran a ser canceladas y ya no se podrán realizar nuevas inscripciones. Esta acciónn no elimina el registro histórico del evento.
                     </p>
                     {errorCancelar && (
                         <p role="alert" className="mt-3 text-sm text-eventu-error">

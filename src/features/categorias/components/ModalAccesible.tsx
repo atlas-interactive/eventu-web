@@ -6,10 +6,11 @@ interface ModalAccesibleProps {
     idTitulo: string;
     onCerrar: () => void;
     children: ReactNode;
+    icono?: ReactNode;
 }
 
 // Diálogo modal accesible: role="dialog", foco dentro al abrir, Escape y clic fuera cierran, el foco vuelve al botón que lo abrió
-export function ModalAccesible({ titulo, idTitulo, onCerrar, children }: ModalAccesibleProps) {
+export function ModalAccesible({ titulo, idTitulo, onCerrar, children, icono }: ModalAccesibleProps) {
     const contenedor = useRef<HTMLDivElement>(null);
     // Se guarda el último cierre para que el efecto no se vuelva a ejecutar en cada render
     const cerrarRef = useRef(onCerrar);
@@ -67,9 +68,16 @@ export function ModalAccesible({ titulo, idTitulo, onCerrar, children }: ModalAc
                 className="max-h-[calc(100dvh-1.5rem)] w-full max-w-[26rem] overflow-y-auto rounded-xl border border-eventu-border bg-eventu-white-surface p-5 text-eventu-main-ink shadow-lg sm:max-h-[calc(100dvh-2rem)] sm:p-6"
                 onClick={(evento) => evento.stopPropagation()}
             >
-                <h2 id={idTitulo} className="mb-4 text-lg font-semibold">
-                    {titulo}
-                </h2>
+                <div className="mb-4 flex items-center gap-3">
+                    {icono && (
+                        <div aria-hidden="true" className="shrink-0">
+                            {icono}
+                        </div>
+                    )}
+                    <h2 id={idTitulo} className="text-lg font-semibold">
+                        {titulo}
+                    </h2>
+                </div>
                 {children}
             </div>
         </div>
