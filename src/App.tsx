@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter, Navigate, NavLink, Outlet, Route, Routes, useNavigate } from 'react-router-dom';
 import { cerrarSesion, esAdministrador, obtenerRutaInicio, obtenerSesion, puedeGestionarEventos } from './features/sesion/sesion';import { FormularioLogin } from './features/auth/FormularioLogin';
 import { FormularioRegistro } from './features/auth/FormularioRegistro';
@@ -26,6 +27,11 @@ function RutaLogin() {
     }
     return <FormularioLogin />;
 }
+
+// Recharts pesa bastante: el dashboard se descarga solo cuando alguien abre la pantalla
+const DashboardEstadisticas = lazy(() =>
+    import('./features/estadisticas/DashboardEstadisticas').then((m) => ({ default: m.DashboardEstadisticas })),
+);
 
 const ETIQUETA_ROL: Record<string, string> = {
     ADMIN: 'Administrador',
@@ -71,9 +77,14 @@ function LayoutAplicacion() {
                                     </>
                                 )}
                                 {puedeGestionarEventos(sesion) && (
-                                    <NavLink to="/organizador/eventos" className={claseEnlace}>
-                                        {esAdministrador(sesion) ? 'Eventos' : 'Mis eventos'}
-                                    </NavLink>
+                                    <>
+                                        <NavLink to="/organizador/eventos" className={claseEnlace}>
+                                            {esAdministrador(sesion) ? 'Eventos' : 'Mis eventos'}
+                                        </NavLink>
+                                        <NavLink to="/organizador/estadisticas" className={claseEnlace}>
+                                            Estadísticas
+                                        </NavLink>
+                                    </>
                                 )}
                             </nav>
                         )}
@@ -131,6 +142,20 @@ function App() {
                         <Route path="/organizador/eventos" element={<MisEventos />} />
                         <Route path="/organizador/eventos/nuevo" element={<CrearEvento />} />
                         <Route path="/organizador/eventos/:id/editar" element={<EditarEvento />} />
+                        <Route
+                            path="/organizador/estadisticas"
+                            element={
+                                <Suspense
+                                    fallback={
+                                        <p role="status" className="mx-auto w-full max-w-[70rem] px-4 py-8 text-sm text-eventu-secondary-text sm:px-8">
+                                            Cargando estadísticas…
+                                        </p>
+                                    }
+                                >
+                                    <DashboardEstadisticas />
+                                </Suspense>
+                            }
+                        />
                     </Route>
                 </Route>
 
