@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import type { Evento } from '../../types/evento';
-import { ModalAccesible } from '../../components/layout/ModalAccesible';
+import { ModalAccesible } from '../../components/ui/ModalAccesible';
 import { esAdministrador, obtenerSesion } from '../sesion/sesion';
 import { mensajeDeError } from '../../api/mensajeDeError';
 import { cancelarEvento, listarEventos } from './services/eventoService';

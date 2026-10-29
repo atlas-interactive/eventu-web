@@ -2,7 +2,7 @@ import { isAxiosError } from 'axios';
 import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import type { Categoria } from '../../types/categoria';
-import { ModalAccesible } from '../../components/layout/ModalAccesible';
+import { ModalAccesible } from '../../components/ui/ModalAccesible';
 import {
     activarCategoria,
     crearCategoria,
