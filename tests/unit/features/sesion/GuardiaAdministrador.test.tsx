@@ -1,15 +1,15 @@
 import { cleanup, render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { RutaOrganizador } from '../../../../src/features/sesion/RutaOrganizador';
+import { RutaAdministrador } from '../../../../src/features/sesion/GuardiaRutaAdministrador';
 import { guardarSesion } from '../../../../src/features/sesion/sesion';
 
 const renderizar = () =>
     render(
-        <MemoryRouter initialEntries={['/organizador/eventos']}>
+        <MemoryRouter initialEntries={['/admin/categorias']}>
             <Routes>
-                <Route element={<RutaOrganizador />}>
-                    <Route path="/organizador/eventos" element={<p>Pantalla de eventos</p>} />
+                <Route element={<RutaAdministrador />}>
+                    <Route path="/admin/categorias" element={<p>Pantalla de categorías</p>} />
                 </Route>
                 <Route path="/login" element={<p>Pantalla de login</p>} />
                 <Route path="/no-autorizado" element={<p>Sin permiso</p>} />
@@ -17,23 +17,21 @@ const renderizar = () =>
         </MemoryRouter>,
     );
 
-const sesionCon = (rol: string) =>
-    guardarSesion({ token: 't', usuarioId: 3, nombre: 'Luz', correo: 'luz@unillanos.edu.co', rol });
-
-describe('RutaOrganizador', () => {
+describe('RutaAdministrador', () => {
     beforeEach(() => localStorage.clear());
     afterEach(cleanup);
 
-    it.each(['ORGANIZADOR', 'ADMIN'])('deja pasar al rol %s', (rol) => {
-        sesionCon(rol);
+    // Escenario 4: solo ADMIN
+    it('deja pasar a un administrador', () => {
+        guardarSesion({ token: 't', usuarioId: 1, nombre: 'Admin', correo: 'a@unillanos.edu.co', rol: 'ADMIN' });
 
         renderizar();
 
-        expect(screen.getByText('Pantalla de eventos')).toBeInTheDocument();
+        expect(screen.getByText('Pantalla de categorías')).toBeInTheDocument();
     });
 
-    it('envía a un usuario sin permisos a la pantalla de sin permiso', () => {
-        sesionCon('USUARIO');
+    it('envía a quien no es administrador a la pantalla de sin permiso', () => {
+        guardarSesion({ token: 't', usuarioId: 2, nombre: 'Ana', correo: 'ana@unillanos.edu.co', rol: 'USUARIO' });
 
         renderizar();
 

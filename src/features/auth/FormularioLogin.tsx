@@ -67,11 +67,7 @@ export const FormularioLogin: React.FC = () => {
             navigate(obtenerRutaInicio(sesion), { replace: true });
 
         } catch (err: unknown) {
-            if (isAxiosError<{ error?: string }>(err) && err.response?.data.error) {
-                setMensajeError(err.response.data.error);
-            } else {
-                setMensajeError('Ocurrió un error inesperado al conectar con el servidor.');
-            }
+            setMensajeError(mensajeDeError(err));
         } finally {
             setLoading(false);
         }
