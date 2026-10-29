@@ -4,7 +4,7 @@ import type { Categoria } from '../../types/categoria';
 import type { Evento, EventoActualizacion, EventoSolicitud } from '../../types/evento';
 import { listarCategorias } from '../categorias/services/categoriaService';
 import { crearEvento, editarEvento } from './services/eventoService';
-import { mensajeDeError } from './mensajeDeError';
+import { mensajeDeError } from '../../api/mensajeDeError';
 import { MAX_TITULO, MAX_UBICACION, validarEvento } from './validacionEvento';
 import type { CamposEvento, ErroresEvento } from './validacionEvento';
 

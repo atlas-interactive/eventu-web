@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import type { Evento } from '../../types/evento';
 import { ModalAccesible } from '../../components/layout/ModalAccesible';
 import { esAdministrador, obtenerSesion } from '../sesion/sesion';
-import { mensajeDeError } from './mensajeDeError';
+import { mensajeDeError } from '../../api/mensajeDeError';
 import { cancelarEvento, listarEventos } from './services/eventoService';
 
 const formatoFecha = new Intl.DateTimeFormat('es-CO', { dateStyle: 'medium', timeStyle: 'short' });

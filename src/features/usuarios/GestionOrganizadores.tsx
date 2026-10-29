@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { isAxiosError } from 'axios';
 import type { UsuarioBuscado } from '../../types/usuario';
 import { ModalAccesible } from '../../components/layout/ModalAccesible';
-import { mensajeDeError } from '../eventos/mensajeDeError';
+import { mensajeDeError } from '../../api/mensajeDeError';
 import { asignarOrganizador, buscarUsuarios, listarOrganizadores, revocarOrganizador } from './services/usuarioService';
 
 const botonPrimario =
