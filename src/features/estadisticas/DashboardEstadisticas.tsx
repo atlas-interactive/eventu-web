@@ -1,30 +1,13 @@
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useState } from 'react';
 import type { Estadisticas } from '../../types/estadisticas';
 import { mensajeDeError } from '../eventos/mensajeDeError';
 import { esAdministrador, obtenerSesion } from '../sesion/sesion';
-import { GraficoBarras } from './GraficoBarras';
+import { GraficoAsistencia } from './GraficoAsistencia';
+import { RankingBarras } from './RankingBarras';
 import { obtenerEstadisticas } from './services/estadisticaService';
 
 const formatoNumero = new Intl.NumberFormat('es-CO');
 const formatoPorcentaje = new Intl.NumberFormat('es-CO', { maximumFractionDigits: 2 });
-
-interface TarjetaProps {
-    titulo: string;
-    valor: string;
-    detalle: string;
-    children?: ReactNode;
-}
-
-function Tarjeta({ titulo, valor, detalle, children }: TarjetaProps) {
-    return (
-        <div className="rounded-lg border border-eventu-border bg-eventu-white-surface p-4 sm:p-5">
-            <dt className="text-sm text-eventu-secondary-text">{titulo}</dt>
-            <dd className="mt-1 text-[2rem] font-semibold leading-tight text-eventu-main-ink">{valor}</dd>
-            <dd className="mt-1 text-sm text-eventu-secondary-text">{detalle}</dd>
-            {children}
-        </div>
-    );
-}
 
 // HU-16: el organizador ve los indicadores de sus eventos; el administrador, los de toda la plataforma y los rankings
 export function DashboardEstadisticas() {
@@ -53,7 +36,6 @@ export function DashboardEstadisticas() {
     }, []);
 
     const sinDatos = estadisticas !== null && estadisticas.inscripcionesActivas === 0 && estadisticas.asistentes === 0;
-    const porcentaje = Math.min(100, Math.max(0, estadisticas?.porcentajeAsistencia ?? 0));
 
     return (
         <main className="mx-auto w-full max-w-[70rem] px-4 py-8 sm:px-8">
@@ -87,47 +69,56 @@ export function DashboardEstadisticas() {
                         </p>
                     )}
 
-                    <dl className="grid gap-4 sm:grid-cols-3">
-                        <Tarjeta
-                            titulo="Inscripciones activas"
-                            valor={formatoNumero.format(estadisticas.inscripcionesActivas)}
-                            detalle="Personas con cupo reservado"
-                        />
-                        <Tarjeta
-                            titulo="Asistentes"
-                            valor={formatoNumero.format(estadisticas.asistentes)}
-                            detalle="Asistencias registradas con el QR"
-                        />
-                        <Tarjeta
-                            titulo="Porcentaje de asistencia"
-                            valor={`${formatoPorcentaje.format(estadisticas.porcentajeAsistencia)} %`}
-                            detalle="Asistentes sobre inscripciones activas"
-                        >
-                            <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-eventu-border" aria-hidden="true">
-                                <div className="h-full rounded-full bg-eventu-institutional-red" style={{ width: `${porcentaje}%` }} />
+                    <div className="grid gap-4 lg:grid-cols-3">
+                        <section className="rounded-xl border border-eventu-border bg-eventu-white-surface p-5 sm:p-6 lg:col-span-2">
+                            <h2 className="text-base font-semibold text-eventu-main-ink">Asistencia</h2>
+                            <p className="mb-5 mt-1 text-sm text-eventu-secondary-text">
+                                Asistentes registrados con el QR sobre las inscripciones activas.
+                            </p>
+                            <GraficoAsistencia
+                                inscripciones={estadisticas.inscripcionesActivas}
+                                asistentes={estadisticas.asistentes}
+                                porcentaje={`${formatoPorcentaje.format(estadisticas.porcentajeAsistencia)} %`}
+                            />
+                        </section>
+
+                        <dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+                            <div className="rounded-xl border border-eventu-border bg-eventu-white-surface p-5 sm:p-6">
+                                <dt className="text-sm text-eventu-secondary-text">Inscripciones activas</dt>
+                                <dd className="mt-1 text-[2rem] font-semibold leading-tight text-eventu-main-ink">
+                                    {formatoNumero.format(estadisticas.inscripcionesActivas)}
+                                </dd>
                             </div>
-                        </Tarjeta>
-                    </dl>
+                            <div className="rounded-xl border border-eventu-border bg-eventu-white-surface p-5 sm:p-6">
+                                <dt className="text-sm text-eventu-secondary-text">Asistentes</dt>
+                                <dd className="mt-1 text-[2rem] font-semibold leading-tight text-eventu-main-ink">
+                                    {formatoNumero.format(estadisticas.asistentes)}
+                                </dd>
+                            </div>
+                        </dl>
+                    </div>
 
                     {admin && (
-                        <div className="mt-6 grid gap-4 lg:grid-cols-2">
-                            <GraficoBarras
+                        <div className="mt-4 grid items-start gap-4 lg:grid-cols-2">
+                            <RankingBarras
                                 titulo="Categorías más concurridas"
-                                descripcion="Categorías con más inscripciones activas."
-                                nombreValor="Inscripciones activas"
+                                descripcion="Por número de inscripciones activas."
+                                unidad="inscripciones activas"
                                 textoVacio="Todavía no hay inscripciones activas en ninguna categoría."
-                                datos={estadisticas.categoriasMasConcurridas.map((c) => ({
-                                    etiqueta: c.categoria,
+                                elementos={estadisticas.categoriasMasConcurridas.map((c) => ({
+                                    clave: c.categoria,
+                                    nombre: c.categoria,
                                     valor: c.inscripcionesActivas,
                                 }))}
                             />
-                            <GraficoBarras
+                            <RankingBarras
                                 titulo="Eventos con más inscritos"
-                                descripcion="Eventos con más inscripciones activas."
-                                nombreValor="Inscripciones activas"
+                                descripcion="Por número de inscripciones activas."
+                                unidad="inscripciones activas"
                                 textoVacio="Todavía no hay eventos con inscripciones activas."
-                                datos={estadisticas.eventosConMasInscritos.map((e) => ({
-                                    etiqueta: e.titulo,
+                                elementos={estadisticas.eventosConMasInscritos.map((e) => ({
+                                    clave: String(e.eventoId),
+                                    nombre: e.titulo,
                                     valor: e.inscripcionesActivas,
                                 }))}
                             />
