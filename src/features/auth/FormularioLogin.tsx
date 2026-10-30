@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { IconoAviso } from '../../components/ui/IconoAviso';
 import '../../styles/auth.css';
 import { mensajeDeError } from '../../api/mensajeDeError';
 import { Link, useNavigate } from 'react-router-dom';
@@ -84,14 +85,16 @@ export const FormularioLogin: React.FC = () => {
             </header>
 
             {mensajeError && (
-                <div role="alert" className="register-alert-error mb-2 rounded border p-2 text-sm">
-                    {mensajeError}
+                <div role="alert" className="register-alert-error mb-2 flex items-start gap-2 rounded border p-2 text-sm">
+                    <IconoAviso tipo="error" className="mt-0.5 h-4 w-4" />
+                    <span>{mensajeError}</span>
                 </div>
             )}
 
             {mensajeExito && (
-                <div role="status" className="register-alert-success mb-2 rounded border p-2 text-sm">
-                    {mensajeExito}
+                <div role="status" className="register-alert-success mb-2 flex items-start gap-2 rounded border p-2 text-sm">
+                    <IconoAviso tipo="exito" className="mt-0.5 h-4 w-4" />
+                    <span>{mensajeExito}</span>
                 </div>
             )}
 

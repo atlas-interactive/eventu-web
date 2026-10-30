@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
+import { CalendarDays, CalendarPlus, CircleX, MapPin, Pencil, Plus, Tag, Users } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import type { Evento } from '../../types/evento';
+import { IconoAviso } from '../../components/ui/IconoAviso';
 import { ModalAccesible } from '../../components/ui/ModalAccesible';
+import { Skeleton, SkeletonEstado } from '../../components/ui/Skeleton';
 import { esAdministrador, obtenerSesion } from '../sesion/sesion';
 import { mensajeDeError } from '../../api/mensajeDeError';
 import { cancelarEvento, listarEventos } from './services/eventoService';
@@ -75,24 +78,49 @@ export function MisEventos() {
                     <h1 className="evento-page-title evento-page-title--list">Mis eventos</h1>
                     <p className="workflow-description">Eventos publicados que puedes gestionar.</p>
                 </div>
-                <Link to="/organizador/eventos/nuevo" className="workflow-button workflow-button--primary">
+                <Link to="/organizador/eventos/nuevo" className="workflow-button workflow-button--primary gap-1.5">
+                    <Plus className="h-4 w-4 shrink-0" aria-hidden="true" />
                     Crear evento
                 </Link>
             </header>
 
             {mensajeExito && (
-                <p role="status" className="evento-list-message evento-list-message--success">
-                    {mensajeExito}
+                <p role="status" className="evento-list-message evento-list-message--success flex items-start gap-2">
+                    <IconoAviso tipo="exito" className="mt-0.5 h-4 w-4" />
+                    <span>{mensajeExito}</span>
                 </p>
             )}
             {error && (
-                <p role="alert" className="evento-list-message">
-                    {error}
+                <p role="alert" className="evento-list-message flex items-start gap-2">
+                    <IconoAviso tipo="error" className="mt-0.5 h-4 w-4" />
+                    <span>{error}</span>
                 </p>
             )}
-            {cargando && <p className="evento-list-state">Cargando…</p>}
+            {cargando && (
+                <SkeletonEstado etiqueta="Cargando eventos">
+                    <ul className="evento-list">
+                        {Array.from({ length: 3 }, (_, indice) => (
+                            <li key={indice} className="evento-card">
+                                <div className="evento-card-content w-full space-y-2">
+                                    <Skeleton className="h-6 w-2/3" />
+                                    <Skeleton className="h-4 w-full" />
+                                    <Skeleton className="h-4 w-3/4" />
+                                    <Skeleton className="h-4 w-1/2" />
+                                </div>
+                                <div className="evento-card-actions sm:flex-row">
+                                    <Skeleton className="h-11 w-full rounded-md sm:w-24" />
+                                    <Skeleton className="h-11 w-full rounded-md sm:w-24" />
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                </SkeletonEstado>
+            )}
             {!cargando && !error && eventos.length === 0 && (
-                <p className="evento-list-state">Aún no tienes eventos publicados.</p>
+                <p className="evento-list-state">
+                    <CalendarPlus className="mr-2 inline h-4 w-4 align-text-bottom" aria-hidden="true" />
+                    Aún no tienes eventos publicados.
+                </p>
             )}
 
             {eventos.length > 0 && (
@@ -103,30 +131,52 @@ export function MisEventos() {
                             className="evento-card"
                         >
                             <div className="evento-card-content">
-                                <h2 className="evento-card-title">{evento.titulo}</h2>
-                                <p className="evento-card-meta">
-                                    {formatoFecha.format(new Date(evento.fechaInicio))} · {evento.ubicacion}
-                                    {evento.categoriaNombre ? ` · ${evento.categoriaNombre}` : ''}
-                                </p>
-                                <p className="evento-card-meta">
+                                <div className="evento-card-titleline">
+                                    <h2 className="evento-card-title">{evento.titulo}</h2>
+                                    <span
+                                        className={`evento-card-status ${
+                                            estaCancelado(evento)
+                                                ? 'evento-card-status--cancelled'
+                                                : 'evento-card-status--published'
+                                        }`}
+                                    >
+                                        {estaCancelado(evento) ? 'Cancelado' : 'Publicado'}
+                                    </span>
+                                </div>
+                                <div className="evento-card-metadata">
+                                    <span className="evento-card-meta">
+                                        <CalendarDays className="h-4 w-4 shrink-0" aria-hidden="true" />
+                                        {formatoFecha.format(new Date(evento.fechaInicio))}
+                                    </span>
+                                    <span className="evento-card-meta">
+                                        <MapPin className="h-4 w-4 shrink-0" aria-hidden="true" />
+                                        {evento.ubicacion}
+                                    </span>
+                                    {evento.categoriaNombre && (
+                                        <span className="evento-card-meta">
+                                            <Tag className="h-4 w-4 shrink-0" aria-hidden="true" />
+                                            {evento.categoriaNombre}
+                                        </span>
+                                    )}
+                                </div>
+                                <span className="evento-card-meta evento-card-capacity">
+                                    <Users className="h-4 w-4 shrink-0" aria-hidden="true" />
                                     Cupos: {evento.cuposDisponibles} disponibles de {evento.cuposMaximos}
-                                </p>
-                                <p className="evento-card-meta">
-                                    Estado: {estaCancelado(evento) ? 'CANCELADO' : 'PUBLICADO'}
-                                </p>
+                                </span>
                             </div>
                             <div className="evento-card-actions">
                                 <Link
                                     to={`/organizador/eventos/${evento.id}/editar`}
-                                    className="evento-row-button"
+                                    className="evento-row-button gap-1.5"
                                     aria-label={`Editar evento ${evento.titulo}`}
                                 >
+                                    <Pencil className="h-4 w-4 shrink-0" aria-hidden="true" />
                                     Editar
                                 </Link>
                                 {!estaCancelado(evento) && (
                                     <button
                                         type="button"
-                                        className="evento-row-button evento-row-button--danger"
+                                        className="evento-row-button evento-row-button--danger gap-1.5"
                                         aria-label={`Cancelar evento ${evento.titulo}`}
                                         onClick={() => {
                                             setMensajeExito('');
@@ -134,6 +184,7 @@ export function MisEventos() {
                                             setACancelar(evento);
                                         }}
                                     >
+                                        <CircleX className="h-4 w-4 shrink-0" aria-hidden="true" />
                                         Cancelar
                                     </button>
                                 )}
@@ -160,7 +211,8 @@ export function MisEventos() {
                         pasaran a ser canceladas y ya no se podrán realizar nuevas inscripciones. Esta acciónn no elimina el registro histórico del evento.
                     </p>
                     {errorCancelar && (
-                        <p role="alert" className="workflow-inline-error evento-dialog-error">
+                        <p role="alert" className="workflow-inline-error evento-dialog-error flex items-start gap-2">
+                            <IconoAviso tipo="error" className="mt-0.5 h-4 w-4" />
                             {errorCancelar}
                         </p>
                     )}

@@ -1,17 +1,44 @@
+import { lazy, Suspense, type ReactNode } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { FormularioLogin } from '../features/auth/FormularioLogin';
-import { FormularioRegistro } from '../features/auth/FormularioRegistro';
-import { GestionCategorias } from '../features/categorias/GestionCategorias';
 import { RutaAdministrador } from '../features/sesion/GuardiaRutaAdministrador';
-import { GestionOrganizadores } from '../features/usuarios/GestionOrganizadores';
-import { CrearEvento } from '../features/eventos/CrearEvento';
-import { EditarEvento } from '../features/eventos/EditarEvento';
-import { MisEventos } from '../features/eventos/MisEventos';
 import { RutaOrganizador } from '../features/sesion/GuardiaRutaOrganizador';
-import { InicioUsuario, RutaUsuario } from '../features/sesion/GuardiaRutaUsuario';
+import { RutaUsuario } from '../features/sesion/GuardiaRutaUsuario';
 import { LayoutAutenticacion } from '../components/layout/LayoutAutenticacion';
 import { LayoutAplicacion } from '../components/layout/LayoutAplicacion';
 import { obtenerRutaInicio, obtenerSesion } from '../features/sesion/sesion';
+import { SkeletonAutenticacion, SkeletonPagina } from '../components/ui/Skeleton';
+
+const FormularioLogin = lazy(() =>
+    import('../features/auth/FormularioLogin').then((modulo) => ({ default: modulo.FormularioLogin })),
+);
+const FormularioRegistro = lazy(() =>
+    import('../features/auth/FormularioRegistro').then((modulo) => ({ default: modulo.FormularioRegistro })),
+);
+const GestionCategorias = lazy(() =>
+    import('../features/categorias/GestionCategorias').then((modulo) => ({ default: modulo.GestionCategorias })),
+);
+const GestionOrganizadores = lazy(() =>
+    import('../features/usuarios/GestionOrganizadores').then((modulo) => ({ default: modulo.GestionOrganizadores })),
+);
+const CrearEvento = lazy(() =>
+    import('../features/eventos/CrearEvento').then((modulo) => ({ default: modulo.CrearEvento })),
+);
+const EditarEvento = lazy(() =>
+    import('../features/eventos/EditarEvento').then((modulo) => ({ default: modulo.EditarEvento })),
+);
+const MisEventos = lazy(() =>
+    import('../features/eventos/MisEventos').then((modulo) => ({ default: modulo.MisEventos })),
+);
+const DashboardEstadisticas = lazy(() =>
+    import('../features/estadisticas/DashboardEstadisticas').then((modulo) => ({ default: modulo.DashboardEstadisticas })),
+);
+const InicioUsuario = lazy(() =>
+    import('../features/sesion/InicioUsuario').then((modulo) => ({ default: modulo.InicioUsuario })),
+);
+
+const pantallaDiferida = (pantalla: ReactNode, fallback: ReactNode = <SkeletonPagina />) => (
+    <Suspense fallback={fallback}>{pantalla}</Suspense>
+);
     
 export function RutaLogin() {
     const sesion = obtenerSesion();
@@ -25,29 +52,31 @@ export function AppRoutes() {
     return (
         <Routes>
             <Route element={<LayoutAutenticacion />}>
-                <Route path="/login" element={<RutaLogin />} />
-                <Route path="/registro" element={<FormularioRegistro />} />
+                <Route path="/login" element={pantallaDiferida(<RutaLogin />, <SkeletonAutenticacion />)} />
+                <Route path="/registro" element={pantallaDiferida(<FormularioRegistro />, <SkeletonAutenticacion />)} />
             </Route>
 
             {/* Cada guardia y layout se aplica a todas las rutas anidadas en su grupo. */}
             <Route element={<RutaAdministrador />}>
                 <Route element={<LayoutAplicacion />}>
-                    <Route path="/admin/categorias" element={<GestionCategorias />} />
-                    <Route path="/admin/usuarios" element={<GestionOrganizadores />} />
+                    <Route path="/admin/categorias" element={pantallaDiferida(<GestionCategorias />)} />
+                    <Route path="/admin/usuarios" element={pantallaDiferida(<GestionOrganizadores />)} />
+                    <Route path="/admin/estadisticas" element={pantallaDiferida(<DashboardEstadisticas />)} />
                 </Route>
             </Route>
 
             <Route element={<RutaOrganizador />}>
                 <Route element={<LayoutAplicacion />}>
-                    <Route path="/organizador/eventos" element={<MisEventos />} />
-                    <Route path="/organizador/eventos/nuevo" element={<CrearEvento />} />
-                    <Route path="/organizador/eventos/:id/editar" element={<EditarEvento />} />
+                    <Route path="/organizador/eventos" element={pantallaDiferida(<MisEventos />)} />
+                    <Route path="/organizador/eventos/nuevo" element={pantallaDiferida(<CrearEvento />)} />
+                    <Route path="/organizador/eventos/:id/editar" element={pantallaDiferida(<EditarEvento />)} />
+                    <Route path="/organizador/estadisticas" element={pantallaDiferida(<DashboardEstadisticas />)} />
                 </Route>
             </Route>
 
             <Route element={<RutaUsuario />}>
                 <Route element={<LayoutAplicacion />}>
-                    <Route path="/usuario" element={<InicioUsuario />} />
+                    <Route path="/usuario" element={pantallaDiferida(<InicioUsuario />)} />
                 </Route>
             </Route>
 
