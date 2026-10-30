@@ -1,4 +1,5 @@
 import { axiosClient } from '../../../api';
+import { convertirErrorBlob } from '../../../api/descargas';
 import type { Evento, EventoActualizacion, EventoSolicitud, RespuestaEvento } from '../../../types/evento';
 
 // El organizador se identifica con el token JWT (el interceptor de axios lo envía), por eso ninguna llamada lleva su id
@@ -20,3 +21,12 @@ export const editarEvento = async (id: number, data: EventoActualizacion): Promi
 
 export const cancelarEvento = async (id: number): Promise<RespuestaEvento> =>
     (await axiosClient.patch<RespuestaEvento>(`/eventos/${id}/cancelar`)).data;
+
+// PDF con los inscritos activos del evento (HU-17)
+export const descargarReporteEvento = async (id: number): Promise<Blob> => {
+    try {
+        return (await axiosClient.get<Blob>(`/eventos/${id}/reporte`, { responseType: 'blob' })).data;
+    } catch (err: unknown) {
+        throw await convertirErrorBlob(err);
+    }
+};
