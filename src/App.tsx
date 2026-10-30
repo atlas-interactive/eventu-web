@@ -58,13 +58,13 @@ function LayoutAplicacion() {
     return (
         <div className="min-h-screen bg-eventu-page-background">
             <header className="border-b border-eventu-border bg-eventu-white-surface">
-                <div className="mx-auto flex w-full max-w-[70rem] flex-col gap-2 px-3 py-2 sm:min-h-[58px] sm:flex-row sm:items-center sm:gap-x-8 sm:gap-y-2 sm:px-8 sm:py-0">
-                    <div className="flex min-w-0 items-center justify-between gap-4 sm:flex-1 sm:justify-start sm:gap-x-6">
+                <div className="mx-auto flex w-full max-w-[70rem] flex-col gap-2 px-3 py-2 lg:min-h-[58px] lg:flex-row lg:items-center lg:gap-x-8 lg:gap-y-2 lg:px-8 lg:py-0">
+                    <div className="flex min-w-0 items-center justify-between gap-4 lg:flex-1 lg:justify-start lg:gap-x-6">
                         <p className="self-center text-[1.0625rem] font-semibold text-eventu-main-ink">EventU</p>
                         {sesion && (
                             <nav
                                 aria-label="Principal"
-                                className="flex min-w-0 flex-wrap items-center justify-end gap-x-3 gap-y-1 sm:justify-start sm:gap-x-6 sm:self-stretch"
+                                className="flex min-w-0 flex-wrap items-center justify-end gap-x-3 gap-y-1 lg:justify-start lg:gap-x-6 lg:self-stretch"
                             >
                                 {esAdministrador(sesion) && (
                                     <>
@@ -90,10 +90,10 @@ function LayoutAplicacion() {
                         )}
                     </div>
                     {sesion && (
-                        <div className="flex min-w-0 items-center justify-between gap-2 sm:ml-auto sm:max-w-full sm:justify-end sm:gap-3">
-                            <div className="flex min-w-0 flex-1 items-center gap-x-2 sm:flex-none">
+                        <div className="flex min-w-0 items-center justify-between gap-2 lg:ml-auto lg:max-w-full lg:justify-end lg:gap-3">
+                            <div className="flex min-w-0 flex-1 items-center gap-x-2 lg:flex-none">
                                 <span
-                                    className="min-w-0 flex-1 truncate text-sm text-eventu-secondary-text sm:flex-none"
+                                    className="min-w-0 flex-1 truncate text-sm text-eventu-secondary-text lg:flex-none"
                                     title={sesion.nombre}
                                 >
                                     {sesion.nombre}
