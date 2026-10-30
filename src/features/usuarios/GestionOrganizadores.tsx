@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
+import { Search, UserCog, UserMinus, UserPlus } from 'lucide-react';
 import { isAxiosError } from 'axios';
 import type { UsuarioBuscado } from '../../types/usuario';
 import { ModalAccesible } from '../../components/ui/ModalAccesible';
+import { IconoAviso } from '../../components/ui/IconoAviso';
 import { Skeleton, SkeletonEstado } from '../../components/ui/Skeleton';
 import { mensajeDeError } from '../../api/mensajeDeError';
 import { asignarOrganizador, buscarUsuarios, listarOrganizadores, revocarOrganizador } from './services/usuarioService';
@@ -162,17 +164,23 @@ export function GestionOrganizadores() {
                     <label htmlFor="criterio" className="workflow-label">
                         Buscar por nombre o correo institucional
                     </label>
-                    <input
-                        id="criterio"
-                        type="search"
-                        autoComplete="off"
-                        value={criterio}
-                        onChange={(e) => alEscribir(e.target.value)}
-                        placeholder="Escribe al menos 2 letras del nombre o del correo..."
-                        aria-invalid={hayCriterio && errorBusqueda ? true : undefined}
-                        aria-describedby={hayCriterio && errorBusqueda ? 'error-busqueda' : 'ayuda-busqueda'}
-                        className="gestion-search-input"
-                    />
+                    <div className="relative">
+                        <Search
+                            className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-eventu-secondary-text"
+                            aria-hidden="true"
+                        />
+                        <input
+                            id="criterio"
+                            type="search"
+                            autoComplete="off"
+                            value={criterio}
+                            onChange={(e) => alEscribir(e.target.value)}
+                            placeholder="Escribe al menos 2 letras del nombre o del correo..."
+                            aria-invalid={hayCriterio && errorBusqueda ? true : undefined}
+                            aria-describedby={hayCriterio && errorBusqueda ? 'error-busqueda' : 'ayuda-busqueda'}
+                            className="gestion-search-input gestion-search-input--with-icon"
+                        />
+                    </div>
                     <p id="ayuda-busqueda" aria-live="polite" className="gestion-help">
                         {!hayCriterio
                               ? 'Solo se muestran usuarios que ya están registrados en la plataforma.'
@@ -183,7 +191,8 @@ export function GestionOrganizadores() {
                 </div>
 
                 {hayCriterio && errorBusqueda && (
-                    <p id="error-busqueda" role="alert" className="gestion-error-message">
+                    <p id="error-busqueda" role="alert" className="gestion-error-message flex items-start gap-2">
+                        <IconoAviso tipo="error" className="mt-0.5 h-4 w-4" />
                         {errorBusqueda}
                     </p>
                 )}
@@ -193,12 +202,14 @@ export function GestionOrganizadores() {
                     </p>
                 )}
                 {mensajeExito && (
-                    <p role="status" className="gestion-success-message">
+                    <p role="status" className="gestion-success-message flex items-start gap-2">
+                        <IconoAviso tipo="exito" className="mt-0.5 h-4 w-4" />
                         {mensajeExito}
                     </p>
                 )}
                 {errorAccion && (
-                    <p role="alert" className="gestion-error-message">
+                    <p role="alert" className="gestion-error-message flex items-start gap-2">
+                        <IconoAviso tipo="error" className="mt-0.5 h-4 w-4" />
                         {errorAccion}
                     </p>
                 )}
@@ -243,18 +254,19 @@ export function GestionOrganizadores() {
                                 {usuario.rol === 'USUARIO' && (
                                     <button
                                         type="button"
-                                        className="gestion-organizer-action gestion-organizer-action--assign"
+                                        className="gestion-organizer-action gestion-organizer-action--assign gap-1.5"
                                         disabled={procesandoId === usuario.id}
                                         aria-label={`Asignar organizador a ${usuario.nombre}`}
                                         onClick={() => asignar(usuario)}
                                     >
+                                        <UserPlus className="h-4 w-4 shrink-0" aria-hidden="true" />
                                         {procesandoId === usuario.id ? 'Asignando…' : 'Asignar organizador'}
                                     </button>
                                 )}
                                 {usuario.rol === 'ORGANIZADOR' && (
                                     <button
                                         type="button"
-                                        className="gestion-organizer-action gestion-organizer-action--revoke"
+                                        className="gestion-organizer-action gestion-organizer-action--revoke gap-1.5"
                                         aria-label={`Revocar rol de organizador a ${usuario.nombre}`}
                                         onClick={() => {
                                             setMensajeExito('');
@@ -262,6 +274,7 @@ export function GestionOrganizadores() {
                                             setARevocar(usuario);
                                         }}
                                     >
+                                        <UserMinus className="h-4 w-4 shrink-0" aria-hidden="true" />
                                         Revocar rol
                                     </button>
                                 )}
@@ -277,7 +290,8 @@ export function GestionOrganizadores() {
                     Organizadores actuales
                 </h2>
                 {errorTabla && (
-                    <p role="alert" className="gestion-table-error">
+                    <p role="alert" className="gestion-table-error flex items-start gap-2">
+                        <IconoAviso tipo="error" className="mt-0.5 h-4 w-4" />
                         {errorTabla}
                     </p>
                 )}
@@ -302,7 +316,10 @@ export function GestionOrganizadores() {
                         </table>
                     </SkeletonEstado>
                 ) : organizadores.length === 0 && !errorTabla ? (
-                    <p className="gestion-table-state">Aún no hay organizadores asignados.</p>
+                    <p className="gestion-table-state">
+                        <UserCog className="mr-2 inline h-4 w-4 align-text-bottom" aria-hidden="true" />
+                        Aún no hay organizadores asignados.
+                    </p>
                 ) : (
                     organizadores.length > 0 && (
                         <div className="gestion-table-scroll">
@@ -327,7 +344,7 @@ export function GestionOrganizadores() {
                                             <td data-label="Acción" className="gestion-organizer-cell gestion-organizer-cell--action">
                                                 <button
                                                     type="button"
-                                                    className="gestion-organizer-action gestion-organizer-action--revoke"
+                                                    className="gestion-organizer-action gestion-organizer-action--revoke gap-1.5"
                                                     aria-label={`Revocar rol de ${organizador.nombre}`}
                                                     onClick={() => {
                                                         setMensajeExito('');
@@ -335,6 +352,7 @@ export function GestionOrganizadores() {
                                                         setARevocar(organizador);
                                                     }}
                                                 >
+                                                    <UserMinus className="h-4 w-4 shrink-0" aria-hidden="true" />
                                                     Revocar rol
                                                 </button>
                                             </td>
@@ -363,10 +381,11 @@ export function GestionOrganizadores() {
                         </button>
                         <button
                             type="button"
-                            className="workflow-button workflow-button--primary"
+                            className="workflow-button workflow-button--primary gap-1.5"
                             disabled={procesandoId === aRevocar.id}
                             onClick={() => revocar(aRevocar)}
                         >
+                            <UserMinus className="h-4 w-4 shrink-0" aria-hidden="true" />
                             {procesandoId === aRevocar.id ? 'Revocando…' : 'Sí, revocar rol'}
                         </button>
                     </div>

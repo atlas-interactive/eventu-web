@@ -1,7 +1,9 @@
 import { isAxiosError } from 'axios';
+import { Pencil, Plus, Power, PowerOff, Tags } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import type { Categoria } from '../../types/categoria';
+import { IconoAviso } from '../../components/ui/IconoAviso';
 import { ModalAccesible } from '../../components/ui/ModalAccesible';
 import { Skeleton } from '../../components/ui/Skeleton';
 import {
@@ -76,26 +78,29 @@ export function GestionCategorias() {
                         Clasifica los eventos y facilita su búsqueda a los usuarios.
                     </p>
                 </div>
-                <button type="button" className="workflow-button workflow-button--primary" onClick={() => setModal({ tipo: 'crear' })}>
-                    + Nueva categoría
+                <button type="button" className="workflow-button workflow-button--primary gap-1.5" onClick={() => setModal({ tipo: 'crear' })}>
+                    <Plus className="h-4 w-4 shrink-0" aria-hidden="true" />
+                    Nueva categoría
                 </button>
             </header>
 
             {mensajeExito && (
                 <div
                     role="status"
-                    className="gestion-feedback gestion-feedback--success"
+                    className="gestion-feedback gestion-feedback--success flex items-start gap-2"
                 >
-                    {mensajeExito}
+                    <IconoAviso tipo="exito" className="mt-0.5 h-4 w-4" />
+                    <span>{mensajeExito}</span>
                 </div>
             )}
 
             {errorCarga && (
                 <div
                     role="alert"
-                    className="gestion-feedback gestion-feedback--error"
+                    className="gestion-feedback gestion-feedback--error flex items-start gap-2"
                 >
-                    {errorCarga}
+                    <IconoAviso tipo="error" className="mt-0.5 h-4 w-4" />
+                    <span>{errorCarga}</span>
                 </div>
             )}
 
@@ -136,6 +141,7 @@ export function GestionCategorias() {
                         {!cargando && categorias.length === 0 && !errorCarga && (
                             <tr>
                                 <td colSpan={4} className="gestion-category-empty">
+                                    <Tags className="mr-2 inline h-4 w-4 align-text-bottom" aria-hidden="true" />
                                     Aún no hay categorías. Crea la primera con «Nueva categoría».
                                 </td>
                             </tr>
@@ -169,6 +175,7 @@ export function GestionCategorias() {
                                             aria-label={`Editar categoría ${categoria.nombre}`}
                                             onClick={() => setModal({ tipo: 'editar', categoria })}
                                         >
+                                            <Pencil className="h-4 w-4 shrink-0" aria-hidden="true" />
                                             Editar
                                         </button>
                                         <button
@@ -177,6 +184,9 @@ export function GestionCategorias() {
                                             aria-label={`${categoria.activo ? 'Desactivar' : 'Activar'} categoría ${categoria.nombre}`}
                                             onClick={() => setModal({ tipo: 'estado', categoria })}
                                         >
+                                            {categoria.activo
+                                                ? <PowerOff className="h-4 w-4 shrink-0" aria-hidden="true" />
+                                                : <Power className="h-4 w-4 shrink-0" aria-hidden="true" />}
                                             {categoria.activo ? 'Desactivar' : 'Activar'}
                                         </button>
                                     </div>

@@ -1,3 +1,4 @@
+import { CalendarDays, ChartPie, LogOut, Tags, UserCog } from 'lucide-react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { obtenerSesion } from '../../features/sesion/sesion';
 import { cerrarSesion, esAdministrador, puedeGestionarEventos } from '../../features/sesion/sesion';
@@ -45,23 +46,27 @@ export function LayoutAplicacion() {
                             >
                                 {esAdministrador(sesion) && (
                                     <>
-                                        <NavLink to="/admin/categorias" className={claseEnlace}>
+                                        <NavLink to="/admin/categorias" className={({ isActive }) => `${claseEnlace({ isActive })} gap-1.5`}>
+                                            <Tags className="h-4 w-4 shrink-0" aria-hidden="true" />
                                             Categorías
                                         </NavLink>
-                                        <NavLink to="/admin/usuarios" className={claseEnlace}>
+                                        <NavLink to="/admin/usuarios" className={({ isActive }) => `${claseEnlace({ isActive })} gap-1.5`}>
+                                            <UserCog className="h-4 w-4 shrink-0" aria-hidden="true" />
                                             Organizadores
                                         </NavLink>
                                     </>
                                 )}
                                 {puedeGestionarEventos(sesion) && (
                                     <>
-                                        <NavLink to="/organizador/eventos" className={claseEnlace}>
+                                        <NavLink to="/organizador/eventos" className={({ isActive }) => `${claseEnlace({ isActive })} gap-1.5`}>
+                                            <CalendarDays className="h-4 w-4 shrink-0" aria-hidden="true" />
                                             {esAdministrador(sesion) ? 'Eventos' : 'Mis eventos'}
                                         </NavLink>
                                         <NavLink
                                             to={esAdministrador(sesion) ? '/admin/estadisticas' : '/organizador/estadisticas'}
-                                            className={claseEnlace}
+                                            className={({ isActive }) => `${claseEnlace({ isActive })} gap-1.5`}
                                         >
+                                            <ChartPie className="h-4 w-4 shrink-0" aria-hidden="true" />
                                             Estadísticas
                                         </NavLink>
                                     </>
@@ -87,8 +92,9 @@ export function LayoutAplicacion() {
                             <button
                                 type="button"
                                 onClick={salir}
-                                className="min-h-8 shrink-0 whitespace-nowrap rounded-[0.4375rem] border border-eventu-field-border bg-eventu-white-surface px-2.5 py-1 text-xs text-eventu-main-ink hover:bg-eventu-page-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red sm:min-h-9 sm:px-4 sm:text-sm"
+                                className="inline-flex min-h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-[0.4375rem] border border-eventu-field-border bg-eventu-white-surface px-2.5 py-1 text-xs text-eventu-main-ink hover:bg-eventu-page-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red sm:min-h-9 sm:px-4 sm:text-sm"
                             >
+                                <LogOut className="h-4 w-4 shrink-0" aria-hidden="true" />
                                 Cerrar sesión
                             </button>
                         </div>

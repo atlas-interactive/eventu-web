@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { CalendarCheck, ChartPie, Tags, Ticket, UserCheck } from 'lucide-react';
 import type { Estadisticas } from '../../types/estadisticas';
 import { mensajeDeError } from '../../api/mensajeDeError';
 import { Skeleton, SkeletonEstado } from '../../components/ui/Skeleton';
@@ -6,7 +7,6 @@ import { esAdministrador, obtenerSesion } from '../sesion/sesion';
 import { GraficoAsistencia } from './components/GraficoAsistencia';
 import { RankingBarras } from './components/RankingBarras';
 import { TarjetaKpi } from './components/TarjetaKpi';
-import { IconoAsistente, IconoBoleta, IconoCalendario, IconoCategoria, IconoGrafico } from './components/iconos';
 import { obtenerEstadisticas } from './services/estadisticaService';
 
 const formatoNumero = new Intl.NumberFormat('es-CO');
@@ -98,7 +98,7 @@ export function DashboardEstadisticas() {
                     <div className="grid gap-4 lg:grid-cols-3">
                         <section className="rounded-xl border border-eventu-border bg-eventu-white-surface p-5 sm:p-6 lg:col-span-2">
                             <h2 className="flex items-center gap-2 text-base font-semibold text-eventu-main-ink">
-                                <IconoGrafico className="h-5 w-5 text-eventu-institutional-red" />
+                                <ChartPie className="h-5 w-5 text-eventu-institutional-red" aria-hidden="true" />
                                 Asistencia
                             </h2>
                             <p className="mb-5 mt-1 text-sm text-eventu-secondary-text">
@@ -116,14 +116,14 @@ export function DashboardEstadisticas() {
                                 titulo="Inscripciones activas"
                                 valor={formatoNumero.format(estadisticas.inscripcionesActivas)}
                                 detalle="Cupos reservados"
-                                Icono={IconoBoleta}
+                                Icono={Ticket}
                                 tono="rojo"
                             />
                             <TarjetaKpi
                                 titulo="Asistentes"
                                 valor={formatoNumero.format(estadisticas.asistentes)}
                                 detalle={`De ${formatoNumero.format(estadisticas.inscripcionesActivas)} inscritos`}
-                                Icono={IconoAsistente}
+                                Icono={UserCheck}
                                 tono="verde"
                             />
                         </dl>
@@ -133,7 +133,7 @@ export function DashboardEstadisticas() {
                         <div className="mt-4 grid items-start gap-4 lg:grid-cols-2">
                             <RankingBarras
                                 titulo="Categorías más concurridas"
-                                Icono={IconoCategoria}
+                                Icono={Tags}
                                 descripcion="Por número de inscripciones activas."
                                 unidad="inscripciones activas"
                                 textoVacio="Todavía no hay inscripciones activas en ninguna categoría."
@@ -145,7 +145,7 @@ export function DashboardEstadisticas() {
                             />
                             <RankingBarras
                                 titulo="Eventos con más inscritos"
-                                Icono={IconoCalendario}
+                                Icono={CalendarCheck}
                                 descripcion="Por número de inscripciones activas."
                                 unidad="inscripciones activas"
                                 textoVacio="Todavía no hay eventos con inscripciones activas."

@@ -1,4 +1,4 @@
-import type { ComponentType, SVGProps } from 'react';
+import type { LucideIcon } from 'lucide-react';
 
 export interface ElementoRanking {
     clave: string;
@@ -12,7 +12,7 @@ interface Props {
     unidad: string;
     elementos: ElementoRanking[];
     textoVacio: string;
-    Icono: ComponentType<SVGProps<SVGSVGElement>>;
+    Icono: LucideIcon;
 }
 
 const formatoNumero = new Intl.NumberFormat('es-CO');
@@ -25,7 +25,7 @@ export function RankingBarras({ titulo, descripcion, unidad, elementos, textoVac
         <section className="flex flex-col rounded-xl border border-eventu-border bg-eventu-white-surface p-5 sm:p-6">
             <h2 className="flex items-center gap-2 text-base font-semibold text-eventu-main-ink">
                 <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-eventu-soft-red-background text-eventu-institutional-red">
-                    <Icono className="h-[1.125rem] w-[1.125rem]" />
+                    <Icono className="h-[1.125rem] w-[1.125rem]" aria-hidden="true" />
                 </span>
                 {titulo}
             </h2>
