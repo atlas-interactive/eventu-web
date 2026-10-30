@@ -7,10 +7,18 @@ const ETIQUETA_ROL: Record<string, string> = {
     ORGANIZADOR: 'Organizador',
 };
 
+const nombreVisible = (nombre: string): string => {
+    const partes = nombre.trim().split(/\s+/).filter(Boolean);
+    if (partes.length <= 2) return partes.join(' ');
+    if (partes.length === 3) return `${partes[0]} ${partes[1]}`;
+    return `${partes[0]} ${partes[2]}`;
+};
+
 // Pantallas internas: barra superior a todo el ancho (como el mockup) y contenido centrado debajo
 export function LayoutAplicacion() {
     const navigate = useNavigate();
     const sesion = obtenerSesion();
+    const nombreUsuario = sesion ? nombreVisible(sesion.nombre) : '';
 
     const claseEnlace = ({ isActive }: { isActive: boolean }) =>
         `inline-flex h-full items-center text-sm ${
@@ -27,8 +35,8 @@ export function LayoutAplicacion() {
     return (
         <div className="min-h-screen bg-eventu-page-background">
             <header className="border-b border-eventu-border bg-eventu-white-surface">
-                <div className="mx-auto flex w-full max-w-[70rem] flex-col gap-2 px-3 py-2 sm:min-h-[58px] sm:flex-row sm:items-center sm:gap-x-4 sm:gap-y-2 sm:px-4 sm:py-0">
-                    <div className="flex min-w-0 items-center justify-between gap-4 sm:flex-none sm:justify-start sm:gap-x-4">
+                <div className="mx-auto flex w-full flex-col gap-2 px-8 py-2 sm:min-h-[58px] sm:flex-row sm:items-center sm:gap-x-4 sm:gap-y-2 sm:px-10 sm:py-0">
+                    <div className="flex min-w-0 items-center justify-between gap-4 sm:flex-none sm:justify-start sm:gap-x-8">
                         <p className="self-center text-[1.0625rem] font-semibold text-eventu-main-ink">EventU</p>
                         {sesion && (
                             <nav
@@ -66,9 +74,9 @@ export function LayoutAplicacion() {
                             <div className="flex min-w-0 flex-1 items-center gap-x-2 sm:flex-none">
                                 <span
                                     className="min-w-0 flex-1 truncate text-sm text-eventu-secondary-text sm:max-w-[11rem] sm:flex-none lg:max-w-[16rem]"
-                                    title={sesion.nombre}
+                                    title={nombreUsuario}
                                 >
-                                    {sesion.nombre}
+                                    {nombreUsuario}
                                 </span>
                                 {ETIQUETA_ROL[sesion.rol.toUpperCase()] && (
                                     <span className="shrink-0 rounded bg-eventu-soft-red-background px-2 py-0.5 text-xs text-eventu-institutional-red">
