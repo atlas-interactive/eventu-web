@@ -4,17 +4,7 @@ import type { UsuarioBuscado } from '../../types/usuario';
 import { ModalAccesible } from '../../components/ui/ModalAccesible';
 import { mensajeDeError } from '../../api/mensajeDeError';
 import { asignarOrganizador, buscarUsuarios, listarOrganizadores, revocarOrganizador } from './services/usuarioService';
-
-const botonPrimario =
-    'rounded-[0.4375rem] bg-eventu-institutional-red px-4 py-2 text-sm font-medium text-eventu-white-surface hover:bg-eventu-institutional-red-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red disabled:opacity-60';
-const botonSecundario =
-    'rounded-[0.4375rem] border border-eventu-field-border bg-eventu-white-surface px-4 py-2 text-sm font-medium text-eventu-main-ink hover:bg-eventu-page-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red';
-const botonFila =
-    'inline-flex h-10 items-center justify-center rounded-[0.4375rem] border px-4 text-sm font-normal bg-eventu-white-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red';
-const botonAsignar = `${botonFila} border-eventu-success text-eventu-success hover:bg-eventu-green-background`;
-const botonRevocar = `${botonFila} border-eventu-institutional-red text-eventu-institutional-red hover:bg-eventu-soft-red-background`;
-const celdaMovil =
-    'flex items-start justify-between gap-4 before:shrink-0 before:text-xs before:font-medium before:uppercase before:text-eventu-secondary-text before:content-[attr(data-label)] lg:before:content-none';
+import '../../styles/management.css';
 
 const ETIQUETA_ROL: Record<string, string> = {
     USUARIO: 'Usuario',
@@ -155,17 +145,17 @@ export function GestionOrganizadores() {
     };
 
     return (
-        <main className="mx-auto w-full max-w-[70rem] px-4 py-8 sm:px-8">
-            <header className="mb-6">
-                <h1 className="text-[1.375rem] font-semibold text-eventu-main-ink">Gestión de organizadores</h1>
-                <p className="mt-1 text-sm text-eventu-secondary-text">
+        <main className="workflow-page gestion-organizer-page">
+            <header className="workflow-page-header">
+                <h1 className="workflow-title">Gestión de organizadores</h1>
+                <p className="workflow-description">
                     Busca un usuario ya registrado y asígnale el rol de organizador.
                 </p>
             </header>
 
-            <section className="rounded-lg border border-eventu-border bg-eventu-white-surface p-5">
-                <div className="w-full sm:max-w-[32.5rem]">
-                    <label htmlFor="criterio" className="mb-1 block text-sm font-medium text-eventu-main-ink">
+            <section className="gestion-panel">
+                <div className="gestion-search">
+                    <label htmlFor="criterio" className="workflow-label">
                         Buscar por nombre o correo institucional
                     </label>
                     <input
@@ -177,9 +167,9 @@ export function GestionOrganizadores() {
                         placeholder="Escribe al menos 2 letras del nombre o del correo..."
                         aria-invalid={hayCriterio && errorBusqueda ? true : undefined}
                         aria-describedby={hayCriterio && errorBusqueda ? 'error-busqueda' : 'ayuda-busqueda'}
-                        className="h-11 w-full rounded-md border border-eventu-field-border px-3 text-sm text-eventu-main-ink outline-none focus:ring-1 focus:ring-eventu-field-border"
+                        className="gestion-search-input"
                     />
-                    <p id="ayuda-busqueda" aria-live="polite" className="mt-1 text-xs text-eventu-secondary-text">
+                    <p id="ayuda-busqueda" aria-live="polite" className="gestion-help">
                         {hayCriterio && buscando
                             ? 'Buscando…'
                             : !hayCriterio
@@ -191,43 +181,43 @@ export function GestionOrganizadores() {
                 </div>
 
                 {hayCriterio && errorBusqueda && (
-                    <p id="error-busqueda" role="alert" className="mt-3 text-sm text-eventu-error">
+                    <p id="error-busqueda" role="alert" className="gestion-error-message">
                         {errorBusqueda}
                     </p>
                 )}
                 {hayCriterio && sinResultados && (
-                    <p role="status" className="mt-3 text-sm text-eventu-secondary-text">
+                    <p role="status" className="gestion-search-message">
                         {sinResultados}
                     </p>
                 )}
                 {mensajeExito && (
-                    <p role="status" className="mt-3 rounded-md bg-eventu-green-background px-4 py-3 text-sm text-eventu-success">
+                    <p role="status" className="gestion-success-message">
                         {mensajeExito}
                     </p>
                 )}
                 {errorAccion && (
-                    <p role="alert" className="mt-3 text-sm text-eventu-error">
+                    <p role="alert" className="gestion-error-message">
                         {errorAccion}
                     </p>
                 )}
 
                 {resultadosVisibles.length > 0 && (
-                    <ul className="mt-5 space-y-3">
+                    <ul className="gestion-results">
                         {resultadosVisibles.map((usuario) => (
                             <li
                                 key={usuario.id}
-                                className="flex flex-col gap-3 rounded-lg border border-eventu-border p-3 sm:flex-row sm:items-center sm:justify-between"
+                                className="gestion-result"
                             >
-                                <div className="flex items-center gap-3">
+                                <div className="gestion-result-person">
                                     <span
                                         aria-hidden="true"
-                                        className="flex h-9 w-9 items-center justify-center rounded-full bg-eventu-soft-red-background text-xs font-medium text-eventu-institutional-red"
+                                        className="gestion-avatar"
                                     >
                                         {iniciales(usuario.nombre)}
                                     </span>
-                                    <div className="min-w-0">
-                                        <p className="text-sm font-medium text-eventu-main-ink">{usuario.nombre}</p>
-                                        <p className="break-all text-sm text-eventu-secondary-text">
+                                    <div className="gestion-result-details">
+                                        <p className="gestion-result-name">{usuario.nombre}</p>
+                                        <p className="gestion-result-meta">
                                             {usuario.correo} · {ETIQUETA_ROL[usuario.rol] ?? usuario.rol}
                                         </p>
                                     </div>
@@ -235,7 +225,7 @@ export function GestionOrganizadores() {
                                 {usuario.rol === 'USUARIO' && (
                                     <button
                                         type="button"
-                                        className={botonAsignar}
+                                        className="gestion-organizer-action gestion-organizer-action--assign"
                                         disabled={procesandoId === usuario.id}
                                         aria-label={`Asignar organizador a ${usuario.nombre}`}
                                         onClick={() => asignar(usuario)}
@@ -246,7 +236,7 @@ export function GestionOrganizadores() {
                                 {usuario.rol === 'ORGANIZADOR' && (
                                     <button
                                         type="button"
-                                        className={botonRevocar}
+                                        className="gestion-organizer-action gestion-organizer-action--revoke"
                                         aria-label={`Revocar rol de organizador a ${usuario.nombre}`}
                                         onClick={() => {
                                             setMensajeExito('');
@@ -264,44 +254,44 @@ export function GestionOrganizadores() {
 
             </section>
 
-            <section aria-labelledby="titulo-organizadores" className="mt-6 rounded-lg border border-eventu-border bg-eventu-white-surface p-5">
-                <h2 id="titulo-organizadores" className="text-base font-semibold text-eventu-main-ink">
+            <section aria-labelledby="titulo-organizadores" className="gestion-panel gestion-panel--spaced">
+                <h2 id="titulo-organizadores" className="gestion-table-title">
                     Organizadores actuales
                 </h2>
                 {errorTabla && (
-                    <p role="alert" className="mt-3 text-sm text-eventu-error">
+                    <p role="alert" className="gestion-table-error">
                         {errorTabla}
                     </p>
                 )}
                 {cargandoTabla ? (
-                    <p className="mt-3 text-sm text-eventu-secondary-text">Cargando organizadores…</p>
+                    <p className="gestion-table-state">Cargando organizadores…</p>
                 ) : organizadores.length === 0 && !errorTabla ? (
-                    <p className="mt-3 text-sm text-eventu-secondary-text">Aún no hay organizadores asignados.</p>
+                    <p className="gestion-table-state">Aún no hay organizadores asignados.</p>
                 ) : (
                     organizadores.length > 0 && (
-                        <div className="mt-4 overflow-x-auto">
-                            <table className="block w-full text-left text-sm lg:table">
+                        <div className="gestion-table-scroll">
+                            <table className="gestion-organizer-table">
                                 <caption className="sr-only">Usuarios con rol de organizador</caption>
-                                <thead className="hidden lg:table-header-group">
-                                    <tr className="border-b border-eventu-border text-eventu-secondary-text">
-                                        <th scope="col" className="py-2 pr-4 font-normal">Nombre</th>
-                                        <th scope="col" className="py-2 pr-4 font-normal">Correo</th>
-                                        <th scope="col" className="py-2 text-right font-normal">Acción</th>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Nombre</th>
+                                        <th scope="col">Correo</th>
+                                        <th scope="col">Acción</th>
                                     </tr>
                                 </thead>
-                                <tbody className="block lg:table-row-group">
+                                <tbody>
                                     {organizadores.map((organizador) => (
-                                        <tr key={organizador.id} className="block space-y-2 border-b border-eventu-border p-4 last:border-0 lg:table-row lg:space-y-0 lg:p-0">
-                                            <td data-label="Nombre" className={`${celdaMovil} py-1 text-eventu-main-ink lg:table-cell lg:py-3 lg:pr-4`}>
-                                                <span className="break-words text-right lg:text-left">{organizador.nombre}</span>
+                                        <tr key={organizador.id} className="gestion-organizer-row">
+                                            <td data-label="Nombre" className="gestion-organizer-cell gestion-organizer-cell--name">
+                                                <span className="gestion-cell-value gestion-cell-value--name">{organizador.nombre}</span>
                                             </td>
-                                            <td data-label="Correo" className={`${celdaMovil} py-1 text-eventu-secondary-text lg:table-cell lg:py-3 lg:pr-4`}>
-                                                <span className="break-all text-right lg:text-left">{organizador.correo}</span>
+                                            <td data-label="Correo" className="gestion-organizer-cell gestion-organizer-cell--email">
+                                                <span className="gestion-cell-value gestion-cell-value--email">{organizador.correo}</span>
                                             </td>
-                                            <td data-label="Acción" className={`${celdaMovil} py-1 lg:table-cell lg:py-3 lg:text-right`}>
+                                            <td data-label="Acción" className="gestion-organizer-cell gestion-organizer-cell--action">
                                                 <button
                                                     type="button"
-                                                    className={`${botonRevocar} w-full sm:w-auto`}
+                                                    className="gestion-organizer-action gestion-organizer-action--revoke"
                                                     aria-label={`Revocar rol de ${organizador.nombre}`}
                                                     onClick={() => {
                                                         setMensajeExito('');
@@ -327,17 +317,17 @@ export function GestionOrganizadores() {
                     idTitulo="titulo-revocar-organizador"
                     onCerrar={() => setARevocar(null)}
                 >
-                    <p className="text-sm text-eventu-main-ink">
+                    <p className="workflow-dialog-copy">
                         {aRevocar.nombre} dejará de poder crear y gestionar eventos. Conservará el acceso a su cuenta con rol
                         Usuario. Sus eventos se conservarán y, desde ahora, solo un administrador podrá editarlos.
                     </p>
-                    <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-                        <button type="button" className={botonSecundario} onClick={() => setARevocar(null)}>
+                    <div className="workflow-dialog-actions">
+                        <button type="button" className="workflow-button workflow-button--secondary" onClick={() => setARevocar(null)}>
                             Cancelar
                         </button>
                         <button
                             type="button"
-                            className={botonPrimario}
+                            className="workflow-button workflow-button--primary"
                             disabled={procesandoId === aRevocar.id}
                             onClick={() => revocar(aRevocar)}
                         >

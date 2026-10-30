@@ -5,17 +5,9 @@ import { ModalAccesible } from '../../components/ui/ModalAccesible';
 import { esAdministrador, obtenerSesion } from '../sesion/sesion';
 import { mensajeDeError } from '../../api/mensajeDeError';
 import { cancelarEvento, listarEventos } from './services/eventoService';
+import '../../styles/events.css';
 
 const formatoFecha = new Intl.DateTimeFormat('es-CO', { dateStyle: 'medium', timeStyle: 'short' });
-
-const botonPrimario =
-    'inline-flex rounded-[0.4375rem] bg-eventu-institutional-red px-4 py-2 text-sm font-medium text-eventu-white-surface hover:bg-eventu-institutional-red-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red disabled:opacity-60';
-const botonSecundario =
-    'inline-flex rounded-[0.4375rem] border border-eventu-field-border bg-eventu-white-surface px-4 py-2 text-sm font-medium text-eventu-main-ink hover:bg-eventu-page-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red disabled:opacity-60';
-const botonFila =
-    'inline-flex h-11 items-center justify-center rounded-[0.4375rem] border border-eventu-field-border bg-eventu-white-surface px-4 text-sm font-semibold text-eventu-main-ink hover:bg-eventu-page-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red';
-const botonCancelarFila =
-    'inline-flex h-11 items-center justify-center rounded-[0.4375rem] border border-eventu-institutional-red bg-eventu-white-surface px-4 text-sm font-semibold text-eventu-institutional-red hover:bg-eventu-soft-red-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red';
 
 const estaCancelado = (evento: Evento) => evento.estado.toUpperCase() === 'CANCELADO';
 
@@ -77,56 +69,56 @@ export function MisEventos() {
     };
 
     return (
-        <main className="mx-auto w-full max-w-[70rem] px-4 py-8 sm:px-8">
-            <header className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <main className="evento-page evento-page--list">
+            <header className="evento-list-header">
                 <div>
-                    <h1 className="text-[1.375rem] font-semibold text-eventu-main-ink">Mis eventos</h1>
-                    <p className="mt-1 text-sm text-eventu-secondary-text">Eventos publicados que puedes gestionar.</p>
+                    <h1 className="evento-page-title evento-page-title--list">Mis eventos</h1>
+                    <p className="workflow-description">Eventos publicados que puedes gestionar.</p>
                 </div>
-                <Link to="/organizador/eventos/nuevo" className={botonPrimario}>
+                <Link to="/organizador/eventos/nuevo" className="workflow-button workflow-button--primary">
                     Crear evento
                 </Link>
             </header>
 
             {mensajeExito && (
-                <p role="status" className="mb-4 rounded-md bg-eventu-green-background px-4 py-3 text-sm text-eventu-success">
+                <p role="status" className="evento-list-message evento-list-message--success">
                     {mensajeExito}
                 </p>
             )}
             {error && (
-                <p role="alert" className="mb-4 text-sm text-eventu-error">
+                <p role="alert" className="evento-list-message">
                     {error}
                 </p>
             )}
-            {cargando && <p className="text-sm text-eventu-secondary-text">Cargando…</p>}
+            {cargando && <p className="evento-list-state">Cargando…</p>}
             {!cargando && !error && eventos.length === 0 && (
-                <p className="text-sm text-eventu-secondary-text">Aún no tienes eventos publicados.</p>
+                <p className="evento-list-state">Aún no tienes eventos publicados.</p>
             )}
 
             {eventos.length > 0 && (
-                <ul className="space-y-3">
+                <ul className="evento-list">
                     {eventos.map((evento) => (
                         <li
                             key={evento.id}
-                            className="flex flex-col gap-3 rounded-lg border border-eventu-border bg-eventu-white-surface p-4 sm:flex-row sm:items-center sm:justify-between"
+                            className="evento-card"
                         >
-                            <div className="min-w-0 break-words">
-                                <h2 className="text-base font-semibold text-eventu-main-ink">{evento.titulo}</h2>
-                                <p className="text-sm text-eventu-secondary-text">
+                            <div className="evento-card-content">
+                                <h2 className="evento-card-title">{evento.titulo}</h2>
+                                <p className="evento-card-meta">
                                     {formatoFecha.format(new Date(evento.fechaInicio))} · {evento.ubicacion}
                                     {evento.categoriaNombre ? ` · ${evento.categoriaNombre}` : ''}
                                 </p>
-                                <p className="text-sm text-eventu-secondary-text">
+                                <p className="evento-card-meta">
                                     Cupos: {evento.cuposDisponibles} disponibles de {evento.cuposMaximos}
                                 </p>
-                                <p className="text-sm text-eventu-secondary-text">
+                                <p className="evento-card-meta">
                                     Estado: {estaCancelado(evento) ? 'CANCELADO' : 'PUBLICADO'}
                                 </p>
                             </div>
-                            <div className="flex flex-col gap-2 sm:flex-row sm:shrink-0">
+                            <div className="evento-card-actions">
                                 <Link
                                     to={`/organizador/eventos/${evento.id}/editar`}
-                                    className={botonFila}
+                                    className="evento-row-button"
                                     aria-label={`Editar evento ${evento.titulo}`}
                                 >
                                     Editar
@@ -134,7 +126,7 @@ export function MisEventos() {
                                 {!estaCancelado(evento) && (
                                     <button
                                         type="button"
-                                        className={botonCancelarFila}
+                                        className="evento-row-button evento-row-button--danger"
                                         aria-label={`Cancelar evento ${evento.titulo}`}
                                         onClick={() => {
                                             setMensajeExito('');
@@ -157,28 +149,28 @@ export function MisEventos() {
                     idTitulo="titulo-cancelar-evento"
                     onCerrar={cerrarModalCancelar}
                     icono={
-                        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-red-50 text-xl font-bold text-red-700">
+                        <span className="evento-dialog-icon">
                             !
                         </span>
                     }
                 >
-                    <h3 className="break-words text-sm font-medium text-eventu-main-ink">{aCancelar.titulo}</h3>
-                    <p className="mt-2 text-sm text-eventu-secondary-text">
+                    <h3 className="evento-dialog-title">{aCancelar.titulo}</h3>
+                    <p className="evento-dialog-copy">
                         Se notificará por correo a los {aCancelar.cuposMaximos - aCancelar.cuposDisponibles} usuarios inscritos, sus inscripciones
                         pasaran a ser canceladas y ya no se podrán realizar nuevas inscripciones. Esta acciónn no elimina el registro histórico del evento.
                     </p>
                     {errorCancelar && (
-                        <p role="alert" className="mt-3 text-sm text-eventu-error">
+                        <p role="alert" className="workflow-inline-error evento-dialog-error">
                             {errorCancelar}
                         </p>
                     )}
-                    <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-                        <button type="button" className={botonSecundario} onClick={cerrarModalCancelar} disabled={cancelando}>
+                    <div className="workflow-dialog-actions">
+                        <button type="button" className="workflow-button workflow-button--secondary" onClick={cerrarModalCancelar} disabled={cancelando}>
                             Volver
                         </button>
                         <button
                             type="button"
-                            className={botonPrimario}
+                            className="workflow-button workflow-button--primary"
                             onClick={confirmarCancelacion}
                             disabled={cancelando}
                         >

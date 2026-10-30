@@ -1,0 +1,86 @@
+.workflow-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.4375rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.workflow-button--compact {
+  padding-block: 0.375rem;
+}
+
+.workflow-button--primary {
+  background-color: var(--color-eventu-institutional-red);
+  color: var(--color-eventu-white-surface);
+}
+
+.workflow-button--primary:hover {
+  background-color: var(--color-eventu-institutional-red-hover);
+}
+
+.workflow-button--secondary {
+  border: 1px solid var(--color-eventu-field-border);
+  background-color: var(--color-eventu-white-surface);
+  color: var(--color-eventu-main-ink);
+}
+
+.workflow-button--secondary:hover {
+  background-color: var(--color-eventu-page-background);
+}
+
+.workflow-button:focus-visible {
+  outline: 2px solid var(--color-eventu-institutional-red);
+  outline-offset: 2px;
+}
+
+.workflow-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.workflow-dialog-actions {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.workflow-dialog-copy {
+  color: var(--color-eventu-main-ink);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.workflow-description {
+  margin-top: 0.25rem;
+  color: var(--color-eventu-secondary-text);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.workflow-label {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: var(--color-eventu-main-ink);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+}
+
+.workflow-inline-error {
+  color: var(--color-eventu-error);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+@media (min-width: 40rem) {
+  .workflow-dialog-actions {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+}

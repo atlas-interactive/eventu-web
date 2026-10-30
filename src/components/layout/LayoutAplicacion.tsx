@@ -27,13 +27,13 @@ export function LayoutAplicacion() {
     return (
         <div className="min-h-screen bg-eventu-page-background">
             <header className="border-b border-eventu-border bg-eventu-white-surface">
-                <div className="mx-auto flex w-full max-w-[70rem] flex-col gap-2 px-3 py-2 sm:min-h-[58px] sm:flex-row sm:items-center sm:gap-x-8 sm:gap-y-2 sm:px-8 sm:py-0">
-                    <div className="flex min-w-0 items-center justify-between gap-4 sm:flex-1 sm:justify-start sm:gap-x-6">
+                <div className="mx-auto flex w-full max-w-[70rem] flex-col gap-2 px-3 py-2 sm:min-h-[58px] sm:flex-row sm:items-center sm:gap-x-4 sm:gap-y-2 sm:px-4 sm:py-0">
+                    <div className="flex min-w-0 items-center justify-between gap-4 sm:flex-none sm:justify-start sm:gap-x-4">
                         <p className="self-center text-[1.0625rem] font-semibold text-eventu-main-ink">EventU</p>
                         {sesion && (
                             <nav
                                 aria-label="Principal"
-                                className="flex min-w-0 flex-wrap items-center justify-end gap-x-3 gap-y-1 sm:justify-start sm:gap-x-6 sm:self-stretch"
+                                className="flex min-w-0 flex-wrap items-center justify-end gap-x-3 gap-y-1 sm:flex-nowrap sm:justify-start sm:gap-x-4 sm:self-stretch"
                             >
                                 {esAdministrador(sesion) && (
                                     <>
@@ -54,10 +54,10 @@ export function LayoutAplicacion() {
                         )}
                     </div>
                     {sesion && (
-                        <div className="flex min-w-0 items-center justify-between gap-2 sm:ml-auto sm:max-w-full sm:justify-end sm:gap-3">
+                        <div className="flex min-w-0 items-center justify-between gap-2 sm:ml-auto sm:flex-none sm:justify-end sm:gap-3">
                             <div className="flex min-w-0 flex-1 items-center gap-x-2 sm:flex-none">
                                 <span
-                                    className="min-w-0 flex-1 truncate text-sm text-eventu-secondary-text sm:flex-none"
+                                    className="min-w-0 flex-1 truncate text-sm text-eventu-secondary-text sm:max-w-[11rem] sm:flex-none lg:max-w-[16rem]"
                                     title={sesion.nombre}
                                 >
                                     {sesion.nombre}

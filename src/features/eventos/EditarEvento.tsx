@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import type { Evento } from '../../types/evento';
 import { FormularioEvento } from './FormularioEvento';
 import { listarEventos } from './services/eventoService';
+import '../../styles/events.css';
 
 // HU-06: el organizador dueño (o un administrador) edita un evento publicado
 export function EditarEvento() {
@@ -36,21 +37,21 @@ export function EditarEvento() {
     }, [id]);
 
     return (
-        <main className="mx-auto w-full max-w-[50rem] px-4 py-8 sm:px-8">
-            <h1 className="text-[1.375rem] font-semibold text-eventu-main-ink">Editar evento</h1>
-            {cargando && <p className="mt-4 text-sm text-eventu-secondary-text">Cargando…</p>}
+        <main className="evento-page evento-page--edit">
+            <h1 className="evento-page-title evento-page-title--edit">Editar evento</h1>
+            {cargando && <p className="evento-list-state evento-loading">Cargando…</p>}
             {error && (
-                <div className="mt-4">
-                    <p role="alert" className="text-sm text-eventu-error">
+                <div className="evento-page-error-container">
+                    <p role="alert" className="evento-page-error">
                         {error}
                     </p>
-                    <Link to="/organizador/eventos" className="mt-2 inline-block text-sm text-eventu-institutional-red underline">
+                    <Link to="/organizador/eventos" className="evento-back-link">
                         Volver a mis eventos
                     </Link>
                 </div>
             )}
             {evento && (
-                <div className="mt-6">
+                <div className="evento-form-wrap">
                     <FormularioEvento
                         evento={evento}
                         onGuardado={(mensaje) => navigate('/organizador/eventos', { state: { mensaje } })}

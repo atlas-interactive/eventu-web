@@ -1,14 +1,15 @@
 import { useNavigate } from 'react-router-dom';
 import { FormularioEvento } from './FormularioEvento';
+import '../../styles/events.css';
 
 // HU-05: el organizador crea un evento
 export function CrearEvento() {
     const navigate = useNavigate();
 
     return (
-        <main className="mx-auto w-full max-w-[50rem] px-4 py-6 sm:px-8 sm:py-8">
-            <h1 className="text-xl font-semibold text-eventu-main-ink">Crear evento</h1>
-            <p className="mt-1 mb-4 text-sm text-eventu-secondary-text">
+        <main className="evento-page">
+            <h1 className="evento-page-title">Crear evento</h1>
+            <p className="evento-description">
                 Completa los datos. El evento queda publicado con todos los cupos disponibles.
             </p>
             <FormularioEvento
