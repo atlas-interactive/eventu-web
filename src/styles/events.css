@@ -205,21 +205,66 @@
 }
 
 .evento-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
   min-width: 0;
   overflow-wrap: break-word;
 }
 
+.evento-card-titleline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
 .evento-card-title {
   color: var(--color-eventu-main-ink);
-  font-size: 1rem;
+  font-size: 1.1rem;
   line-height: 1.5rem;
   font-weight: 600;
 }
 
+.evento-card-status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.75rem;
+  border-radius: 0.375rem;
+  padding-inline: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+}
+
+.evento-card-status--published {
+  background-color: var(--color-eventu-green-background);
+  color: var(--color-eventu-success);
+}
+
+.evento-card-status--cancelled {
+  background-color: #ededeb;
+  color: var(--color-eventu-secondary-text);
+}
+
+.evento-card-metadata {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 1rem;
+}
+
 .evento-card-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
   color: var(--color-eventu-secondary-text);
   font-size: 0.875rem;
   line-height: 1.25rem;
+}
+
+.evento-card-capacity {
+  margin-top: -0.375rem;
 }
 
 .evento-card-actions {

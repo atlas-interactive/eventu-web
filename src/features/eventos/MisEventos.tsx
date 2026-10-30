@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { CalendarDays, CalendarPlus, CircleCheck, CircleX, MapPin, Pencil, Plus, Tag, Users } from 'lucide-react';
+import { CalendarDays, CalendarPlus, CircleX, MapPin, Pencil, Plus, Tag, Users } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import type { Evento } from '../../types/evento';
 import { IconoAviso } from '../../components/ui/IconoAviso';
@@ -131,37 +131,38 @@ export function MisEventos() {
                             className="evento-card"
                         >
                             <div className="evento-card-content">
-                                <h2 className="evento-card-title">{evento.titulo}</h2>
-                                <p className="evento-card-meta">
-                                    <span className="inline-flex items-center gap-1.5">
+                                <div className="evento-card-titleline">
+                                    <h2 className="evento-card-title">{evento.titulo}</h2>
+                                    <span
+                                        className={`evento-card-status ${
+                                            estaCancelado(evento)
+                                                ? 'evento-card-status--cancelled'
+                                                : 'evento-card-status--published'
+                                        }`}
+                                    >
+                                        {estaCancelado(evento) ? 'Cancelado' : 'Publicado'}
+                                    </span>
+                                </div>
+                                <div className="evento-card-metadata">
+                                    <span className="evento-card-meta">
                                         <CalendarDays className="h-4 w-4 shrink-0" aria-hidden="true" />
                                         {formatoFecha.format(new Date(evento.fechaInicio))}
                                     </span>
-                                    {' · '}
-                                    <span className="inline-flex items-center gap-1.5">
+                                    <span className="evento-card-meta">
                                         <MapPin className="h-4 w-4 shrink-0" aria-hidden="true" />
                                         {evento.ubicacion}
                                     </span>
                                     {evento.categoriaNombre && (
-                                        <>
-                                            {' · '}
-                                            <span className="inline-flex items-center gap-1.5">
-                                                <Tag className="h-4 w-4 shrink-0" aria-hidden="true" />
-                                                {evento.categoriaNombre}
-                                            </span>
-                                        </>
+                                        <span className="evento-card-meta">
+                                            <Tag className="h-4 w-4 shrink-0" aria-hidden="true" />
+                                            {evento.categoriaNombre}
+                                        </span>
                                     )}
-                                </p>
-                                <p className="evento-card-meta">
-                                    <Users className="mr-1.5 inline h-4 w-4 align-text-bottom" aria-hidden="true" />
+                                </div>
+                                <span className="evento-card-meta evento-card-capacity">
+                                    <Users className="h-4 w-4 shrink-0" aria-hidden="true" />
                                     Cupos: {evento.cuposDisponibles} disponibles de {evento.cuposMaximos}
-                                </p>
-                                <p className="evento-card-meta">
-                                    {estaCancelado(evento)
-                                        ? <CircleX className="mr-1.5 inline h-4 w-4 align-text-bottom" aria-hidden="true" />
-                                        : <CircleCheck className="mr-1.5 inline h-4 w-4 align-text-bottom" aria-hidden="true" />}
-                                    Estado: {estaCancelado(evento) ? 'CANCELADO' : 'PUBLICADO'}
-                                </p>
+                                </span>
                             </div>
                             <div className="evento-card-actions">
                                 <Link
