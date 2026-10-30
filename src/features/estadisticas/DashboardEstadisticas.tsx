@@ -1,9 +1,9 @@
-import { useEffect, useState, type ComponentType, type SVGProps } from 'react';
+import { CalendarCheck, ChartPie, Tags, Ticket, UserCheck, type LucideIcon } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import type { Estadisticas } from '../../types/estadisticas';
 import { mensajeDeError } from '../eventos/mensajeDeError';
 import { esAdministrador, obtenerSesion } from '../sesion/sesion';
 import { GraficoAsistencia } from './GraficoAsistencia';
-import { IconoAsistente, IconoBoleta, IconoCalendario, IconoCategoria, IconoGrafico } from './iconos';
 import { RankingBarras } from './RankingBarras';
 import { obtenerEstadisticas } from './services/estadisticaService';
 
@@ -14,7 +14,7 @@ interface TarjetaKpiProps {
     titulo: string;
     valor: string;
     detalle: string;
-    Icono: ComponentType<SVGProps<SVGSVGElement>>;
+    Icono: LucideIcon;
     tono: 'rojo' | 'verde';
 }
 
@@ -30,7 +30,7 @@ function TarjetaKpi({ titulo, valor, detalle, Icono, tono }: TarjetaKpiProps) {
             className={`flex items-center gap-4 rounded-xl border border-t-4 border-eventu-border ${colores.borde} bg-eventu-white-surface p-5 sm:p-6`}
         >
             <span className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ${colores.fondo} ${colores.texto}`}>
-                <Icono className="h-7 w-7" />
+                <Icono className="h-7 w-7" aria-hidden="true" />
             </span>
             <div className="min-w-0">
                 <dt className="text-sm font-medium text-eventu-secondary-text">{titulo}</dt>
@@ -104,7 +104,7 @@ export function DashboardEstadisticas() {
                     <div className="grid gap-4 lg:grid-cols-3">
                         <section className="rounded-xl border border-eventu-border bg-eventu-white-surface p-5 sm:p-6 lg:col-span-2">
                             <h2 className="flex items-center gap-2 text-base font-semibold text-eventu-main-ink">
-                                <IconoGrafico className="h-5 w-5 text-eventu-institutional-red" />
+                                <ChartPie className="h-5 w-5 text-eventu-institutional-red" aria-hidden="true" />
                                 Asistencia
                             </h2>
                             <p className="mb-5 mt-1 text-sm text-eventu-secondary-text">
@@ -122,14 +122,14 @@ export function DashboardEstadisticas() {
                                 titulo="Inscripciones activas"
                                 valor={formatoNumero.format(estadisticas.inscripcionesActivas)}
                                 detalle="Cupos reservados"
-                                Icono={IconoBoleta}
+                                Icono={Ticket}
                                 tono="rojo"
                             />
                             <TarjetaKpi
                                 titulo="Asistentes"
                                 valor={formatoNumero.format(estadisticas.asistentes)}
                                 detalle={`De ${formatoNumero.format(estadisticas.inscripcionesActivas)} inscritos`}
-                                Icono={IconoAsistente}
+                                Icono={UserCheck}
                                 tono="verde"
                             />
                         </dl>
@@ -139,7 +139,7 @@ export function DashboardEstadisticas() {
                         <div className="mt-4 grid items-start gap-4 lg:grid-cols-2">
                             <RankingBarras
                                 titulo="Categorías más concurridas"
-                                Icono={IconoCategoria}
+                                Icono={Tags}
                                 descripcion="Por número de inscripciones activas."
                                 unidad="inscripciones activas"
                                 textoVacio="Todavía no hay inscripciones activas en ninguna categoría."
@@ -151,7 +151,7 @@ export function DashboardEstadisticas() {
                             />
                             <RankingBarras
                                 titulo="Eventos con más inscritos"
-                                Icono={IconoCalendario}
+                                Icono={CalendarCheck}
                                 descripcion="Por número de inscripciones activas."
                                 unidad="inscripciones activas"
                                 textoVacio="Todavía no hay eventos con inscripciones activas."
