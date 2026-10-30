@@ -6,7 +6,7 @@ interface Props {
     porcentaje: string;
 }
 
-const COLOR_ASISTIERON = '#15803d';
+const COLOR_ASISTIERON = '#b3141f';
 const COLOR_PENDIENTES = '#e4e3de';
 
 // Dona de asistentes frente a inscritos que aún no asisten; el porcentaje y los totales también van en texto
@@ -51,7 +51,7 @@ export function GraficoAsistencia({ inscripciones, asistentes, porcentaje }: Pro
             <ul className="w-full max-w-xs space-y-3 text-sm">
                 <li className="flex items-center justify-between gap-4">
                     <span className="flex items-center gap-2 text-eventu-main-ink">
-                        <span className="h-3 w-3 rounded-sm bg-eventu-success" aria-hidden="true" />
+                        <span className="h-3 w-3 rounded-sm bg-eventu-institutional-red" aria-hidden="true" />
                         Asistieron
                     </span>
                     <span className="font-semibold text-eventu-main-ink">{asistentes}</span>
