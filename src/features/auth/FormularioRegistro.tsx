@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import '../../styles/auth.css';
 import { mensajeDeError } from '../../api/mensajeDeError';
 import { validarCorreoInstitucional, validarLongitudContrasena } from './validacionAuth';
 import { Link } from 'react-router-dom';

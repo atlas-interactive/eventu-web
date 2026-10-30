@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import '../../styles/auth.css';
 import { mensajeDeError } from '../../api/mensajeDeError';
 import { Link, useNavigate } from 'react-router-dom';
 import iconoEventU from '../../assets/icons/iconoEventU.png';

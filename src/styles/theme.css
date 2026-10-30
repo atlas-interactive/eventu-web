@@ -1,0 +1,21 @@
+/* Tokens de color y tipografía compartidos por los estilos de la aplicación. */
+@theme {
+  --color-eventu-institutional-red: #b3141f;
+  --color-eventu-institutional-red-hover: #8f0f18;
+  --color-eventu-soft-red-background: #fbeaea;
+  --color-eventu-main-ink: #1a1a18;
+  --color-eventu-secondary-text: #6b6b68;
+  --color-eventu-border: #e4e3de;
+  --color-eventu-page-background: #f8f7f4;
+  --color-eventu-white-surface: #ffffff;
+  --color-eventu-success: #15803d;
+  --color-eventu-green-background: #f0fdf4;
+  --color-eventu-error: #b91c1c;
+  --color-eventu-red-background: #fef2f2;
+  --color-eventu-deportive-orange: #92400e;
+  --color-eventu-deportive-orange-background: #fff3e0;
+  --color-eventu-cultural-purple: #5b21b6;
+  --color-eventu-cultural-purple-background: #f5f3ff;
+  --color-eventu-field-border: #878782;
+  --font-sans: 'Atkinson Hyperlegible', Arial, sans-serif;
+}
