@@ -1,4 +1,5 @@
 import { lazy, Suspense } from 'react';
+import { CalendarDays, ChartPie, LogOut, Tags, UserCog } from 'lucide-react';
 import { BrowserRouter, Navigate, NavLink, Outlet, Route, Routes, useNavigate } from 'react-router-dom';
 import { cerrarSesion, esAdministrador, obtenerRutaInicio, obtenerSesion, puedeGestionarEventos } from './features/sesion/sesion';import { FormularioLogin } from './features/auth/FormularioLogin';
 import { FormularioRegistro } from './features/auth/FormularioRegistro';
@@ -44,7 +45,7 @@ function LayoutAplicacion() {
     const sesion = obtenerSesion();
 
     const claseEnlace = ({ isActive }: { isActive: boolean }) =>
-        `inline-flex h-full items-center text-sm ${
+        `inline-flex h-full items-center gap-1.5 whitespace-nowrap text-sm ${
             isActive
                 ? "relative font-semibold text-eventu-institutional-red after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:bg-eventu-institutional-red after:content-['']"
                 : 'text-eventu-main-ink hover:underline'
@@ -69,9 +70,11 @@ function LayoutAplicacion() {
                                 {esAdministrador(sesion) && (
                                     <>
                                         <NavLink to="/admin/categorias" className={claseEnlace}>
+                                            <Tags className="h-4 w-4 shrink-0" aria-hidden="true" />
                                             Categorías
                                         </NavLink>
                                         <NavLink to="/admin/usuarios" className={claseEnlace}>
+                                            <UserCog className="h-4 w-4 shrink-0" aria-hidden="true" />
                                             Organizadores
                                         </NavLink>
                                     </>
@@ -79,9 +82,11 @@ function LayoutAplicacion() {
                                 {puedeGestionarEventos(sesion) && (
                                     <>
                                         <NavLink to="/organizador/eventos" className={claseEnlace}>
+                                            <CalendarDays className="h-4 w-4 shrink-0" aria-hidden="true" />
                                             {esAdministrador(sesion) ? 'Eventos' : 'Mis eventos'}
                                         </NavLink>
                                         <NavLink to="/organizador/estadisticas" className={claseEnlace}>
+                                            <ChartPie className="h-4 w-4 shrink-0" aria-hidden="true" />
                                             Estadísticas
                                         </NavLink>
                                     </>
@@ -107,8 +112,9 @@ function LayoutAplicacion() {
                             <button
                                 type="button"
                                 onClick={salir}
-                                className="min-h-8 shrink-0 whitespace-nowrap rounded-[0.4375rem] border border-eventu-field-border bg-eventu-white-surface px-2.5 py-1 text-xs text-eventu-main-ink hover:bg-eventu-page-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red sm:min-h-9 sm:px-4 sm:text-sm"
+                                className="inline-flex min-h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-[0.4375rem] border border-eventu-field-border bg-eventu-white-surface px-2.5 py-1 text-xs text-eventu-main-ink hover:bg-eventu-page-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red sm:min-h-9 sm:px-4 sm:text-sm"
                             >
+                                <LogOut className="h-4 w-4 shrink-0" aria-hidden="true" />
                                 Cerrar sesión
                             </button>
                         </div>

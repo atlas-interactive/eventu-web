@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { CalendarDays, CalendarPlus, CircleAlert, CircleCheck, CircleX, MapPin, Pencil, Plus, Tag, Users } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import type { Evento } from '../../types/evento';
 import { ModalAccesible } from '../categorias/components/ModalAccesible';
@@ -9,13 +10,13 @@ import { cancelarEvento, listarEventos } from './services/eventoService';
 const formatoFecha = new Intl.DateTimeFormat('es-CO', { dateStyle: 'medium', timeStyle: 'short' });
 
 const botonPrimario =
-    'inline-flex rounded-[0.4375rem] bg-eventu-institutional-red px-4 py-2 text-sm font-medium text-eventu-white-surface hover:bg-eventu-institutional-red-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red disabled:opacity-60';
+    'inline-flex items-center gap-1.5 rounded-[0.4375rem] bg-eventu-institutional-red px-4 py-2 text-sm font-medium text-eventu-white-surface hover:bg-eventu-institutional-red-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red disabled:opacity-60';
 const botonSecundario =
     'inline-flex rounded-[0.4375rem] border border-eventu-field-border bg-eventu-white-surface px-4 py-2 text-sm font-medium text-eventu-main-ink hover:bg-eventu-page-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red disabled:opacity-60';
 const botonFila =
-    'inline-flex h-11 items-center justify-center rounded-[0.4375rem] border border-eventu-field-border bg-eventu-white-surface px-4 text-sm font-semibold text-eventu-main-ink hover:bg-eventu-page-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red';
+    'inline-flex h-11 items-center justify-center gap-1.5 rounded-[0.4375rem] border border-eventu-field-border bg-eventu-white-surface px-4 text-sm font-semibold text-eventu-main-ink hover:bg-eventu-page-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red';
 const botonCancelarFila =
-    'inline-flex h-11 items-center justify-center rounded-[0.4375rem] border border-eventu-institutional-red bg-eventu-white-surface px-4 text-sm font-semibold text-eventu-institutional-red hover:bg-eventu-soft-red-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red';
+    'inline-flex h-11 items-center justify-center gap-1.5 rounded-[0.4375rem] border border-eventu-institutional-red bg-eventu-white-surface px-4 text-sm font-semibold text-eventu-institutional-red hover:bg-eventu-soft-red-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red';
 
 const estaCancelado = (evento: Evento) => evento.estado.toUpperCase() === 'CANCELADO';
 
@@ -84,23 +85,31 @@ export function MisEventos() {
                     <p className="mt-1 text-sm text-eventu-secondary-text">Eventos publicados que puedes gestionar.</p>
                 </div>
                 <Link to="/organizador/eventos/nuevo" className={botonPrimario}>
+                    <Plus className="h-4 w-4 shrink-0" aria-hidden="true" />
                     Crear evento
                 </Link>
             </header>
 
             {mensajeExito && (
-                <p role="status" className="mb-4 rounded-md bg-eventu-green-background px-4 py-3 text-sm text-eventu-success">
-                    {mensajeExito}
+                <p role="status" className="mb-4 flex items-start gap-2 rounded-md bg-eventu-green-background px-4 py-3 text-sm text-eventu-success">
+                    <CircleCheck className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+                    <span>{mensajeExito}</span>
                 </p>
             )}
             {error && (
-                <p role="alert" className="mb-4 text-sm text-eventu-error">
-                    {error}
+                <p role="alert" className="mb-4 flex items-start gap-2 text-sm text-eventu-error">
+                    <CircleAlert className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+                    <span>{error}</span>
                 </p>
             )}
             {cargando && <p className="text-sm text-eventu-secondary-text">Cargando…</p>}
             {!cargando && !error && eventos.length === 0 && (
-                <p className="text-sm text-eventu-secondary-text">Aún no tienes eventos publicados.</p>
+                <div className="flex flex-col items-center rounded-lg border border-dashed border-eventu-border bg-eventu-white-surface px-6 py-10 text-center">
+                    <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-eventu-soft-red-background text-eventu-institutional-red">
+                        <CalendarPlus className="h-7 w-7" aria-hidden="true" />
+                    </span>
+                    <p className="mt-3 text-sm text-eventu-secondary-text">Aún no tienes eventos publicados.</p>
+                </div>
             )}
 
             {eventos.length > 0 && (
@@ -112,14 +121,27 @@ export function MisEventos() {
                         >
                             <div className="min-w-0 break-words">
                                 <h2 className="text-base font-semibold text-eventu-main-ink">{evento.titulo}</h2>
-                                <p className="text-sm text-eventu-secondary-text">
-                                    {formatoFecha.format(new Date(evento.fechaInicio))} · {evento.ubicacion}
-                                    {evento.categoriaNombre ? ` · ${evento.categoriaNombre}` : ''}
-                                </p>
-                                <p className="text-sm text-eventu-secondary-text">
-                                    Cupos: {evento.cuposDisponibles} disponibles de {evento.cuposMaximos}
-                                </p>
-                                <p className="text-sm text-eventu-secondary-text">
+                                <ul className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-sm text-eventu-secondary-text">
+                                    <li className="inline-flex items-center gap-1.5">
+                                        <CalendarDays className="h-4 w-4 shrink-0" aria-hidden="true" />
+                                        {formatoFecha.format(new Date(evento.fechaInicio))}
+                                    </li>
+                                    <li className="inline-flex items-center gap-1.5">
+                                        <MapPin className="h-4 w-4 shrink-0" aria-hidden="true" />
+                                        {evento.ubicacion}
+                                    </li>
+                                    {evento.categoriaNombre && (
+                                        <li className="inline-flex items-center gap-1.5">
+                                            <Tag className="h-4 w-4 shrink-0" aria-hidden="true" />
+                                            {evento.categoriaNombre}
+                                        </li>
+                                    )}
+                                    <li className="inline-flex items-center gap-1.5">
+                                        <Users className="h-4 w-4 shrink-0" aria-hidden="true" />
+                                        Cupos: {evento.cuposDisponibles} disponibles de {evento.cuposMaximos}
+                                    </li>
+                                </ul>
+                                <p className="mt-1 text-sm text-eventu-secondary-text">
                                     Estado: {estaCancelado(evento) ? 'CANCELADO' : 'PUBLICADO'}
                                 </p>
                             </div>
@@ -129,6 +151,7 @@ export function MisEventos() {
                                     className={botonFila}
                                     aria-label={`Editar evento ${evento.titulo}`}
                                 >
+                                    <Pencil className="h-4 w-4 shrink-0" aria-hidden="true" />
                                     Editar
                                 </Link>
                                 {!estaCancelado(evento) && (
@@ -142,6 +165,7 @@ export function MisEventos() {
                                             setACancelar(evento);
                                         }}
                                     >
+                                        <CircleX className="h-4 w-4 shrink-0" aria-hidden="true" />
                                         Cancelar
                                     </button>
                                 )}

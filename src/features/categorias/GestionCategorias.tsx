@@ -1,4 +1,5 @@
 import { isAxiosError } from 'axios';
+import { CircleAlert, CircleCheck, Eye, EyeOff, Pencil, Plus, Tags } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import type { Categoria } from '../../types/categoria';
@@ -34,12 +35,12 @@ const celdaMovil =
     'flex items-center justify-between before:text-xs before:font-medium before:uppercase before:text-eventu-secondary-text before:content-[attr(data-label)] lg:before:content-none';
 
 const botonPrimario =
-    'rounded-[0.4375rem] bg-eventu-institutional-red px-4 py-2 text-sm font-medium text-eventu-white-surface hover:bg-eventu-institutional-red-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red disabled:opacity-60';
+    'inline-flex items-center justify-center gap-1.5 rounded-[0.4375rem] bg-eventu-institutional-red px-4 py-2 text-sm font-medium text-eventu-white-surface hover:bg-eventu-institutional-red-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red disabled:opacity-60';
 const botonSecundario =
     'rounded-[0.4375rem] border border-eventu-field-border bg-eventu-white-surface px-4 py-2 text-sm font-medium text-eventu-main-ink hover:bg-eventu-page-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red';
-// Botones de acción de cada fila: mismo ancho (112 px) y 44 px de alto (WCAG 2.5.5 AAA) para que se vean uniformes y se pulsen con comodidad
+// Botones de acción de cada fila: mismo ancho (128 px) y 44 px de alto (WCAG 2.5.5 AAA) para que se vean uniformes y se pulsen con comodidad
 const botonFila =
-    'inline-flex h-11 w-28 items-center justify-center rounded-[0.4375rem] border bg-eventu-white-surface px-3 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red';
+    'inline-flex h-11 w-32 items-center justify-center gap-1.5 rounded-[0.4375rem] border bg-eventu-white-surface px-3 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red';
 const botonEditar = `${botonFila} border-eventu-field-border text-eventu-main-ink hover:bg-eventu-page-background`;
 const botonDesactivar = `${botonFila} border-eventu-institutional-red text-eventu-institutional-red hover:bg-eventu-soft-red-background`;
 const botonActivar = `${botonFila} border-eventu-success text-eventu-success hover:bg-eventu-green-background`;
@@ -90,25 +91,28 @@ export function GestionCategorias() {
                     </p>
                 </div>
                 <button type="button" className={botonPrimario} onClick={() => setModal({ tipo: 'crear' })}>
-                    + Nueva categoría
+                    <Plus className="h-4 w-4 shrink-0" aria-hidden="true" />
+                    Nueva categoría
                 </button>
             </header>
 
             {mensajeExito && (
                 <div
                     role="status"
-                    className="mb-4 rounded border border-eventu-success bg-eventu-green-background p-3 text-sm text-eventu-success"
+                    className="mb-4 flex items-start gap-2 rounded border border-eventu-success bg-eventu-green-background p-3 text-sm text-eventu-success"
                 >
-                    {mensajeExito}
+                    <CircleCheck className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+                    <span>{mensajeExito}</span>
                 </div>
             )}
 
             {errorCarga && (
                 <div
                     role="alert"
-                    className="mb-4 rounded border border-eventu-soft-red-background bg-eventu-red-background p-3 text-sm text-eventu-error"
+                    className="mb-4 flex items-start gap-2 rounded border border-eventu-soft-red-background bg-eventu-red-background p-3 text-sm text-eventu-error"
                 >
-                    {errorCarga}
+                    <CircleAlert className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+                    <span>{errorCarga}</span>
                 </div>
             )}
 
@@ -134,7 +138,10 @@ export function GestionCategorias() {
                         )}
                         {!cargando && categorias.length === 0 && !errorCarga && (
                             <tr>
-                                <td colSpan={4} className="px-6 py-6 text-sm text-eventu-secondary-text">
+                                <td colSpan={4} className="block px-6 py-10 text-center text-sm text-eventu-secondary-text lg:table-cell">
+                                    <span className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-eventu-soft-red-background text-eventu-institutional-red">
+                                        <Tags className="h-7 w-7" aria-hidden="true" />
+                                    </span>
                                     Aún no hay categorías. Crea la primera con «Nueva categoría».
                                 </td>
                             </tr>
@@ -172,6 +179,7 @@ export function GestionCategorias() {
                                             aria-label={`Editar categoría ${categoria.nombre}`}
                                             onClick={() => setModal({ tipo: 'editar', categoria })}
                                         >
+                                            <Pencil className="h-4 w-4 shrink-0" aria-hidden="true" />
                                             Editar
                                         </button>
                                         <button
@@ -180,6 +188,7 @@ export function GestionCategorias() {
                                             aria-label={`${categoria.activo ? 'Desactivar' : 'Activar'} categoría ${categoria.nombre}`}
                                             onClick={() => setModal({ tipo: 'estado', categoria })}
                                         >
+                                            {categoria.activo ? <EyeOff className="h-4 w-4 shrink-0" aria-hidden="true" /> : <Eye className="h-4 w-4 shrink-0" aria-hidden="true" />}
                                             {categoria.activo ? 'Desactivar' : 'Activar'}
                                         </button>
                                     </div>

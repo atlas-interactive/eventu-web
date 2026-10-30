@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { CircleAlert, CircleCheck } from 'lucide-react';
 import { isAxiosError } from 'axios';
 import { Link } from 'react-router-dom';
 import iconoEventU from '../../assets/icons/iconoEventU.png';
@@ -83,15 +84,17 @@ export const FormularioRegistro: React.FC = () => {
 
             {/* Alerta visual de Error */}
             {mensajeError && (
-                <div role="alert" className="register-alert-error mb-2 rounded border p-2 text-sm">
-                    {mensajeError}
+                <div role="alert" className="register-alert-error mb-2 flex items-start gap-2 rounded border p-2 text-sm">
+                    <CircleAlert className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+                    <span>{mensajeError}</span>
                 </div>
             )}
 
             {/* Alerta visual de Éxito */}
             {mensajeExito && (
-                <div role="status" className="register-alert-success mb-2 rounded border p-2 text-sm">
-                    {mensajeExito}
+                <div role="status" className="register-alert-success mb-2 flex items-start gap-2 rounded border p-2 text-sm">
+                    <CircleCheck className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+                    <span>{mensajeExito}</span>
                 </div>
             )}
 

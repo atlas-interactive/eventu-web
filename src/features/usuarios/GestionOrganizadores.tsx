@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { CircleCheck, Search, UserCog, UserMinus, UserPlus } from 'lucide-react';
 import { isAxiosError } from 'axios';
 import type { UsuarioBuscado } from '../../types/usuario';
 import { ModalAccesible } from '../categorias/components/ModalAccesible';
@@ -10,7 +11,7 @@ const botonPrimario =
 const botonSecundario =
     'rounded-[0.4375rem] border border-eventu-field-border bg-eventu-white-surface px-4 py-2 text-sm font-medium text-eventu-main-ink hover:bg-eventu-page-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red';
 const botonFila =
-    'inline-flex h-10 items-center justify-center rounded-[0.4375rem] border px-4 text-sm font-normal bg-eventu-white-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red';
+    'inline-flex h-10 items-center justify-center gap-1.5 rounded-[0.4375rem] border px-4 text-sm font-normal bg-eventu-white-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red';
 const botonAsignar = `${botonFila} border-eventu-success text-eventu-success hover:bg-eventu-green-background`;
 const botonRevocar = `${botonFila} border-eventu-institutional-red text-eventu-institutional-red hover:bg-eventu-soft-red-background`;
 const celdaMovil =
@@ -168,6 +169,8 @@ export function GestionOrganizadores() {
                     <label htmlFor="criterio" className="mb-1 block text-sm font-medium text-eventu-main-ink">
                         Buscar por nombre o correo institucional
                     </label>
+                    <div className="relative">
+                    <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-eventu-secondary-text" aria-hidden="true" />
                     <input
                         id="criterio"
                         type="search"
@@ -177,8 +180,9 @@ export function GestionOrganizadores() {
                         placeholder="Escribe al menos 2 letras del nombre o del correo..."
                         aria-invalid={hayCriterio && errorBusqueda ? true : undefined}
                         aria-describedby={hayCriterio && errorBusqueda ? 'error-busqueda' : 'ayuda-busqueda'}
-                        className="h-11 w-full rounded-md border border-eventu-field-border px-3 text-sm text-eventu-main-ink outline-none focus:ring-1 focus:ring-eventu-field-border"
+                        className="h-11 w-full rounded-md border border-eventu-field-border pl-9 pr-3 text-sm text-eventu-main-ink outline-none focus:ring-1 focus:ring-eventu-field-border"
                     />
+                    </div>
                     <p id="ayuda-busqueda" aria-live="polite" className="mt-1 text-xs text-eventu-secondary-text">
                         {hayCriterio && buscando
                             ? 'Buscando…'
@@ -201,8 +205,9 @@ export function GestionOrganizadores() {
                     </p>
                 )}
                 {mensajeExito && (
-                    <p role="status" className="mt-3 rounded-md bg-eventu-green-background px-4 py-3 text-sm text-eventu-success">
-                        {mensajeExito}
+                    <p role="status" className="mt-3 flex items-start gap-2 rounded-md bg-eventu-green-background px-4 py-3 text-sm text-eventu-success">
+                        <CircleCheck className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+                        <span>{mensajeExito}</span>
                     </p>
                 )}
                 {errorAccion && (
@@ -240,6 +245,7 @@ export function GestionOrganizadores() {
                                         aria-label={`Asignar organizador a ${usuario.nombre}`}
                                         onClick={() => asignar(usuario)}
                                     >
+                                        <UserPlus className="h-4 w-4 shrink-0" aria-hidden="true" />
                                         {procesandoId === usuario.id ? 'Asignando…' : 'Asignar organizador'}
                                     </button>
                                 )}
@@ -254,6 +260,7 @@ export function GestionOrganizadores() {
                                             setARevocar(usuario);
                                         }}
                                     >
+                                        <UserMinus className="h-4 w-4 shrink-0" aria-hidden="true" />
                                         Revocar rol
                                     </button>
                                 )}
@@ -276,7 +283,12 @@ export function GestionOrganizadores() {
                 {cargandoTabla ? (
                     <p className="mt-3 text-sm text-eventu-secondary-text">Cargando organizadores…</p>
                 ) : organizadores.length === 0 && !errorTabla ? (
-                    <p className="mt-3 text-sm text-eventu-secondary-text">Aún no hay organizadores asignados.</p>
+                    <div className="mt-3 flex flex-col items-center rounded-lg border border-dashed border-eventu-border px-6 py-8 text-center">
+                        <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-eventu-soft-red-background text-eventu-institutional-red">
+                            <UserCog className="h-6 w-6" aria-hidden="true" />
+                        </span>
+                        <p className="mt-3 text-sm text-eventu-secondary-text">Aún no hay organizadores asignados.</p>
+                    </div>
                 ) : (
                     organizadores.length > 0 && (
                         <div className="mt-4 overflow-x-auto">
@@ -309,6 +321,7 @@ export function GestionOrganizadores() {
                                                         setARevocar(organizador);
                                                     }}
                                                 >
+                                                    <UserMinus className="h-4 w-4 shrink-0" aria-hidden="true" />
                                                     Revocar rol
                                                 </button>
                                             </td>
