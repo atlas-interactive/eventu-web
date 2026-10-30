@@ -6,8 +6,8 @@ interface Props {
     porcentaje: string;
 }
 
-const COLOR_ASISTIERON = '#b3141f';
-const COLOR_PENDIENTES = '#e4e3de';
+const COLOR_ASISTIERON = 'var(--color-eventu-institutional-red)';
+const COLOR_PENDIENTES = 'var(--color-eventu-border)';
 
 // Dona de asistentes frente a inscritos que aún no asisten; el porcentaje y los totales también van en texto
 export function GraficoAsistencia({ inscripciones, asistentes, porcentaje }: Props) {
