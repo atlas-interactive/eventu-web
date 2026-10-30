@@ -120,7 +120,19 @@ export function MisEventos() {
                             className="flex flex-col gap-3 rounded-lg border border-eventu-border bg-eventu-white-surface p-4 sm:flex-row sm:items-center sm:justify-between"
                         >
                             <div className="min-w-0 break-words">
-                                <h2 className="text-base font-semibold text-eventu-main-ink">{evento.titulo}</h2>
+                                <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                                    <h2 className="text-base font-semibold text-eventu-main-ink">{evento.titulo}</h2>
+                                    <span
+                                        className={
+                                            estaCancelado(evento)
+                                                ? 'inline-block rounded bg-[#ededeb] px-3 py-1 text-xs font-medium text-eventu-secondary-text'
+                                                : 'inline-block rounded bg-eventu-green-background px-3 py-1 text-xs font-medium text-eventu-success'
+                                        }
+                                    >
+                                        <span className="sr-only">Estado: </span>
+                                        {estaCancelado(evento) ? 'Cancelado' : 'Publicado'}
+                                    </span>
+                                </div>
                                 <ul className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-sm text-eventu-secondary-text">
                                     <li className="inline-flex items-center gap-1.5">
                                         <CalendarDays className="h-4 w-4 shrink-0" aria-hidden="true" />
@@ -141,9 +153,6 @@ export function MisEventos() {
                                         Cupos: {evento.cuposDisponibles} disponibles de {evento.cuposMaximos}
                                     </li>
                                 </ul>
-                                <p className="mt-1 text-sm text-eventu-secondary-text">
-                                    Estado: {estaCancelado(evento) ? 'CANCELADO' : 'PUBLICADO'}
-                                </p>
                             </div>
                             <div className="flex flex-col gap-2 sm:flex-row sm:shrink-0">
                                 <Link

@@ -1,5 +1,5 @@
 import { isAxiosError } from 'axios';
-import { CircleAlert, CircleCheck, Eye, EyeOff, Pencil, Plus, Tags } from 'lucide-react';
+import { CircleAlert, CircleCheck, Pencil, Plus, Power, PowerOff, Tags } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import type { Categoria } from '../../types/categoria';
@@ -188,7 +188,7 @@ export function GestionCategorias() {
                                             aria-label={`${categoria.activo ? 'Desactivar' : 'Activar'} categoría ${categoria.nombre}`}
                                             onClick={() => setModal({ tipo: 'estado', categoria })}
                                         >
-                                            {categoria.activo ? <EyeOff className="h-4 w-4 shrink-0" aria-hidden="true" /> : <Eye className="h-4 w-4 shrink-0" aria-hidden="true" />}
+                                            {categoria.activo ? <PowerOff className="h-4 w-4 shrink-0" aria-hidden="true" /> : <Power className="h-4 w-4 shrink-0" aria-hidden="true" />}
                                             {categoria.activo ? 'Desactivar' : 'Activar'}
                                         </button>
                                     </div>
