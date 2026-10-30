@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { isAxiosError } from 'axios';
+import '../../styles/auth.css';
+import { mensajeDeError } from '../../api/mensajeDeError';
 import { Link, useNavigate } from 'react-router-dom';
 import iconoEventU from '../../assets/icons/iconoEventU.png';
 import { autenticarUsuario } from './services/authService';
@@ -67,11 +68,7 @@ export const FormularioLogin: React.FC = () => {
             navigate(obtenerRutaInicio(sesion), { replace: true });
 
         } catch (err: unknown) {
-            if (isAxiosError<{ error?: string }>(err) && err.response?.data.error) {
-                setMensajeError(err.response.data.error);
-            } else {
-                setMensajeError('Ocurrió un error inesperado al conectar con el servidor.');
-            }
+            setMensajeError(mensajeDeError(err));
         } finally {
             setLoading(false);
         }

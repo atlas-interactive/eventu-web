@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { isAxiosError } from 'axios';
+import '../../styles/auth.css';
+import { mensajeDeError } from '../../api/mensajeDeError';
+import { validarCorreoInstitucional, validarLongitudContrasena } from './validacionAuth';
 import { Link } from 'react-router-dom';
 import iconoEventU from '../../assets/icons/iconoEventU.png';
 import { registrarUsuario } from './services/authService';
 import type { RegistroDTO } from '../../types/auth';
-
-const correoInstitucionalRegex = /^[a-zA-Z0-9._%+-]+@unillanos\.edu\.co$/;
 
 export const FormularioRegistro: React.FC = () => {
     const [formData, setFormData] = useState<RegistroDTO>({
@@ -22,8 +22,8 @@ export const FormularioRegistro: React.FC = () => {
     // Validación de campos del formulario
     const campoInvalido = {
         nombre: formData.nombre.trim().length === 0,
-        correo: !correoInstitucionalRegex.test(formData.correo),
-        password: formData.password.length < 8 || formData.password.length > 72,
+        correo: !validarCorreoInstitucional(formData.correo),
+        password: !validarLongitudContrasena(formData.password),
     };
 
     // Función para determinar si un campo debe mostrar un estado de error
@@ -45,12 +45,12 @@ export const FormularioRegistro: React.FC = () => {
         setMensajeError(null);
         setMensajeExito(null);
 
-        if (!correoInstitucionalRegex.test(formData.correo)) {
+        if (!validarCorreoInstitucional(formData.correo)) {
             setMensajeError('Debe ingresar un correo institucional educativo válido.');
             return;
         }
 
-        if (formData.password.length < 8 || formData.password.length > 72) {
+        if (!validarLongitudContrasena(formData.password)) {
             setMensajeError('La contraseña debe tener entre 8 y 72 caracteres.');
             return;
         }
@@ -62,11 +62,7 @@ export const FormularioRegistro: React.FC = () => {
             setMensajeExito(response.mensaje || 'Usuario registrado exitosamente.');
             setFormData({ nombre: '', correo: '', password: '' });
         } catch (err: unknown) {
-            if (isAxiosError<{ error?: string }>(err) && err.response?.data.error) {
-                setMensajeError(err.response.data.error);
-            } else {
-                setMensajeError('Ocurrió un error inesperado al conectar con el servidor.');
-            }
+            setMensajeError(mensajeDeError(err));
         } finally {
             setLoading(false);
         }

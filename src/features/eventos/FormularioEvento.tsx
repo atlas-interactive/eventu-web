@@ -4,9 +4,10 @@ import type { Categoria } from '../../types/categoria';
 import type { Evento, EventoActualizacion, EventoSolicitud } from '../../types/evento';
 import { listarCategorias } from '../categorias/services/categoriaService';
 import { crearEvento, editarEvento } from './services/eventoService';
-import { mensajeDeError } from './mensajeDeError';
+import { mensajeDeError } from '../../api/mensajeDeError';
 import { MAX_TITULO, MAX_UBICACION, validarEvento } from './validacionEvento';
 import type { CamposEvento, ErroresEvento } from './validacionEvento';
+import '../../styles/events.css';
 
 interface FormularioEventoProps {
     // Sin evento crea (HU-05); con evento edita (HU-06)
@@ -14,18 +15,6 @@ interface FormularioEventoProps {
     onGuardado: (mensaje: string) => void;
     onCancelar: () => void;
 }
-
-const botonPrimario =
-    'rounded-[0.4375rem] bg-eventu-institutional-red px-4 py-1.5 text-sm font-medium text-eventu-white-surface hover:bg-eventu-institutional-red-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red disabled:opacity-60';
-const botonSecundario =
-    'rounded-[0.4375rem] border border-eventu-field-border bg-eventu-white-surface px-4 py-1.5 text-sm font-medium text-eventu-main-ink hover:bg-eventu-page-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red';
-
-const clasesCampo = (conError: boolean) =>
-    `w-full rounded-md border px-3 text-sm text-eventu-main-ink outline-none focus:ring-1 ${
-        conError
-            ? 'border-eventu-institutional-red focus:ring-eventu-institutional-red'
-            : 'border-eventu-field-border focus:ring-eventu-field-border'
-    }`;
 
 // "2026-10-20T14:30:00" -> "2026-10-20T14:30", que es lo que acepta <input type="datetime-local">
 const aValorDeFecha = (fecha: string) => fecha.slice(0, 16);
@@ -135,7 +124,7 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
 
     const mensajeCampo = (campo: keyof CamposEvento) =>
         errores[campo] && (
-            <p id={`error-${campo}`} role="alert" className="mt-1 text-sm text-eventu-error">
+            <p id={`error-${campo}`} role="alert" className="workflow-inline-error evento-field-error">
                 {errores[campo]}
             </p>
         );
@@ -146,10 +135,10 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
         <form
             onSubmit={alEnviar}
             noValidate
-            className="flex flex-col gap-3 rounded-lg border border-eventu-border bg-eventu-white-surface p-4 sm:p-7"
+            className="evento-form"
         >
             <div>
-                <label htmlFor="titulo" className="mb-1 block text-sm font-medium text-eventu-main-ink">
+                <label htmlFor="titulo" className="evento-field-label">
                     Título <span aria-hidden="true">*</span>
                 </label>
                 <input
@@ -161,14 +150,14 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
                     aria-invalid={errores.titulo ? true : undefined}
                     aria-required="true"
                     aria-describedby={describir('titulo')}
-                    className={`h-8 ${clasesCampo(Boolean(errores.titulo))}`}
+                    className="evento-control"
                     placeholder='Ej. Feria de proyectos de ingeniería'
                 />
                 {mensajeCampo('titulo')}
             </div>
 
             <div>
-                <label htmlFor="descripcion" className="mb-1 block text-sm font-medium text-eventu-main-ink">
+                <label htmlFor="descripcion" className="evento-field-label">
                     Descripción <span aria-hidden="true">*</span>
                 </label>
                 <textarea
@@ -178,16 +167,16 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
                     onChange={alCambiar('descripcion')}
                     aria-invalid={errores.descripcion ? true : undefined}
                     aria-describedby={describir('descripcion')}
-                    className={`h-14 resize-y py-2 ${clasesCampo(Boolean(errores.descripcion))}`}
+                    className="evento-control evento-control--textarea"
                     placeholder='Describe brevemente el evento...'
                     aria-required="true"
                 />
                 {mensajeCampo('descripcion')}
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2">
-                <div className="order-3">
-                    <label htmlFor="fechaInicio" className="mb-1 block text-sm font-medium text-eventu-main-ink">
+            <div className="evento-form-grid">
+                <div className="evento-field evento-field--date">
+                    <label htmlFor="fechaInicio" className="evento-field-label">
                         Fecha y hora <span aria-hidden="true">*</span>
                     </label>
                     <input
@@ -197,19 +186,19 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
                         onChange={alCambiar('fechaInicio')}
                         aria-invalid={errores.fechaInicio ? true : undefined}
                         aria-describedby={describir('fechaInicio', !editando ? 'ayuda-fecha-futura' : undefined)}
-                        className={`h-8 ${clasesCampo(Boolean(errores.fechaInicio))}`}
+                        className="evento-control"
                         aria-required="true"
                     />
                     {!editando && (
-                        <p id="ayuda-fecha-futura" className="mt-1 text-xs text-eventu-secondary-text">
+                        <p id="ayuda-fecha-futura" className="evento-help">
                             La fecha debe ser futura.
                         </p>
                     )}
                     {mensajeCampo('fechaInicio')}
                 </div>
 
-                <div className="order-4">
-                    <label htmlFor="ubicacion" className="mb-1 block text-sm font-medium text-eventu-main-ink">
+                <div className="evento-field evento-field--location">
+                    <label htmlFor="ubicacion" className="evento-field-label">
                         Ubicación <span aria-hidden="true">*</span>
                     </label>
                     <input
@@ -221,14 +210,14 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
                         aria-invalid={errores.ubicacion ? true : undefined}
                         aria-required="true"
                         aria-describedby={describir('ubicacion')}
-                        className={`h-8 ${clasesCampo(Boolean(errores.ubicacion))}`}
+                        className="evento-control"
                         placeholder='Ej. Auditorio Eduardo Carranza'
                     />
                     {mensajeCampo('ubicacion')}
                 </div>
 
-                <div className="order-2">
-                    <label htmlFor="cuposMaximos" className="mb-1 block text-sm font-medium text-eventu-main-ink">
+                <div className="evento-field evento-field--capacity">
+                    <label htmlFor="cuposMaximos" className="evento-field-label">
                         Cupo máximo <span aria-hidden="true">*</span>
                     </label>
                     <input
@@ -241,19 +230,19 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
                         aria-invalid={errores.cuposMaximos ? true : undefined}
                         aria-required="true"
                         aria-describedby={describir('cuposMaximos')}
-                        className={`h-8 ${clasesCampo(Boolean(errores.cuposMaximos))}`}
+                        className="evento-control"
                         placeholder='Ej. 100'
                     />
                     {editando && (
-                        <p className="mt-1 text-xs text-eventu-secondary-text">
+                        <p className="evento-help">
                             Inscritos actuales: {inscritos}. Los cupos disponibles se recalculan al guardar.
                         </p>
                     )}
                     {mensajeCampo('cuposMaximos')}
                 </div>
 
-                <div className="order-1">
-                    <label htmlFor="categoriaId" className="mb-1 block text-sm font-medium text-eventu-main-ink">
+                <div className="evento-field evento-field--category">
+                    <label htmlFor="categoriaId" className="evento-field-label">
                         Categoría <span aria-hidden="true">*</span>
                     </label>
                     <select
@@ -264,7 +253,7 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
                         aria-invalid={errores.categoriaId ? true : undefined}
                         aria-required="true"
                         aria-describedby={describir('categoriaId')}
-                        className={`h-8 bg-eventu-white-surface ${clasesCampo(Boolean(errores.categoriaId))}`}
+                        className="evento-control evento-control--select"
                     >
                         <option value="">{cargandoCategorias ? 'Cargando…' : 'Selecciona una categoría'}</option>
                         {opciones.map((categoria) => (
@@ -274,7 +263,7 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
                         ))}
                     </select>
                     {errorCategorias && (
-                        <p role="alert" className="mt-1 text-sm text-eventu-error">
+                        <p role="alert" className="workflow-inline-error evento-field-error">
                             {errorCategorias}
                         </p>
                     )}
@@ -283,16 +272,16 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
             </div>
 
             {errorGeneral && (
-                <p role="alert" className="text-sm text-eventu-error">
+                <p role="alert" className="evento-form-error">
                     {errorGeneral}
                 </p>
             )}
 
-            <div className="flex flex-col-reverse gap-3 border-t border-eventu-border pt-3 sm:flex-row sm:justify-end">
-                <button type="button" className={botonSecundario} onClick={onCancelar}>
+            <div className="evento-form-actions">
+                <button type="button" className="workflow-button workflow-button--secondary workflow-button--compact" onClick={onCancelar}>
                     Cancelar
                 </button>
-                <button type="submit" className={botonPrimario} disabled={guardando}>
+                <button type="submit" className="workflow-button workflow-button--primary workflow-button--compact" disabled={guardando}>
                     {guardando ? 'Guardando…' : editando ? 'Guardar cambios' : 'Crear evento'}
                 </button>
             </div>
