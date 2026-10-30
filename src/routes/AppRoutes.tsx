@@ -7,6 +7,7 @@ import { GestionOrganizadores } from '../features/usuarios/GestionOrganizadores'
 import { CrearEvento } from '../features/eventos/CrearEvento';
 import { EditarEvento } from '../features/eventos/EditarEvento';
 import { MisEventos } from '../features/eventos/MisEventos';
+import { DashboardEstadisticas } from '../features/estadisticas/DashboardEstadisticas';
 import { RutaOrganizador } from '../features/sesion/GuardiaRutaOrganizador';
 import { InicioUsuario, RutaUsuario } from '../features/sesion/GuardiaRutaUsuario';
 import { LayoutAutenticacion } from '../components/layout/LayoutAutenticacion';
@@ -34,6 +35,7 @@ export function AppRoutes() {
                 <Route element={<LayoutAplicacion />}>
                     <Route path="/admin/categorias" element={<GestionCategorias />} />
                     <Route path="/admin/usuarios" element={<GestionOrganizadores />} />
+                    <Route path="/admin/estadisticas" element={<DashboardEstadisticas />} />
                 </Route>
             </Route>
 
@@ -42,6 +44,7 @@ export function AppRoutes() {
                     <Route path="/organizador/eventos" element={<MisEventos />} />
                     <Route path="/organizador/eventos/nuevo" element={<CrearEvento />} />
                     <Route path="/organizador/eventos/:id/editar" element={<EditarEvento />} />
+                    <Route path="/organizador/estadisticas" element={<DashboardEstadisticas />} />
                 </Route>
             </Route>
 

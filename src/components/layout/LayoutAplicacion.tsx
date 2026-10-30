@@ -46,9 +46,17 @@ export function LayoutAplicacion() {
                                     </>
                                 )}
                                 {puedeGestionarEventos(sesion) && (
-                                    <NavLink to="/organizador/eventos" className={claseEnlace}>
-                                        {esAdministrador(sesion) ? 'Eventos' : 'Mis eventos'}
-                                    </NavLink>
+                                    <>
+                                        <NavLink to="/organizador/eventos" className={claseEnlace}>
+                                            {esAdministrador(sesion) ? 'Eventos' : 'Mis eventos'}
+                                        </NavLink>
+                                        <NavLink
+                                            to={esAdministrador(sesion) ? '/admin/estadisticas' : '/organizador/estadisticas'}
+                                            className={claseEnlace}
+                                        >
+                                            Estadísticas
+                                        </NavLink>
+                                    </>
                                 )}
                             </nav>
                         )}
