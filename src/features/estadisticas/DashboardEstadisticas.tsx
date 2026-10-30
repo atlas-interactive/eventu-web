@@ -1,13 +1,45 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ComponentType, type SVGProps } from 'react';
 import type { Estadisticas } from '../../types/estadisticas';
 import { mensajeDeError } from '../eventos/mensajeDeError';
 import { esAdministrador, obtenerSesion } from '../sesion/sesion';
 import { GraficoAsistencia } from './GraficoAsistencia';
+import { IconoAsistente, IconoBoleta, IconoCalendario, IconoCategoria, IconoGrafico } from './iconos';
 import { RankingBarras } from './RankingBarras';
 import { obtenerEstadisticas } from './services/estadisticaService';
 
 const formatoNumero = new Intl.NumberFormat('es-CO');
 const formatoPorcentaje = new Intl.NumberFormat('es-CO', { maximumFractionDigits: 2 });
+
+interface TarjetaKpiProps {
+    titulo: string;
+    valor: string;
+    detalle: string;
+    Icono: ComponentType<SVGProps<SVGSVGElement>>;
+    tono: 'rojo' | 'verde';
+}
+
+const TONOS = {
+    rojo: { fondo: 'bg-eventu-soft-red-background', texto: 'text-eventu-institutional-red', borde: 'border-t-eventu-institutional-red' },
+    verde: { fondo: 'bg-eventu-green-background', texto: 'text-eventu-success', borde: 'border-t-eventu-success' },
+};
+
+function TarjetaKpi({ titulo, valor, detalle, Icono, tono }: TarjetaKpiProps) {
+    const colores = TONOS[tono];
+    return (
+        <div
+            className={`flex items-center gap-4 rounded-xl border border-t-4 border-eventu-border ${colores.borde} bg-eventu-white-surface p-5 sm:p-6`}
+        >
+            <span className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ${colores.fondo} ${colores.texto}`}>
+                <Icono className="h-7 w-7" />
+            </span>
+            <div className="min-w-0">
+                <dt className="text-sm font-medium text-eventu-secondary-text">{titulo}</dt>
+                <dd className="text-[2.25rem] font-bold leading-tight text-eventu-main-ink">{valor}</dd>
+                <dd className="text-sm text-eventu-secondary-text">{detalle}</dd>
+            </div>
+        </div>
+    );
+}
 
 // HU-16: el organizador ve los indicadores de sus eventos; el administrador, los de toda la plataforma y los rankings
 export function DashboardEstadisticas() {
@@ -71,7 +103,10 @@ export function DashboardEstadisticas() {
 
                     <div className="grid gap-4 lg:grid-cols-3">
                         <section className="rounded-xl border border-eventu-border bg-eventu-white-surface p-5 sm:p-6 lg:col-span-2">
-                            <h2 className="text-base font-semibold text-eventu-main-ink">Asistencia</h2>
+                            <h2 className="flex items-center gap-2 text-base font-semibold text-eventu-main-ink">
+                                <IconoGrafico className="h-5 w-5 text-eventu-institutional-red" />
+                                Asistencia
+                            </h2>
                             <p className="mb-5 mt-1 text-sm text-eventu-secondary-text">
                                 Asistentes registrados con el QR sobre las inscripciones activas.
                             </p>
@@ -83,18 +118,20 @@ export function DashboardEstadisticas() {
                         </section>
 
                         <dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
-                            <div className="rounded-xl border border-eventu-border bg-eventu-white-surface p-5 sm:p-6">
-                                <dt className="text-sm text-eventu-secondary-text">Inscripciones activas</dt>
-                                <dd className="mt-1 text-[2rem] font-semibold leading-tight text-eventu-main-ink">
-                                    {formatoNumero.format(estadisticas.inscripcionesActivas)}
-                                </dd>
-                            </div>
-                            <div className="rounded-xl border border-eventu-border bg-eventu-white-surface p-5 sm:p-6">
-                                <dt className="text-sm text-eventu-secondary-text">Asistentes</dt>
-                                <dd className="mt-1 text-[2rem] font-semibold leading-tight text-eventu-main-ink">
-                                    {formatoNumero.format(estadisticas.asistentes)}
-                                </dd>
-                            </div>
+                            <TarjetaKpi
+                                titulo="Inscripciones activas"
+                                valor={formatoNumero.format(estadisticas.inscripcionesActivas)}
+                                detalle="Cupos reservados"
+                                Icono={IconoBoleta}
+                                tono="rojo"
+                            />
+                            <TarjetaKpi
+                                titulo="Asistentes"
+                                valor={formatoNumero.format(estadisticas.asistentes)}
+                                detalle={`De ${formatoNumero.format(estadisticas.inscripcionesActivas)} inscritos`}
+                                Icono={IconoAsistente}
+                                tono="verde"
+                            />
                         </dl>
                     </div>
 
@@ -102,6 +139,7 @@ export function DashboardEstadisticas() {
                         <div className="mt-4 grid items-start gap-4 lg:grid-cols-2">
                             <RankingBarras
                                 titulo="Categorías más concurridas"
+                                Icono={IconoCategoria}
                                 descripcion="Por número de inscripciones activas."
                                 unidad="inscripciones activas"
                                 textoVacio="Todavía no hay inscripciones activas en ninguna categoría."
@@ -113,6 +151,7 @@ export function DashboardEstadisticas() {
                             />
                             <RankingBarras
                                 titulo="Eventos con más inscritos"
+                                Icono={IconoCalendario}
                                 descripcion="Por número de inscripciones activas."
                                 unidad="inscripciones activas"
                                 textoVacio="Todavía no hay eventos con inscripciones activas."

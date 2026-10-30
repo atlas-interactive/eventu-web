@@ -1,3 +1,5 @@
+import type { ComponentType, SVGProps } from 'react';
+
 export interface ElementoRanking {
     clave: string;
     nombre: string;
@@ -10,18 +12,24 @@ interface Props {
     unidad: string;
     elementos: ElementoRanking[];
     textoVacio: string;
+    Icono: ComponentType<SVGProps<SVGSVGElement>>;
 }
 
 const formatoNumero = new Intl.NumberFormat('es-CO');
 
 // Lista ordenada con una barra proporcional al primero; al ser HTML, los lectores de pantalla la leen como una lista normal
-export function RankingBarras({ titulo, descripcion, unidad, elementos, textoVacio }: Props) {
+export function RankingBarras({ titulo, descripcion, unidad, elementos, textoVacio, Icono }: Props) {
     const maximo = Math.max(1, ...elementos.map((e) => e.valor));
 
     return (
         <section className="flex flex-col rounded-xl border border-eventu-border bg-eventu-white-surface p-5 sm:p-6">
-            <h2 className="text-base font-semibold text-eventu-main-ink">{titulo}</h2>
-            <p className="mt-1 text-sm text-eventu-secondary-text">{descripcion}</p>
+            <h2 className="flex items-center gap-2 text-base font-semibold text-eventu-main-ink">
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-eventu-soft-red-background text-eventu-institutional-red">
+                    <Icono className="h-[1.125rem] w-[1.125rem]" />
+                </span>
+                {titulo}
+            </h2>
+            <p className="mt-1 pl-10 text-sm text-eventu-secondary-text">{descripcion}</p>
 
             {elementos.length === 0 ? (
                 <p className="mt-6 text-sm text-eventu-secondary-text">{textoVacio}</p>
