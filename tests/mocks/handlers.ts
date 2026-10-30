@@ -10,4 +10,13 @@ export const handlers = [
             rol: 'estudiante',
         }),
     ),
+    http.post('*/auth/login', () =>
+        HttpResponse.json({
+            token: 'jwt-de-integracion',
+            usuarioId: 1,
+            nombre: 'Admin EventU',
+            correo: 'admin@unillanos.edu.co',
+            rol: 'ADMIN',
+        }),
+    ),
 ];

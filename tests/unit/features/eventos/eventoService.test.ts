@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { axiosClient } from '../../../../src/api';
-import { crearEvento, editarEvento, listarEventos } from '../../../../src/features/eventos/services/eventoService';
+import { cancelarEvento, crearEvento, editarEvento, listarEventos } from '../../../../src/features/eventos/services/eventoService';
 
 vi.mock('../../../../src/api', () => ({
-    axiosClient: { get: vi.fn(), post: vi.fn(), put: vi.fn() },
+    axiosClient: { get: vi.fn(), post: vi.fn(), put: vi.fn(), patch: vi.fn() },
 }));
 
 const clienteMock = vi.mocked(axiosClient);
@@ -13,6 +13,7 @@ describe('eventoService', () => {
         clienteMock.get.mockReset();
         clienteMock.post.mockReset();
         clienteMock.put.mockReset();
+        clienteMock.patch.mockReset();
     });
 
     it('lista los eventos publicados', async () => {
@@ -53,5 +54,14 @@ describe('eventoService', () => {
         await editarEvento(7, { cuposMaximos: 80 });
 
         expect(clienteMock.put).toHaveBeenCalledWith('/eventos/7', { cuposMaximos: 80 });
+    });
+
+    it('cancela el evento por id sin enviar un cuerpo', async () => {
+        clienteMock.patch.mockResolvedValue({ data: { mensaje: 'Evento cancelado correctamente.', eventoId: 7 } });
+
+        const resultado = await cancelarEvento(7);
+
+        expect(clienteMock.patch).toHaveBeenCalledWith('/eventos/7/cancelar');
+        expect(resultado.mensaje).toBe('Evento cancelado correctamente.');
     });
 });

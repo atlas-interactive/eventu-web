@@ -18,6 +18,7 @@ const renderizar = () =>
             <Routes>
                 <Route path="/login" element={<FormularioLogin />} />
                 <Route path="/admin/categorias" element={<p>Pantalla de categorías</p>} />
+                <Route path="/usuario" element={<p>Inicio de usuario</p>} />
             </Routes>
         </MemoryRouter>,
     );
@@ -70,10 +71,36 @@ describe('FormularioLogin: sesión y redirección', () => {
 
         await iniciarSesion();
 
-        expect(await screen.findByRole('status')).toHaveTextContent(
-            'Sesión iniciada, Ana. El listado de eventos estará disponible en la próxima versión.',
-        );
+        expect(await screen.findByText('Inicio de usuario')).toBeInTheDocument();
         expect(screen.queryByText('Pantalla de categorías')).not.toBeInTheDocument();
         expect(obtenerSesion()?.rol).toBe('USUARIO');
+    });
+
+    it('muestra el error de autenticación y no guarda una sesión', async () => {
+        autenticarMock.mockRejectedValue(new Error('Credenciales incorrectas'));
+        renderizar();
+
+        await iniciarSesion();
+
+        expect(await screen.findByRole('alert')).toHaveTextContent(
+            'Ocurrió un error inesperado al conectar con el servidor.',
+        );
+        expect(localStorage.getItem('auth_token')).toBeNull();
+        expect(obtenerSesion()).toBeNull();
+    });
+
+    it('rechaza un correo no institucional antes de llamar al servicio', async () => {
+        const user = userEvent.setup();
+        renderizar();
+
+        await user.type(screen.getByLabelText('Correo institucional'), 'ana@gmail.com');
+        await user.type(screen.getByLabelText('Contraseña'), 'password-segura');
+        await user.click(screen.getByRole('button', { name: 'Iniciar sesión' }));
+
+        expect(await screen.findByRole('alert')).toHaveTextContent(
+            'Debe ingresar un correo institucional válido.',
+        );
+        expect(autenticarMock).not.toHaveBeenCalled();
+        expect(obtenerSesion()).toBeNull();
     });
 });

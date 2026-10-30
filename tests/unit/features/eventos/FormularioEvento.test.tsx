@@ -82,12 +82,12 @@ describe('FormularioEvento', () => {
             await renderizar();
             const user = userEvent.setup();
 
-            await user.type(screen.getByLabelText('Título'), '  Feria de ciencia ');
-            await user.type(screen.getByLabelText('Descripción'), 'Proyectos');
-            await user.type(screen.getByLabelText('Fecha y hora de inicio'), '2099-10-20T14:30');
-            await user.type(screen.getByLabelText('Ubicación'), 'Auditorio');
-            await user.type(screen.getByLabelText('Cupo máximo'), '50');
-            await user.selectOptions(screen.getByLabelText('Categoría'), 'Cultural');
+            await user.type(screen.getByLabelText(/Título/), '  Feria de ciencia ');
+            await user.type(screen.getByLabelText(/Descripción/), 'Proyectos');
+            await user.type(screen.getByLabelText(/Fecha y hora/), '2099-10-20T14:30');
+            await user.type(screen.getByLabelText(/Ubicación/), 'Auditorio');
+            await user.type(screen.getByLabelText(/Cupo máximo/), '50');
+            await user.selectOptions(screen.getByLabelText(/Categoría/), '2');
             await user.click(screen.getByRole('button', { name: 'Crear evento' }));
 
             await waitFor(() => expect(onGuardado).toHaveBeenCalledWith('Evento creado exitosamente.'));
@@ -110,7 +110,7 @@ describe('FormularioEvento', () => {
             expect(crearMock).not.toHaveBeenCalled();
             expect(screen.getByText('El título es obligatorio.')).toBeInTheDocument();
             expect(screen.getByText('La categoría es obligatoria.')).toBeInTheDocument();
-            expect(screen.getByLabelText('Título')).toHaveAttribute('aria-invalid', 'true');
+            expect(screen.getByLabelText(/Título/)).toHaveAttribute('aria-invalid', 'true');
         });
 
         it('muestra el error del backend si no se pudo crear', async () => {
@@ -118,12 +118,12 @@ describe('FormularioEvento', () => {
             await renderizar();
             const user = userEvent.setup();
 
-            await user.type(screen.getByLabelText('Título'), 'Feria');
-            await user.type(screen.getByLabelText('Descripción'), 'Proyectos');
-            await user.type(screen.getByLabelText('Fecha y hora de inicio'), '2099-10-20T14:30');
-            await user.type(screen.getByLabelText('Ubicación'), 'Auditorio');
-            await user.type(screen.getByLabelText('Cupo máximo'), '50');
-            await user.selectOptions(screen.getByLabelText('Categoría'), 'Cultural');
+            await user.type(screen.getByLabelText(/Título/), 'Feria');
+            await user.type(screen.getByLabelText(/Descripción/), 'Proyectos');
+            await user.type(screen.getByLabelText(/Fecha y hora/), '2099-10-20T14:30');
+            await user.type(screen.getByLabelText(/Ubicación/), 'Auditorio');
+            await user.type(screen.getByLabelText(/Cupo máximo/), '50');
+            await user.selectOptions(screen.getByLabelText(/Categoría/), '2');
             await user.click(screen.getByRole('button', { name: 'Crear evento' }));
 
             expect(await screen.findByRole('alert')).toHaveTextContent('La categoría seleccionada está inactiva.');
@@ -140,10 +140,10 @@ describe('FormularioEvento', () => {
         it('precarga los datos del evento y muestra los inscritos actuales', async () => {
             await renderizar();
 
-            expect(screen.getByLabelText('Título')).toHaveValue('Feria de ciencia');
-            expect(screen.getByLabelText('Fecha y hora de inicio')).toHaveValue('2099-10-20T14:30');
-            expect(screen.getByLabelText('Cupo máximo')).toHaveValue(50);
-            expect(screen.getByLabelText('Categoría')).toHaveValue('2');
+            expect(screen.getByLabelText(/Título/)).toHaveValue('Feria de ciencia');
+            expect(screen.getByLabelText(/Fecha y hora/)).toHaveValue('2099-10-20T14:30');
+            expect(screen.getByLabelText(/Cupo máximo/)).toHaveValue(50);
+            expect(screen.getByLabelText(/Categoría/)).toHaveValue('2');
             expect(screen.getByText(/Inscritos actuales: 20/)).toBeInTheDocument();
         });
 
@@ -152,8 +152,8 @@ describe('FormularioEvento', () => {
             await renderizar();
             const user = userEvent.setup();
 
-            await user.clear(screen.getByLabelText('Cupo máximo'));
-            await user.type(screen.getByLabelText('Cupo máximo'), '80');
+            await user.clear(screen.getByLabelText(/Cupo máximo/));
+            await user.type(screen.getByLabelText(/Cupo máximo/), '80');
             await user.click(screen.getByRole('button', { name: 'Guardar cambios' }));
 
             await waitFor(() => expect(onGuardado).toHaveBeenCalledWith('Evento actualizado exitosamente.'));
@@ -164,8 +164,8 @@ describe('FormularioEvento', () => {
             await renderizar();
             const user = userEvent.setup();
 
-            await user.clear(screen.getByLabelText('Cupo máximo'));
-            await user.type(screen.getByLabelText('Cupo máximo'), '10');
+            await user.clear(screen.getByLabelText(/Cupo máximo/));
+            await user.type(screen.getByLabelText(/Cupo máximo/), '10');
             await user.click(screen.getByRole('button', { name: 'Guardar cambios' }));
 
             expect(editarMock).not.toHaveBeenCalled();
@@ -178,8 +178,8 @@ describe('FormularioEvento', () => {
             await renderizar();
             const user = userEvent.setup();
 
-            await user.clear(screen.getByLabelText('Fecha y hora de inicio'));
-            await user.type(screen.getByLabelText('Fecha y hora de inicio'), '2020-01-01T09:00');
+            await user.clear(screen.getByLabelText(/Fecha y hora/));
+            await user.type(screen.getByLabelText(/Fecha y hora/), '2020-01-01T09:00');
             await user.click(screen.getByRole('button', { name: 'Guardar cambios' }));
 
             expect(editarMock).not.toHaveBeenCalled();
@@ -201,8 +201,8 @@ describe('FormularioEvento', () => {
             await renderizar();
             const user = userEvent.setup();
 
-            await user.clear(screen.getByLabelText('Título'));
-            await user.type(screen.getByLabelText('Título'), 'Otro título');
+            await user.clear(screen.getByLabelText(/Título/));
+            await user.type(screen.getByLabelText(/Título/), 'Otro título');
             await user.click(screen.getByRole('button', { name: 'Guardar cambios' }));
 
             expect(await screen.findByRole('alert')).toHaveTextContent('Solo el organizador del evento puede modificarlo.');
@@ -214,7 +214,7 @@ describe('FormularioEvento', () => {
             render(<FormularioEvento evento={EVENTO} onGuardado={onGuardado} onCancelar={onCancelar} />);
 
             expect(await screen.findByRole('option', { name: 'Cultural (inactiva)' })).toBeInTheDocument();
-            expect(screen.getByLabelText('Categoría')).toHaveValue('2');
+            expect(screen.getByLabelText(/Categoría/)).toHaveValue('2');
         });
     });
 });
