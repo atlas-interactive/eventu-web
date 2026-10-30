@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import type { Categoria } from '../../types/categoria';
 import { ModalAccesible } from '../../components/ui/ModalAccesible';
+import { Skeleton } from '../../components/ui/Skeleton';
 import {
     activarCategoria,
     crearCategoria,
@@ -100,7 +101,8 @@ export function GestionCategorias() {
 
             <div className="gestion-category-table-container">
                 {/* En móvil cada fila se muestra como tarjeta; desde md es una tabla */}
-                <table className="gestion-category-table">
+                {cargando && <span role="status" className="sr-only">Cargando categorías</span>}
+                <table className="gestion-category-table" aria-busy={cargando}>
                     <caption className="sr-only">Listado de categorías de eventos</caption>
                     <thead>
                         <tr>
@@ -114,11 +116,22 @@ export function GestionCategorias() {
                     </thead>
                     <tbody>
                         {cargando && (
-                            <tr>
-                                <td colSpan={4} className="gestion-category-empty">
-                                    Cargando categorías…
-                                </td>
-                            </tr>
+                            Array.from({ length: 3 }, (_, indice) => (
+                                <tr key={indice} aria-hidden="true" className="gestion-category-row">
+                                    <th scope="row" className="gestion-category-name">
+                                        <Skeleton className="h-5 w-2/3" />
+                                    </th>
+                                    <td data-label="Eventos activos" className="gestion-category-cell">
+                                        <Skeleton className="h-4 w-20" />
+                                    </td>
+                                    <td data-label="Estado" className="gestion-category-cell">
+                                        <Skeleton className="h-6 w-20 rounded-full" />
+                                    </td>
+                                    <td className="gestion-category-actions-cell">
+                                        <Skeleton className="h-9 w-20 rounded-md" />
+                                    </td>
+                                </tr>
+                            ))
                         )}
                         {!cargando && categorias.length === 0 && !errorCarga && (
                             <tr>

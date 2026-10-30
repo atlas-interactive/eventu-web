@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import type { Categoria } from '../../types/categoria';
 import type { Evento, EventoActualizacion, EventoSolicitud } from '../../types/evento';
+import { Skeleton, SkeletonEstado } from '../../components/ui/Skeleton';
 import { listarCategorias } from '../categorias/services/categoriaService';
 import { crearEvento, editarEvento } from './services/eventoService';
 import { mensajeDeError } from '../../api/mensajeDeError';
@@ -245,23 +246,34 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
                     <label htmlFor="categoriaId" className="evento-field-label">
                         Categoría <span aria-hidden="true">*</span>
                     </label>
-                    <select
-                        id="categoriaId"
-                        value={campos.categoriaId}
-                        onChange={alCambiar('categoriaId')}
-                        disabled={cargandoCategorias}
-                        aria-invalid={errores.categoriaId ? true : undefined}
-                        aria-required="true"
-                        aria-describedby={describir('categoriaId')}
-                        className="evento-control evento-control--select"
-                    >
-                        <option value="">{cargandoCategorias ? 'Cargando…' : 'Selecciona una categoría'}</option>
-                        {opciones.map((categoria) => (
-                            <option key={categoria.id} value={categoria.id}>
-                                {categoria.nombre}
-                            </option>
-                        ))}
-                    </select>
+                    <div className="relative">
+                        <select
+                            id="categoriaId"
+                            value={campos.categoriaId}
+                            onChange={alCambiar('categoriaId')}
+                            disabled={cargandoCategorias}
+                            aria-busy={cargandoCategorias}
+                            aria-invalid={errores.categoriaId ? true : undefined}
+                            aria-required="true"
+                            aria-describedby={describir('categoriaId')}
+                            className={`evento-control evento-control--select ${cargandoCategorias ? 'text-transparent' : ''}`}
+                        >
+                            <option value="">Selecciona una categoría</option>
+                            {opciones.map((categoria) => (
+                                <option key={categoria.id} value={categoria.id}>
+                                    {categoria.nombre}
+                                </option>
+                            ))}
+                        </select>
+                        {cargandoCategorias && (
+                            <SkeletonEstado
+                                etiqueta="Cargando categorías"
+                                className="pointer-events-none absolute inset-y-0 left-3 right-8 flex items-center"
+                            >
+                                <Skeleton className="h-4 w-36" />
+                            </SkeletonEstado>
+                        )}
+                    </div>
                     {errorCategorias && (
                         <p role="alert" className="workflow-inline-error evento-field-error">
                             {errorCategorias}

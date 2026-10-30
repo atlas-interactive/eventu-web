@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import type { Evento } from '../../types/evento';
 import { ModalAccesible } from '../../components/ui/ModalAccesible';
+import { Skeleton, SkeletonEstado } from '../../components/ui/Skeleton';
 import { esAdministrador, obtenerSesion } from '../sesion/sesion';
 import { mensajeDeError } from '../../api/mensajeDeError';
 import { cancelarEvento, listarEventos } from './services/eventoService';
@@ -90,7 +91,26 @@ export function MisEventos() {
                     {error}
                 </p>
             )}
-            {cargando && <p className="evento-list-state">Cargando…</p>}
+            {cargando && (
+                <SkeletonEstado etiqueta="Cargando eventos">
+                    <ul className="evento-list">
+                        {Array.from({ length: 3 }, (_, indice) => (
+                            <li key={indice} className="evento-card">
+                                <div className="evento-card-content w-full space-y-2">
+                                    <Skeleton className="h-6 w-2/3" />
+                                    <Skeleton className="h-4 w-full" />
+                                    <Skeleton className="h-4 w-3/4" />
+                                    <Skeleton className="h-4 w-1/2" />
+                                </div>
+                                <div className="evento-card-actions sm:flex-row">
+                                    <Skeleton className="h-11 w-full rounded-md sm:w-24" />
+                                    <Skeleton className="h-11 w-full rounded-md sm:w-24" />
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                </SkeletonEstado>
+            )}
             {!cargando && !error && eventos.length === 0 && (
                 <p className="evento-list-state">Aún no tienes eventos publicados.</p>
             )}

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { isAxiosError } from 'axios';
 import type { UsuarioBuscado } from '../../types/usuario';
 import { ModalAccesible } from '../../components/ui/ModalAccesible';
+import { Skeleton, SkeletonEstado } from '../../components/ui/Skeleton';
 import { mensajeDeError } from '../../api/mensajeDeError';
 import { asignarOrganizador, buscarUsuarios, listarOrganizadores, revocarOrganizador } from './services/usuarioService';
 import '../../styles/management.css';
@@ -104,6 +105,9 @@ export function GestionOrganizadores() {
 
     const alEscribir = (valor: string) => {
         setCriterio(valor);
+        setBuscando(valor.trim().length >= MINIMO_CARACTERES);
+        setErrorBusqueda('');
+        setSinResultados('');
         setMensajeExito('');
         setErrorAccion('');
     };
@@ -170,9 +174,7 @@ export function GestionOrganizadores() {
                         className="gestion-search-input"
                     />
                     <p id="ayuda-busqueda" aria-live="polite" className="gestion-help">
-                        {hayCriterio && buscando
-                            ? 'Buscando…'
-                            : !hayCriterio
+                        {!hayCriterio
                               ? 'Solo se muestran usuarios que ya están registrados en la plataforma.'
                               : resultadosVisibles.length > 0
                                 ? `${resultadosVisibles.length} ${resultadosVisibles.length === 1 ? 'coincidencia' : 'coincidencias'}`
@@ -201,7 +203,23 @@ export function GestionOrganizadores() {
                     </p>
                 )}
 
-                {resultadosVisibles.length > 0 && (
+                {hayCriterio && buscando && (
+                    <SkeletonEstado etiqueta="Buscando usuarios" className="gestion-results">
+                        {Array.from({ length: 2 }, (_, indice) => (
+                            <div key={indice} className="gestion-result">
+                                <div className="gestion-result-person">
+                                    <Skeleton className="h-9 w-9 shrink-0 rounded-full" />
+                                    <div className="min-w-0 flex-1 space-y-2">
+                                        <Skeleton className="h-4 w-1/2" />
+                                        <Skeleton className="h-4 w-3/4" />
+                                    </div>
+                                </div>
+                                <Skeleton className="h-10 w-full rounded-md sm:w-40" />
+                            </div>
+                        ))}
+                    </SkeletonEstado>
+                )}
+                {resultadosVisibles.length > 0 && !buscando && (
                     <ul className="gestion-results">
                         {resultadosVisibles.map((usuario) => (
                             <li
@@ -264,7 +282,25 @@ export function GestionOrganizadores() {
                     </p>
                 )}
                 {cargandoTabla ? (
-                    <p className="gestion-table-state">Cargando organizadores…</p>
+                    <SkeletonEstado etiqueta="Cargando organizadores" className="gestion-table-scroll">
+                        <table className="gestion-organizer-table" aria-hidden="true">
+                            <tbody>
+                                {Array.from({ length: 3 }, (_, indice) => (
+                                    <tr key={indice} className="gestion-organizer-row">
+                                        <td className="gestion-organizer-cell gestion-organizer-cell--name">
+                                            <Skeleton className="h-4 w-36" />
+                                        </td>
+                                        <td className="gestion-organizer-cell gestion-organizer-cell--email">
+                                            <Skeleton className="h-4 w-48 max-w-full" />
+                                        </td>
+                                        <td className="gestion-organizer-cell gestion-organizer-cell--action">
+                                            <Skeleton className="h-10 w-32 rounded-md" />
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </SkeletonEstado>
                 ) : organizadores.length === 0 && !errorTabla ? (
                     <p className="gestion-table-state">Aún no hay organizadores asignados.</p>
                 ) : (

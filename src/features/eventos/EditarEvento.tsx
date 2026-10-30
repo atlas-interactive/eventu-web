@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import type { Evento } from '../../types/evento';
+import { Skeleton, SkeletonEstado } from '../../components/ui/Skeleton';
 import { FormularioEvento } from './FormularioEvento';
 import { listarEventos } from './services/eventoService';
 import '../../styles/events.css';
@@ -39,7 +40,24 @@ export function EditarEvento() {
     return (
         <main className="evento-page evento-page--edit">
             <h1 className="evento-page-title evento-page-title--edit">Editar evento</h1>
-            {cargando && <p className="evento-list-state evento-loading">Cargando…</p>}
+            {cargando && (
+                <SkeletonEstado etiqueta="Cargando evento para editar" className="evento-form-wrap">
+                    <div className="evento-form">
+                        <div className="grid gap-4 sm:grid-cols-2">
+                            {Array.from({ length: 6 }, (_, indice) => (
+                                <div key={indice} className={indice < 2 ? 'sm:col-span-2' : ''}>
+                                    <Skeleton className="mb-2 h-4 w-24" />
+                                    <Skeleton className="h-11 w-full rounded-md" />
+                                </div>
+                            ))}
+                        </div>
+                        <div className="flex flex-col gap-3 border-t border-eventu-border pt-3 sm:flex-row sm:justify-end">
+                            <Skeleton className="h-11 w-full rounded-md sm:w-32" />
+                            <Skeleton className="h-11 w-full rounded-md sm:w-32" />
+                        </div>
+                    </div>
+                </SkeletonEstado>
+            )}
             {error && (
                 <div className="evento-page-error-container">
                     <p role="alert" className="evento-page-error">

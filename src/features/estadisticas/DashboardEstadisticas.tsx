@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { Estadisticas } from '../../types/estadisticas';
 import { mensajeDeError } from '../../api/mensajeDeError';
+import { Skeleton, SkeletonEstado } from '../../components/ui/Skeleton';
 import { esAdministrador, obtenerSesion } from '../sesion/sesion';
 import { GraficoAsistencia } from './components/GraficoAsistencia';
 import { RankingBarras } from './components/RankingBarras';
@@ -50,15 +51,38 @@ export function DashboardEstadisticas() {
                 </p>
             </header>
 
-            {cargando && (
-                <p role="status" className="text-sm text-eventu-secondary-text">
-                    Cargando estadísticas…
-                </p>
-            )}
             {error && (
                 <p role="alert" className="text-sm text-eventu-error">
                     {error}
                 </p>
+            )}
+
+            {cargando && (
+                <SkeletonEstado etiqueta="Cargando estadísticas" className="space-y-4">
+                    <div className="grid gap-4 lg:grid-cols-3">
+                        <section className="rounded-xl border border-eventu-border bg-eventu-white-surface p-5 sm:p-6 lg:col-span-2">
+                            <Skeleton className="h-5 w-32" />
+                            <Skeleton className="mt-2 h-4 w-64 max-w-full" />
+                            <div className="mt-6 flex flex-col items-center gap-6 sm:flex-row sm:gap-8">
+                                <Skeleton className="h-44 w-44 shrink-0 rounded-full" />
+                                <div className="w-full max-w-xs space-y-4">
+                                    <Skeleton className="h-4 w-full" />
+                                    <Skeleton className="h-4 w-full" />
+                                </div>
+                            </div>
+                        </section>
+                        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+                            <Skeleton className="h-36 rounded-xl" />
+                            <Skeleton className="h-36 rounded-xl" />
+                        </div>
+                    </div>
+                    {admin && (
+                        <div className="grid items-start gap-4 lg:grid-cols-2">
+                            <Skeleton className="h-64 rounded-xl" />
+                            <Skeleton className="h-64 rounded-xl" />
+                        </div>
+                    )}
+                </SkeletonEstado>
             )}
 
             {estadisticas && (
