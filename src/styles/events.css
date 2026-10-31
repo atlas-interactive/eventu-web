@@ -294,6 +294,11 @@
   background-color: var(--color-eventu-page-background);
 }
 
+.evento-row-button:disabled {
+  cursor: progress;
+  opacity: 0.6;
+}
+
 .evento-row-button--danger {
   border-color: var(--color-eventu-institutional-red);
   color: var(--color-eventu-institutional-red);

@@ -1,6 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { axiosClient } from '../../../../src/api';
-import { cancelarEvento, crearEvento, editarEvento, listarEventos } from '../../../../src/features/eventos/services/eventoService';
+import {
+    cancelarEvento,
+    crearEvento,
+    descargarReporteEvento,
+    editarEvento,
+    listarEventos,
+} from '../../../../src/features/eventos/services/eventoService';
 
 vi.mock('../../../../src/api', () => ({
     axiosClient: { get: vi.fn(), post: vi.fn(), put: vi.fn(), patch: vi.fn() },
@@ -63,5 +69,24 @@ describe('eventoService', () => {
 
         expect(clienteMock.patch).toHaveBeenCalledWith('/eventos/7/cancelar');
         expect(resultado.mensaje).toBe('Evento cancelado correctamente.');
+    });
+
+    it('descarga el reporte del evento como Blob', async () => {
+        const pdf = new Blob(['%PDF-1.7'], { type: 'application/pdf' });
+        clienteMock.get.mockResolvedValue({ data: pdf });
+
+        const resultado = await descargarReporteEvento(7);
+
+        expect(clienteMock.get).toHaveBeenCalledWith('/eventos/7/reporte', { responseType: 'blob' });
+        expect(resultado).toBe(pdf);
+    });
+
+    it('convierte a JSON el error que llega como Blob para conservar el mensaje del backend', async () => {
+        const cuerpo = new Blob([JSON.stringify({ error: 'No tienes permiso sobre este evento.' })], { type: 'application/json' });
+        clienteMock.get.mockRejectedValue({ isAxiosError: true, response: { status: 403, data: cuerpo } });
+
+        await expect(descargarReporteEvento(7)).rejects.toMatchObject({
+            response: { data: { error: 'No tienes permiso sobre este evento.' } },
+        });
     });
 });

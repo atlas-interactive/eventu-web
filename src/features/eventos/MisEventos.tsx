@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { CalendarDays, CalendarPlus, CircleX, MapPin, Pencil, Plus, Tag, Users } from 'lucide-react';
+import { CalendarDays, CalendarPlus, CircleX, FileDown, MapPin, Pencil, Plus, Tag, Users } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import type { Evento } from '../../types/evento';
 import { IconoAviso } from '../../components/ui/IconoAviso';
@@ -7,7 +7,8 @@ import { ModalAccesible } from '../../components/ui/ModalAccesible';
 import { Skeleton, SkeletonEstado } from '../../components/ui/Skeleton';
 import { esAdministrador, obtenerSesion } from '../sesion/sesion';
 import { mensajeDeError } from '../../api/mensajeDeError';
-import { cancelarEvento, listarEventos } from './services/eventoService';
+import { guardarArchivo } from '../../api/descargas';
+import { cancelarEvento, descargarReporteEvento, listarEventos } from './services/eventoService';
 import '../../styles/events.css';
 
 const formatoFecha = new Intl.DateTimeFormat('es-CO', { dateStyle: 'medium', timeStyle: 'short' });
@@ -25,6 +26,8 @@ export function MisEventos() {
     const [aCancelar, setACancelar] = useState<Evento | null>(null);
     const [cancelando, setCancelando] = useState(false);
     const [errorCancelar, setErrorCancelar] = useState('');
+    const [descargandoId, setDescargandoId] = useState<number | null>(null);
+    const [errorReporte, setErrorReporte] = useState('');
 
     useEffect(() => {
         // Evita actualizar el estado si la respuesta llega después de desmontar la pantalla.
@@ -71,6 +74,22 @@ export function MisEventos() {
         }
     };
 
+    // Un reporte a la vez: los demás botones quedan deshabilitados mientras el backend genera el PDF
+    const descargarReporte = async (evento: Evento) => {
+        if (descargandoId !== null) return;
+        setDescargandoId(evento.id);
+        setErrorReporte('');
+        try {
+            const pdf = await descargarReporteEvento(evento.id);
+            guardarArchivo(pdf, `reporte-evento-${evento.id}.pdf`);
+        } catch (err: unknown) {
+            console.error('No se pudo descargar el reporte:', err);
+            setErrorReporte(mensajeDeError(err));
+        } finally {
+            setDescargandoId(null);
+        }
+    };
+
     return (
         <main className="evento-page evento-page--list">
             <header className="evento-list-header">
@@ -94,6 +113,12 @@ export function MisEventos() {
                 <p role="alert" className="evento-list-message flex items-start gap-2">
                     <IconoAviso tipo="error" className="mt-0.5 h-4 w-4" />
                     <span>{error}</span>
+                </p>
+            )}
+            {errorReporte && (
+                <p role="alert" className="evento-list-message flex items-start gap-2">
+                    <IconoAviso tipo="error" className="mt-0.5 h-4 w-4" />
+                    <span>{errorReporte}</span>
                 </p>
             )}
             {cargando && (
@@ -173,6 +198,19 @@ export function MisEventos() {
                                     <Pencil className="h-4 w-4 shrink-0" aria-hidden="true" />
                                     Editar
                                 </Link>
+                                {!estaCancelado(evento) && (
+                                    <button
+                                        type="button"
+                                        className="evento-row-button gap-1.5"
+                                        aria-label={`Descargar reporte de inscritos de ${evento.titulo}`}
+                                        aria-busy={descargandoId === evento.id}
+                                        disabled={descargandoId !== null}
+                                        onClick={() => descargarReporte(evento)}
+                                    >
+                                        <FileDown className="h-4 w-4 shrink-0" aria-hidden="true" />
+                                        {descargandoId === evento.id ? 'Generando…' : 'Reporte PDF'}
+                                    </button>
+                                )}
                                 {!estaCancelado(evento) && (
                                     <button
                                         type="button"
