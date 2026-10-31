@@ -44,6 +44,7 @@ describe('FormularioLogin: sesión y redirección', () => {
             nombre: 'Admin',
             correo: 'admin@unillanos.edu.co',
             rol: 'ADMIN',
+            cuentaReactivada: false,
         });
         renderizar();
 
@@ -66,6 +67,7 @@ describe('FormularioLogin: sesión y redirección', () => {
             nombre: 'Ana',
             correo: 'ana@unillanos.edu.co',
             rol: 'USUARIO',
+            cuentaReactivada: false,
         });
         renderizar();
 
@@ -74,6 +76,38 @@ describe('FormularioLogin: sesión y redirección', () => {
         expect(await screen.findByText('Inicio de usuario')).toBeInTheDocument();
         expect(screen.queryByText('Pantalla de categorías')).not.toBeInTheDocument();
         expect(obtenerSesion()?.rol).toBe('USUARIO');
+    });
+
+    it('muestra la reactivación antes de guardar la sesión y redirigir según el rol', async () => {
+        autenticarMock.mockResolvedValue({
+            token: 'jwt-de-prueba',
+            usuarioId: 1n,
+            nombre: 'Admin',
+            correo: 'admin@unillanos.edu.co',
+            rol: 'ADMIN',
+            cuentaReactivada: true,
+        });
+        renderizar();
+
+        await iniciarSesion();
+
+        expect(await screen.findByRole('dialog')).toHaveTextContent(
+            'Tu cuenta ha sido reactivada correctamente.',
+        );
+        expect(screen.queryByText('Pantalla de categorías')).not.toBeInTheDocument();
+        expect(localStorage.getItem('auth_token')).toBeNull();
+        expect(obtenerSesion()).toBeNull();
+
+        await userEvent.setup().click(screen.getByRole('button', { name: 'Continuar' }));
+
+        expect(await screen.findByText('Pantalla de categorías')).toBeInTheDocument();
+        expect(localStorage.getItem('auth_token')).toBe('jwt-de-prueba');
+        expect(obtenerSesion()).toEqual({
+            usuarioId: 1,
+            nombre: 'Admin',
+            correo: 'admin@unillanos.edu.co',
+            rol: 'ADMIN',
+        });
     });
 
     it('muestra el error de autenticación y no guarda una sesión', async () => {

@@ -17,6 +17,7 @@ export const handlers = [
             nombre: 'Admin EventU',
             correo: 'admin@unillanos.edu.co',
             rol: 'ADMIN',
+            cuentaReactivada: false,
         }),
     ),
 ];

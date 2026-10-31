@@ -6,7 +6,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import iconoEventU from '../../assets/icons/iconoEventU.png';
 import { autenticarUsuario } from './services/authService';
 import { obtenerRutaInicio, guardarSesion } from '../sesion/sesion';
-import type { AutenticacionDTO } from '../../types/auth';
+import { ModalAccesible } from '../../components/ui/ModalAccesible';
+import type { AutenticacionDTO, RespuestaAutenticacion } from '../../types/auth';
 
 const correoInstitucionalRegex = /^[a-zA-Z0-9._%+-]+@unillanos\.edu\.co$/;
 
@@ -21,6 +22,7 @@ export const FormularioLogin: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [mensajeError, setMensajeError] = useState<string | null>(null);
     const [mensajeExito, setMensajeExito] = useState<string | null>(null);
+    const [respuestaPendiente, setRespuestaPendiente] = useState<RespuestaAutenticacion | null>(null);
 
     // Validación del correo institucional y la contraseña
     const campoInvalido = {
@@ -39,6 +41,18 @@ export const FormularioLogin: React.FC = () => {
             ...prev,
             [name]: value,
         }));
+    };
+
+    const continuarConSesion = (response: RespuestaAutenticacion) => {
+        const sesion = {
+            usuarioId: Number(response.usuarioId),
+            nombre: response.nombre,
+            correo: response.correo,
+            rol: response.rol,
+        };
+        guardarSesion({ token: response.token, ...sesion });
+        setFormData({ correo: '', password: '' });
+        navigate(obtenerRutaInicio(sesion), { replace: true });
     };
 
     // Valida las credenciales y gestiona el inicio de sesión
@@ -61,12 +75,11 @@ export const FormularioLogin: React.FC = () => {
 
         try {
             const response = await autenticarUsuario(formData);
-            // usuarioId llega tipado como bigint; en la sesión se guarda como número
-            const sesion = { ...response, usuarioId: Number(response.usuarioId) };
-            guardarSesion(sesion);
-            setFormData({ correo: '', password: '' });
-
-            navigate(obtenerRutaInicio(sesion), { replace: true });
+            if (response.cuentaReactivada) {
+                setRespuestaPendiente(response);
+            } else {
+                continuarConSesion(response);
+            }
 
         } catch (err: unknown) {
             setMensajeError(mensajeDeError(err));
@@ -150,6 +163,28 @@ export const FormularioLogin: React.FC = () => {
                     Regístrate
                 </Link>
             </p>
+
+            {respuestaPendiente && (
+                <ModalAccesible
+                    titulo="Cuenta reactivada"
+                    idTitulo="titulo-cuenta-reactivada"
+                    onCerrar={() => continuarConSesion(respuestaPendiente)}
+                    icono={<IconoAviso tipo="exito" className="h-6 w-6" />}
+                >
+                    <p className="workflow-dialog-copy">
+                        Tu cuenta ha sido reactivada correctamente. Puedes continuar a EventU.
+                    </p>
+                    <div className="workflow-dialog-actions">
+                        <button
+                            type="button"
+                            className="workflow-button workflow-button--primary"
+                            onClick={() => continuarConSesion(respuestaPendiente)}
+                        >
+                            Continuar
+                        </button>
+                    </div>
+                </ModalAccesible>
+            )}
         </section>
     );
 };
