@@ -3,6 +3,8 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import { AppRoutes } from '../../../src/routes/AppRoutes';
 import { guardarSesion } from '../../../src/features/sesion/sesion';
+import { http, HttpResponse } from 'msw';
+import { server } from '../../mocks/server';
 
 describe('AppRoutes', () => {
     beforeEach(() => localStorage.clear());
@@ -17,7 +19,11 @@ describe('AppRoutes', () => {
         expect(await screen.findByLabelText('Correo institucional')).toBeInTheDocument();
     });
 
-    it('abre el inicio de usuario para una sesión con rol USUARIO', async () => {
+    it('abre el catálogo de eventos del campus en la ruta inicial de USUARIO', async () => {
+        server.use(
+            http.get('*/categorias', () => HttpResponse.json([])),
+            http.get('*/eventos', () => HttpResponse.json([])),
+        );
         guardarSesion({
             token: 'token-de-prueba',
             usuarioId: 1,
@@ -31,10 +37,6 @@ describe('AppRoutes', () => {
             </MemoryRouter>,
         );
 
-        expect(
-            await screen.findByText(
-                'Sesión iniciada exitosamente, el listado de eventos estará disponible en la próxima versión.',
-            ),
-        ).toBeInTheDocument();
+        expect(await screen.findByRole('heading', { name: 'Eventos en campus' })).toBeInTheDocument();
     });
 });

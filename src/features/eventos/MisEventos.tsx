@@ -9,17 +9,26 @@ import { esAdministrador, obtenerSesion } from '../sesion/sesion';
 import { mensajeDeError } from '../../api/mensajeDeError';
 import { guardarArchivo } from '../../api/descargas';
 import { cancelarEvento, descargarReporteEvento, listarEventos } from './services/eventoService';
+import { listarCategorias } from '../categorias/services/categoriaService';
+import type { Categoria } from '../../types/categoria';
+import type { FiltrosEvento } from '../../types/evento';
+import { FiltrosEventos } from './components/FiltrosEventos';
 import '../../styles/events.css';
 
 const formatoFecha = new Intl.DateTimeFormat('es-CO', { dateStyle: 'medium', timeStyle: 'short' });
 
 const estaCancelado = (evento: Evento) => evento.estado.toUpperCase() === 'CANCELADO';
+const fechasInvalidas = (filtros: FiltrosEvento) =>
+    Boolean(filtros.fechaDesde && filtros.fechaHasta && filtros.fechaDesde > filtros.fechaHasta);
 
 // El organizador ve sus eventos publicados; el administrador ve todos (puede editar cualquiera)
 export function MisEventos() {
     const location = useLocation();
     const mensajeNavegacion = (location.state as { mensaje?: string } | null)?.mensaje ?? '';
     const [eventos, setEventos] = useState<Evento[]>([]);
+    const [categorias, setCategorias] = useState<Categoria[]>([]);
+    const [errorCategorias, setErrorCategorias] = useState('');
+    const [filtros, setFiltros] = useState<FiltrosEvento>({});
     const [cargando, setCargando] = useState(true);
     const [error, setError] = useState('');
     const [mensajeExito, setMensajeExito] = useState(mensajeNavegacion);
@@ -30,25 +39,59 @@ export function MisEventos() {
     const [errorReporte, setErrorReporte] = useState('');
 
     useEffect(() => {
-        // Evita actualizar el estado si la respuesta llega después de desmontar la pantalla.
         let vigente = true;
-        const sesion = obtenerSesion();
-        listarEventos()
+        listarCategorias()
             .then((datos) => {
-                if (!vigente) return;
-                setEventos(esAdministrador(sesion) ? datos : datos.filter((e) => e.organizadorId === sesion?.usuarioId));
+                if (vigente) setCategorias(datos);
             })
             .catch((err: unknown) => {
-                console.error('No se pudo cargar el listado de eventos:', err);
-                if (vigente) setError('No se pudieron cargar los eventos. Intenta de nuevo más tarde.');
-            })
-            .finally(() => {
-                if (vigente) setCargando(false);
+                console.error('No se pudieron cargar las categorías de eventos:', err);
+                if (vigente) setErrorCategorias('No se pudieron cargar las categorías.');
             });
         return () => {
             vigente = false;
         };
     }, []);
+
+    useEffect(() => {
+        let vigente = true;
+        const sesion = obtenerSesion();
+        const invalidas = fechasInvalidas(filtros);
+        const espera = filtros.texto?.trim() ? 300 : 0;
+
+        if (invalidas) {
+            setCargando(false);
+            return () => {
+                vigente = false;
+            };
+        }
+
+        setCargando(true);
+        setError('');
+        const temporizador = window.setTimeout(() => {
+            listarEventos(filtros)
+                .then((datos) => {
+                    if (!vigente) return;
+                    setEventos(
+                        esAdministrador(sesion)
+                            ? datos
+                            : datos.filter((evento) => evento.organizadorId === sesion?.usuarioId),
+                    );
+                })
+                .catch((err: unknown) => {
+                    console.error('No se pudo cargar el listado de eventos:', err);
+                    if (vigente) setError('No se pudieron cargar los eventos. Intenta de nuevo más tarde.');
+                })
+                .finally(() => {
+                    if (vigente) setCargando(false);
+                });
+        }, espera);
+
+        return () => {
+            vigente = false;
+            window.clearTimeout(temporizador);
+        };
+    }, [filtros.categoriaId, filtros.fechaDesde, filtros.fechaHasta, filtros.texto]);
 
     const cerrarModalCancelar = () => {
         if (cancelando) return;
@@ -121,6 +164,12 @@ export function MisEventos() {
                     <span>{errorReporte}</span>
                 </p>
             )}
+            {errorCategorias && (
+                <p role="alert" className="evento-list-message">
+                    {errorCategorias}
+                </p>
+            )}
+            <FiltrosEventos categorias={categorias} filtros={filtros} onChange={setFiltros} />
             {cargando && (
                 <SkeletonEstado etiqueta="Cargando eventos">
                     <ul className="evento-list">
@@ -141,14 +190,15 @@ export function MisEventos() {
                     </ul>
                 </SkeletonEstado>
             )}
-            {!cargando && !error && eventos.length === 0 && (
+            {!cargando && !error && !fechasInvalidas(filtros) && eventos.length === 0 && (
                 <p className="evento-list-state">
                     <CalendarPlus className="mr-2 inline h-4 w-4 align-text-bottom" aria-hidden="true" />
-                    Aún no tienes eventos publicados.
+                    {filtros.texto || filtros.categoriaId || filtros.fechaDesde || filtros.fechaHasta
+                        ? 'No se encontraron eventos con esos filtros.'
+                        : 'Aún no tienes eventos publicados.'}
                 </p>
             )}
-
-            {eventos.length > 0 && (
+            {!cargando && !error && !fechasInvalidas(filtros) && eventos.length > 0 && (
                 <ul className="evento-list">
                     {eventos.map((evento) => (
                         <li
