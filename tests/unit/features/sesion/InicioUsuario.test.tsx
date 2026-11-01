@@ -50,6 +50,7 @@ describe('InicioUsuario (HU-08)', () => {
 
         expect(await screen.findByRole('heading', { name: 'Eventos en campus' })).toBeInTheDocument();
         expect(await screen.findByRole('heading', { name: 'Feria de proyectos' })).toBeInTheDocument();
+        expect(listarCategoriasMock).toHaveBeenCalledWith(true);
         expect(screen.getByRole('button', { name: 'Académico' })).toBeInTheDocument();
         expect(screen.getByText('38 cupos disponibles de 120')).toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Ver detalle' })).toBeDisabled();

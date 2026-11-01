@@ -38,7 +38,7 @@ export function InicioUsuario() {
 
     useEffect(() => {
         let vigente = true;
-        listarCategorias()
+        listarCategorias(true)
             .then((datos) => {
                 if (vigente) setCategorias(datos);
             })

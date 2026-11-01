@@ -91,6 +91,7 @@ describe('MisEventos (HU-07)', () => {
         renderizar();
 
         await screen.findByRole('heading', { name: 'Feria cultural' });
+        expect(listarCategoriasMock).toHaveBeenCalledWith(true);
         await usuario.click(screen.getByRole('button', { name: 'Cultural' }));
 
         await vi.waitFor(() => expect(listarMock).toHaveBeenCalledTimes(2));
