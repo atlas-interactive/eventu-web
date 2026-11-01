@@ -26,4 +26,5 @@ export interface RespuestaAutenticacion {
     nombre: string
     correo: string;
     rol: string;
+    cuentaReactivada: boolean;
 }
