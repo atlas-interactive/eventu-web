@@ -1,6 +1,6 @@
 import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { MemoryRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { FormularioLogin } from '../../../../src/features/auth/FormularioLogin';
 import { autenticarUsuario } from '../../../../src/features/auth/services/authService';
@@ -8,6 +8,14 @@ import { obtenerSesion } from '../../../../src/features/sesion/sesion';
 
 vi.mock('../../../../src/features/auth/services/authService', () => ({
     autenticarUsuario: vi.fn(),
+}));
+
+vi.mock('../../../../src/features/categorias/services/categoriaService', () => ({
+    listarCategorias: vi.fn().mockResolvedValue([]),
+}));
+
+vi.mock('../../../../src/features/eventos/services/eventoService', () => ({
+    listarEventos: vi.fn().mockResolvedValue([]),
 }));
 
 const autenticarMock = vi.mocked(autenticarUsuario);
@@ -18,7 +26,8 @@ const renderizar = () =>
             <Routes>
                 <Route path="/login" element={<FormularioLogin />} />
                 <Route path="/admin/categorias" element={<p>Pantalla de categorías</p>} />
-                <Route path="/usuario" element={<p>Inicio de usuario</p>} />
+                <Route path="/usuario" element={<Navigate to="/usuario/eventos" replace />} />
+                <Route path="/usuario/eventos" element={<h1>Eventos en campus</h1>} />
             </Routes>
         </MemoryRouter>,
     );
@@ -73,7 +82,7 @@ describe('FormularioLogin: sesión y redirección', () => {
 
         await iniciarSesion();
 
-        expect(await screen.findByText('Inicio de usuario')).toBeInTheDocument();
+        expect(await screen.findByRole('heading', { name: 'Eventos en campus' })).toBeInTheDocument();
         expect(screen.queryByText('Pantalla de categorías')).not.toBeInTheDocument();
         expect(obtenerSesion()?.rol).toBe('USUARIO');
     });

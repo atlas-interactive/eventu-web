@@ -1,7 +1,7 @@
 import { CalendarDays, ChartPie, LogOut, Tags, UserCog } from 'lucide-react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { obtenerSesion } from '../../features/sesion/sesion';
-import { cerrarSesion, esAdministrador, puedeGestionarEventos } from '../../features/sesion/sesion';
+import { cerrarSesion, esAdministrador, esUsuario, puedeGestionarEventos } from '../../features/sesion/sesion';
 
 const ETIQUETA_ROL: Record<string, string> = {
     ADMIN: 'Administrador',
@@ -70,6 +70,15 @@ export function LayoutAplicacion() {
                                             Estadísticas
                                         </NavLink>
                                     </>
+                                )}
+                                {esUsuario(sesion) && (
+                                    <NavLink
+                                        to="/usuario/eventos"
+                                        className={({ isActive }) => `${claseEnlace({ isActive })} gap-1.5`}
+                                    >
+                                        <CalendarDays className="h-4 w-4 shrink-0" aria-hidden="true" />
+                                        Eventos en campus
+                                    </NavLink>
                                 )}
                             </nav>
                         )}

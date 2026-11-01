@@ -7,11 +7,16 @@ import { cancelarEvento, descargarReporteEvento, listarEventos } from '../../../
 import { guardarArchivo } from '../../../../src/api/descargas';
 import { guardarSesion } from '../../../../src/features/sesion/sesion';
 import type { Evento } from '../../../../src/types/evento';
+import { listarCategorias } from '../../../../src/features/categorias/services/categoriaService';
 
 vi.mock('../../../../src/features/eventos/services/eventoService', () => ({
     cancelarEvento: vi.fn(),
     descargarReporteEvento: vi.fn(),
     listarEventos: vi.fn(),
+}));
+
+vi.mock('../../../../src/features/categorias/services/categoriaService', () => ({
+    listarCategorias: vi.fn(),
 }));
 
 vi.mock('../../../../src/api/descargas', () => ({
@@ -22,6 +27,7 @@ const cancelarMock = vi.mocked(cancelarEvento);
 const descargarMock = vi.mocked(descargarReporteEvento);
 const guardarMock = vi.mocked(guardarArchivo);
 const listarMock = vi.mocked(listarEventos);
+const listarCategoriasMock = vi.mocked(listarCategorias);
 
 const evento = (id: number, titulo: string, organizadorId = 3): Evento => ({
     id,
@@ -56,6 +62,9 @@ describe('MisEventos (HU-07)', () => {
             rol: 'ORGANIZADOR',
         });
         listarMock.mockReset().mockResolvedValue([evento(9, 'Feria cultural')]);
+        listarCategoriasMock.mockReset().mockResolvedValue([
+            { id: 2, nombre: 'Cultural', activo: true, creadoEn: '', eventosActivos: 1 },
+        ]);
         cancelarMock.mockReset();
         descargarMock.mockReset();
         guardarMock.mockReset();
@@ -75,6 +84,19 @@ describe('MisEventos (HU-07)', () => {
 
         expect(await screen.findByRole('heading', { name: 'Feria cultural' })).toBeInTheDocument();
         expect(screen.queryByRole('heading', { name: 'Evento de otro organizador' })).not.toBeInTheDocument();
+    });
+
+    it('aplica filtros a la consulta sin cambiar las tarjetas de gestión', async () => {
+        const usuario = userEvent.setup();
+        renderizar();
+
+        await screen.findByRole('heading', { name: 'Feria cultural' });
+        await usuario.click(screen.getByRole('button', { name: 'Cultural' }));
+
+        await vi.waitFor(() => expect(listarMock).toHaveBeenCalledTimes(2));
+        expect(listarMock).toHaveBeenLastCalledWith({ categoriaId: 2 });
+        expect(screen.getByRole('link', { name: 'Editar evento Feria cultural' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Cancelar evento Feria cultural' })).toBeInTheDocument();
     });
 
     it('cancela el evento solo tras confirmar y lo retira de la lista', async () => {
@@ -128,6 +150,9 @@ describe('MisEventos (HU-17)', () => {
             rol: 'ORGANIZADOR',
         });
         listarMock.mockReset().mockResolvedValue([evento(9, 'Feria cultural')]);
+        listarCategoriasMock.mockReset().mockResolvedValue([
+            { id: 2, nombre: 'Cultural', activo: true, creadoEn: '', eventosActivos: 1 },
+        ]);
         descargarMock.mockReset();
         guardarMock.mockReset();
     });

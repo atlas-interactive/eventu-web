@@ -38,7 +38,7 @@ export const obtenerSesion = (): SesionUsuario | null => {
 export const obtenerRutaInicio = (sesion: SesionUsuario): string => {
     if (esAdministrador(sesion)) return '/admin/categorias';
     if (esOrganizador(sesion)) return '/organizador/eventos';
-    if (esUsuario(sesion)) return '/usuario';
+    if (esUsuario(sesion)) return '/usuario/eventos';
 
     return '/no-autorizado';
 };

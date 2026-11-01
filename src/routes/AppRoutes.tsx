@@ -76,7 +76,8 @@ export function AppRoutes() {
 
             <Route element={<RutaUsuario />}>
                 <Route element={<LayoutAplicacion />}>
-                    <Route path="/usuario" element={pantallaDiferida(<InicioUsuario />)} />
+                    <Route path="/usuario" element={<Navigate to="/usuario/eventos" replace />} />
+                    <Route path="/usuario/eventos" element={pantallaDiferida(<InicioUsuario />)} />
                 </Route>
             </Route>
 

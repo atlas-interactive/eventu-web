@@ -1,13 +1,68 @@
-import { render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { cleanup, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { InicioUsuario } from '../../../../src/features/sesion/InicioUsuario';
+import { listarCategorias } from '../../../../src/features/categorias/services/categoriaService';
+import { listarEventos } from '../../../../src/features/eventos/services/eventoService';
+import type { Evento } from '../../../../src/types/evento';
 
-describe('InicioUsuario', () => {
-    it('presenta el estado informativo del inicio de usuario', () => {
+vi.mock('../../../../src/features/categorias/services/categoriaService', () => ({
+    listarCategorias: vi.fn(),
+}));
+
+vi.mock('../../../../src/features/eventos/services/eventoService', () => ({
+    listarEventos: vi.fn(),
+}));
+
+const listarCategoriasMock = vi.mocked(listarCategorias);
+const listarEventosMock = vi.mocked(listarEventos);
+
+const evento: Evento = {
+    id: 5,
+    titulo: 'Feria de proyectos',
+    descripcion: 'Muestra de proyectos universitarios',
+    fechaInicio: '2026-11-20T14:30:00',
+    ubicacion: 'Auditorio central',
+    cuposMaximos: 120,
+    cuposDisponibles: 38,
+    estado: 'PUBLICADO',
+    organizadorId: 2,
+    organizadorNombre: 'Laura',
+    categoriaId: 4,
+    categoriaNombre: 'Académico',
+};
+
+describe('InicioUsuario (HU-08)', () => {
+    beforeEach(() => {
+        listarCategoriasMock.mockReset().mockResolvedValue([
+            { id: 4, nombre: 'Académico', activo: true, creadoEn: '', eventosActivos: 1 },
+        ]);
+        listarEventosMock.mockReset().mockResolvedValue([evento]);
+    });
+
+    afterEach(() => {
+        cleanup();
+        vi.restoreAllMocks();
+    });
+
+    it('muestra el catálogo de campus y deja el botón de detalle pendiente de conectar', async () => {
         render(<InicioUsuario />);
 
-        expect(screen.getByRole('status')).toHaveTextContent(
-            'Sesión iniciada exitosamente, el listado de eventos estará disponible en la próxima versión.',
-        );
+        expect(await screen.findByRole('heading', { name: 'Eventos en campus' })).toBeInTheDocument();
+        expect(await screen.findByRole('heading', { name: 'Feria de proyectos' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Académico' })).toBeInTheDocument();
+        expect(screen.getByText('38 cupos disponibles de 120')).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Ver detalle' })).toBeDisabled();
+    });
+
+    it('envía al backend la categoría elegida en los filtros del catálogo', async () => {
+        const usuario = userEvent.setup();
+        render(<InicioUsuario />);
+
+        await screen.findByRole('heading', { name: 'Feria de proyectos' });
+        await usuario.click(screen.getByRole('button', { name: 'Académico' }));
+
+        await vi.waitFor(() => expect(listarEventosMock).toHaveBeenCalledTimes(2));
+        expect(listarEventosMock).toHaveBeenLastCalledWith({ categoriaId: 4 });
     });
 });

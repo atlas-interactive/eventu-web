@@ -15,6 +15,13 @@ export interface Evento {
     categoriaNombre: string;
 }
 
+export interface FiltrosEvento {
+    categoriaId?: number;
+    fechaDesde?: string;
+    fechaHasta?: string;
+    texto?: string;
+}
+
 // Cuerpo de POST /eventos (todos los campos son obligatorios)
 export interface EventoSolicitud {
     titulo: string;
