@@ -60,6 +60,24 @@ describe('LayoutAplicacion', () => {
         expect(screen.getByText('Ana Gómez')).toBeInTheDocument();
     });
 
+    it('ofrece al usuario navegación directa al catálogo de eventos', () => {
+        guardarSesion({
+            token: 't',
+            usuarioId: 3,
+            nombre: 'Juan Pérez',
+            correo: 'juan@unillanos.edu.co',
+            rol: 'USUARIO',
+        });
+
+        renderizar();
+
+        expect(screen.getByRole('link', { name: 'Eventos en campus' })).toHaveAttribute(
+            'href',
+            '/usuario/eventos',
+        );
+        expect(screen.queryByRole('link', { name: 'Mis eventos' })).not.toBeInTheDocument();
+    });
+
     it('cierra la sesión y navega al login', async () => {
         guardarSesion({
             token: 'jwt-de-prueba',

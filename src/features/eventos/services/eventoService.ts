@@ -1,12 +1,19 @@
 import { axiosClient } from '../../../api';
 import { convertirErrorBlob } from '../../../api/descargas';
-import type { Evento, EventoActualizacion, EventoSolicitud, RespuestaEvento } from '../../../types/evento';
+import type { Evento, EventoActualizacion, EventoSolicitud, FiltrosEvento, RespuestaEvento } from '../../../types/evento';
 
 // El organizador se identifica con el token JWT (el interceptor de axios lo envía), por eso ninguna llamada lleva su id
 
-// Devuelve los eventos publicados. El backend aún no tiene consulta por id, así que la edición busca aquí
-export const listarEventos = async (): Promise<Evento[]> => {
-    const { data } = await axiosClient.get<Evento[]>('/eventos');
+// El backend aplica los filtros y limita la visibilidad según el rol del token.
+export const listarEventos = async (filtros: FiltrosEvento = {}): Promise<Evento[]> => {
+    const params = Object.fromEntries(
+        Object.entries(filtros)
+            .map(([clave, valor]) => [clave, typeof valor === 'string' ? valor.trim() : valor])
+            .filter(([, valor]) => valor !== undefined && valor !== ''),
+    );
+    const { data } = Object.keys(params).length > 0
+        ? await axiosClient.get<Evento[]>('/eventos', { params })
+        : await axiosClient.get<Evento[]>('/eventos');
     if (!Array.isArray(data)) {
         throw new Error('La respuesta de /eventos no es una lista.');
     }

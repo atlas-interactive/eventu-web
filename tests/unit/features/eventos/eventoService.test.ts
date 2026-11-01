@@ -37,6 +37,34 @@ describe('eventoService', () => {
         await expect(listarEventos()).rejects.toThrow('no es una lista');
     });
 
+    it('envía los filtros definidos al backend', async () => {
+        clienteMock.get.mockResolvedValue({ data: [] });
+
+        await listarEventos({
+            categoriaId: 4,
+            fechaDesde: '2026-10-01',
+            fechaHasta: '2026-10-31',
+            texto: 'feria',
+        });
+
+        expect(clienteMock.get).toHaveBeenCalledWith('/eventos', {
+            params: {
+                categoriaId: 4,
+                fechaDesde: '2026-10-01',
+                fechaHasta: '2026-10-31',
+                texto: 'feria',
+            },
+        });
+    });
+
+    it('omite filtros vacíos y conserva la llamada original sin parámetros', async () => {
+        clienteMock.get.mockResolvedValue({ data: [] });
+
+        await listarEventos({ texto: '   ', fechaDesde: undefined });
+
+        expect(clienteMock.get).toHaveBeenCalledWith('/eventos');
+    });
+
     it('crea el evento sin enviar el id del organizador (va en el token)', async () => {
         clienteMock.post.mockResolvedValue({ data: { mensaje: 'Evento creado exitosamente.', eventoId: 7 } });
         const solicitud = {
