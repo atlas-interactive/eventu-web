@@ -17,9 +17,19 @@ export const listarEventos = async (filtros: FiltrosEvento = {}): Promise<Evento
     const sesion = obtenerSesion();
     const url = esOrganizador(sesion) ? '/eventos/mios' : '/eventos';
 
-    const { data } = await axiosClient.get<Evento[]>(url, { params });
+    const { data } = Object.keys(params).length > 0
+        ? await axiosClient.get<Evento[]>(url, { params })
+        : await axiosClient.get<Evento[]>(url);
     if (!Array.isArray(data)) {
         throw new Error('La respuesta de /eventos no es una lista.');
+    }
+    return data;
+};
+
+export const obtenerEvento = async (id: number): Promise<Evento> => {
+    const { data } = await axiosClient.get<Evento>(`/eventos/${id}`);
+    if (!data || typeof data !== 'object' || Array.isArray(data)) {
+        throw new Error('La respuesta de /eventos/{id} no es un evento válido.');
     }
     return data;
 };

@@ -6,6 +6,7 @@ import {
     descargarReporteEvento,
     editarEvento,
     listarEventos,
+    obtenerEvento,
 } from '../../../../src/features/eventos/services/eventoService';
 
 vi.mock('../../../../src/api', () => ({
@@ -16,6 +17,7 @@ const clienteMock = vi.mocked(axiosClient);
 
 describe('eventoService', () => {
     beforeEach(() => {
+        localStorage.clear();
         clienteMock.get.mockReset();
         clienteMock.post.mockReset();
         clienteMock.put.mockReset();
@@ -63,6 +65,21 @@ describe('eventoService', () => {
         await listarEventos({ texto: '   ', fechaDesde: undefined });
 
         expect(clienteMock.get).toHaveBeenCalledWith('/eventos');
+    });
+
+    it('consulta un evento por id', async () => {
+        const detalle = { id: 7, titulo: 'Feria' };
+        clienteMock.get.mockResolvedValue({ data: detalle });
+
+        await expect(obtenerEvento(7)).resolves.toEqual(detalle);
+
+        expect(clienteMock.get).toHaveBeenCalledWith('/eventos/7');
+    });
+
+    it('rechaza una respuesta de detalle que no es un objeto', async () => {
+        clienteMock.get.mockResolvedValue({ data: [] });
+
+        await expect(obtenerEvento(7)).rejects.toThrow('no es un evento válido');
     });
 
     it('crea el evento sin enviar el id del organizador (va en el token)', async () => {

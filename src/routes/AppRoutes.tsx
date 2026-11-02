@@ -29,6 +29,9 @@ const EditarEvento = lazy(() =>
 const MisEventos = lazy(() =>
     import('../features/eventos/MisEventos').then((modulo) => ({ default: modulo.MisEventos })),
 );
+const DetalleEvento = lazy(() =>
+    import('../features/eventos/DetalleEvento').then((modulo) => ({ default: modulo.DetalleEvento })),
+);
 const DashboardEstadisticas = lazy(() =>
     import('../features/estadisticas/DashboardEstadisticas').then((modulo) => ({ default: modulo.DashboardEstadisticas })),
 );
@@ -78,6 +81,7 @@ export function AppRoutes() {
                 <Route element={<LayoutAplicacion />}>
                     <Route path="/usuario" element={<Navigate to="/usuario/eventos" replace />} />
                     <Route path="/usuario/eventos" element={pantallaDiferida(<InicioUsuario />)} />
+                    <Route path="/usuario/eventos/:id" element={pantallaDiferida(<DetalleEvento />)} />
                 </Route>
             </Route>
 

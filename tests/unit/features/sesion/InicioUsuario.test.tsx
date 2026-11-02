@@ -1,6 +1,7 @@
 import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { MemoryRouter } from 'react-router-dom';
 import { InicioUsuario } from '../../../../src/features/sesion/InicioUsuario';
 import { listarCategorias } from '../../../../src/features/categorias/services/categoriaService';
 import { listarEventos } from '../../../../src/features/eventos/services/eventoService';
@@ -45,20 +46,31 @@ describe('InicioUsuario (HU-08)', () => {
         vi.restoreAllMocks();
     });
 
-    it('muestra el catálogo de campus y deja el botón de detalle pendiente de conectar', async () => {
-        render(<InicioUsuario />);
+    it('muestra el catálogo y enlaza cada evento con su detalle', async () => {
+        render(
+            <MemoryRouter>
+                <InicioUsuario />
+            </MemoryRouter>,
+        );
 
         expect(await screen.findByRole('heading', { name: 'Eventos en campus' })).toBeInTheDocument();
         expect(await screen.findByRole('heading', { name: 'Feria de proyectos' })).toBeInTheDocument();
         expect(listarCategoriasMock).toHaveBeenCalledWith(true);
         expect(screen.getByRole('button', { name: 'Académico' })).toBeInTheDocument();
         expect(screen.getByText('38 cupos disponibles de 120')).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: 'Ver detalle' })).toBeDisabled();
+        expect(screen.getByRole('link', { name: 'Ver detalle de Feria de proyectos' })).toHaveAttribute(
+            'href',
+            '/usuario/eventos/5',
+        );
     });
 
     it('envía al backend la categoría elegida en los filtros del catálogo', async () => {
         const usuario = userEvent.setup();
-        render(<InicioUsuario />);
+        render(
+            <MemoryRouter>
+                <InicioUsuario />
+            </MemoryRouter>,
+        );
 
         await screen.findByRole('heading', { name: 'Feria de proyectos' });
         await usuario.click(screen.getByRole('button', { name: 'Académico' }));

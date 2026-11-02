@@ -1,0 +1,195 @@
+.detalle-evento-page {
+  width: 100%;
+  max-width: 70rem;
+  margin-inline: auto;
+  padding: 1.5rem 1rem 2rem;
+}
+
+.detalle-evento-volver {
+  display: inline-block;
+  color: var(--color-eventu-institutional-red);
+  font-size: 0.8125rem;
+  text-decoration: none;
+}
+
+.detalle-evento-volver:hover {
+  text-decoration: underline;
+}
+
+.detalle-evento-layout {
+  display: grid;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.detalle-evento-contenido {
+  min-width: 0;
+}
+
+.detalle-evento-etiquetas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.detalle-evento-categoria,
+.detalle-evento-estado {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.25rem;
+  border-radius: 0.25rem;
+  padding: 0.125rem 0.375rem;
+  background-color: var(--color-eventu-soft-red-background);
+  color: var(--color-eventu-institutional-red);
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+.detalle-evento-estado--agotado {
+  background-color: #fff4e5;
+  color: #8a4b08;
+}
+
+.detalle-evento-estado--cancelado {
+  background-color: #ededeb;
+  color: var(--color-eventu-main-ink);
+}
+
+.detalle-evento-titulo {
+  margin-top: 0.375rem;
+  color: var(--color-eventu-main-ink);
+  font-size: 1.375rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+}
+
+.detalle-evento-descripcion {
+  margin-top: 0.5rem;
+  color: var(--color-eventu-secondary-text);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  white-space: pre-line;
+}
+
+.detalle-evento-informacion {
+  display: grid;
+  gap: 0.625rem;
+  margin-top: 1.25rem;
+  border-top: 1px solid var(--color-eventu-border);
+  padding-top: 1rem;
+}
+
+.detalle-evento-informacion p {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-eventu-main-ink);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.detalle-evento-informacion svg {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  color: var(--color-eventu-secondary-text);
+}
+
+.detalle-evento-cupos {
+  height: 0.25rem;
+  overflow: hidden;
+  margin-top: 0.625rem;
+  border-radius: 9999px;
+  background-color: var(--color-eventu-border);
+}
+
+.detalle-evento-cupos span {
+  display: block;
+  height: 100%;
+  background-color: var(--color-eventu-institutional-red);
+}
+
+.detalle-evento-cupos-texto {
+  margin-top: 0.375rem;
+  color: var(--color-eventu-secondary-text);
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+.detalle-evento-organiza {
+  margin-top: 1rem;
+  border-top: 1px solid var(--color-eventu-border);
+  padding-top: 0.75rem;
+}
+
+.detalle-evento-organiza span,
+.detalle-evento-panel-categoria > span:first-child {
+  color: var(--color-eventu-secondary-text);
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+.detalle-evento-organiza p {
+  margin-top: 0.125rem;
+  color: var(--color-eventu-main-ink);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.detalle-evento-panel {
+  align-self: start;
+  border: 1px solid var(--color-eventu-border);
+  border-radius: 0.5rem;
+  background-color: var(--color-eventu-white-surface);
+  padding: 1rem;
+}
+
+.detalle-evento-inscripcion,
+.detalle-evento-panel-estado {
+  display: flex;
+  width: 100%;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 0.375rem;
+  background-color: var(--color-eventu-institutional-red);
+  padding: 0.5rem;
+  color: var(--color-eventu-white-surface);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.detalle-evento-inscripcion:disabled {
+  cursor: default;
+}
+
+.detalle-evento-panel-estado {
+  background-color: #ededeb;
+  color: var(--color-eventu-secondary-text);
+}
+
+.detalle-evento-panel-categoria {
+  display: grid;
+  gap: 0.25rem;
+  margin-top: 1rem;
+  border-top: 1px solid var(--color-eventu-border);
+  padding-top: 0.75rem;
+}
+
+@media (min-width: 48rem) {
+  .detalle-evento-page {
+    padding: 1.5rem 2rem 2rem;
+  }
+
+  .detalle-evento-layout {
+    grid-template-columns: minmax(0, 2fr) minmax(14rem, 0.9fr);
+    gap: 2.5rem;
+  }
+
+  .detalle-evento-panel {
+    margin-top: 0;
+  }
+}

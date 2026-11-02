@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { listarCategorias } from '../categorias/services/categoriaService';
 import { mensajeDeError } from '../../api/mensajeDeError';
 import { SkeletonEstado } from '../../components/ui/Skeleton';
@@ -144,14 +145,13 @@ export function InicioUsuario() {
                             <p className="catalogo-evento-detalles">
                                 {evento.cuposDisponibles} cupos disponibles de {evento.cuposMaximos}
                             </p>
-                            <button
-                                type="button"
+                            <Link
+                                to={`/usuario/eventos/${evento.id}`}
                                 className="catalogo-evento-detalle"
-                                disabled
-                                title="La consulta de detalles estará disponible próximamente."
+                                aria-label={`Ver detalle de ${evento.titulo}`}
                             >
                                 Ver detalle
-                            </button>
+                            </Link>
                         </li>
                     ))}
                 </ul>
