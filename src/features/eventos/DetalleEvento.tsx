@@ -19,7 +19,12 @@ const estaCancelado = (evento: Evento) => evento.estado.toUpperCase() === 'CANCE
 export function DetalleEvento() {
     const { id } = useParams();
     const idEvento = Number(id);
-    const inscripcion = useInscripcionEvento();
+    const sesion = obtenerSesion();
+    const puedeConsultarInscripcion = esUsuario(sesion) || esOrganizador(sesion);
+    const inscripcion = useInscripcionEvento(
+        idEvento,
+        puedeConsultarInscripcion && Number.isSafeInteger(idEvento) && idEvento > 0,
+    );
     const [evento, setEvento] = useState<Evento | null>(null);
     const [cargando, setCargando] = useState(true);
     const [error, setError] = useState('');
@@ -96,7 +101,6 @@ export function DetalleEvento() {
         evento.cuposMaximos > 0 ? Math.min(100, (inscritos / evento.cuposMaximos) * 100) : 0;
     const fechaInicio = new Date(evento.fechaInicio);
     const estadoVisible = cancelado ? 'Evento cancelado' : agotado ? 'Cupos agotados' : '';
-    const sesion = obtenerSesion();
     const esPropio = evento.organizadorId === sesion?.usuarioId;
     const puedeInscribirse = esUsuario(sesion) || esOrganizador(sesion);
     const noPublicado = evento.estado.toUpperCase() !== 'PUBLICADO';
@@ -185,16 +189,37 @@ export function DetalleEvento() {
                                 ? 'Los administradores no pueden inscribirse en eventos.'
                                 : 'Debes iniciar sesión para inscribirte.'}
                         </p>
+                    ) : inscripcion.verificando ? (
+                        <button type="button" className="detalle-evento-inscripcion" disabled aria-busy="true">
+                            Verificando inscripción…
+                        </button>
+                    ) : inscripcion.errorVerificacion ? (
+                        <button
+                            type="button"
+                            className="detalle-evento-inscripcion"
+                            onClick={inscripcion.reintentarVerificacion}
+                        >
+                            Reintentar verificación
+                        </button>
+                    ) : inscripcion.yaInscrito ? (
+                        <button type="button" className="detalle-evento-inscripcion" disabled>
+                            Ya estás inscrito
+                        </button>
                     ) : (
                         <button
                             type="button"
                             className="detalle-evento-inscripcion"
-                            disabled={inscripcion.inscribiendo}
+                            disabled={inscripcion.inscribiendo || inscripcion.verificando}
                             aria-busy={inscripcion.inscribiendo}
-                            onClick={() => inscripcion.inscribir(evento.id)}
+                            onClick={inscripcion.inscribir}
                         >
                             {inscripcion.inscribiendo ? 'Inscribiendo…' : 'Inscribirme al evento'}
                         </button>
+                    )}
+                    {inscripcion.errorVerificacion && (
+                        <p role="alert" className="detalle-evento-error">
+                            No se pudo verificar si ya estás inscrito: {inscripcion.errorVerificacion}
+                        </p>
                     )}
                     {inscripcion.error && (
                         <p role="alert" className="detalle-evento-error">

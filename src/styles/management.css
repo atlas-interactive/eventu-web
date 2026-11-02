@@ -175,8 +175,11 @@
   outline-offset: 2px;
 }
 
-.gestion-organizer-action:disabled {
-  opacity: 0.6;
+.gestion-organizer-action:disabled,
+.gestion-organizer-action:disabled:hover {
+  border-color: var(--color-eventu-border);
+  background-color: var(--color-eventu-disabled-button);
+  color: var(--color-eventu-secondary-text);
   cursor: not-allowed;
 }
 

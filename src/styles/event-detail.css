@@ -164,6 +164,8 @@
 
 .detalle-evento-inscripcion:disabled {
   cursor: default;
+  background-color: var(--color-eventu-disabled-button);
+  color: var(--color-eventu-secondary-text);
 }
 
 .detalle-evento-panel-estado {

@@ -4,7 +4,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { DetalleEvento } from '../../../../src/features/eventos/DetalleEvento';
 import { obtenerEvento } from '../../../../src/features/eventos/services/eventoService';
-import { inscribirEnEvento } from '../../../../src/features/inscripciones/services/inscripcionService';
+import {
+    inscribirEnEvento,
+    tieneInscripcionActiva,
+} from '../../../../src/features/inscripciones/services/inscripcionService';
 import { guardarSesion } from '../../../../src/features/sesion/sesion';
 import type { Evento } from '../../../../src/types/evento';
 
@@ -14,10 +17,12 @@ vi.mock('../../../../src/features/eventos/services/eventoService', () => ({
 
 vi.mock('../../../../src/features/inscripciones/services/inscripcionService', () => ({
     inscribirEnEvento: vi.fn(),
+    tieneInscripcionActiva: vi.fn(),
 }));
 
 const obtenerEventoMock = vi.mocked(obtenerEvento);
 const inscribirEnEventoMock = vi.mocked(inscribirEnEvento);
+const tieneInscripcionActivaMock = vi.mocked(tieneInscripcionActiva);
 
 const evento: Evento = {
     id: 5,
@@ -52,6 +57,7 @@ describe('DetalleEvento', () => {
             inscripcionId: 12,
             codigoQr: 'EVENTU-QR-SECRETO',
         });
+        tieneInscripcionActivaMock.mockReset().mockResolvedValue(false);
         localStorage.clear();
         guardarSesion({
             token: 'token-prueba',
@@ -76,6 +82,44 @@ describe('DetalleEvento', () => {
         expect(screen.getByText(/82\s+inscritos de\s+120 cupos/)).toBeInTheDocument();
         expect(screen.getByText('38 cupos disponibles')).toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Inscribirme al evento' })).toBeEnabled();
+        expect(tieneInscripcionActivaMock).toHaveBeenCalledWith(5);
+    });
+
+    it('deshabilita la inscripción si ya existe una inscripción activa', async () => {
+        tieneInscripcionActivaMock.mockResolvedValue(true);
+        renderDetalle();
+
+        const boton = await screen.findByRole('button', { name: 'Ya estás inscrito' });
+
+        expect(boton).toBeDisabled();
+        expect(inscribirEnEventoMock).not.toHaveBeenCalled();
+    });
+
+    it('no considera una inscripción cancelada como activa', async () => {
+        tieneInscripcionActivaMock.mockResolvedValue(false);
+        renderDetalle();
+
+        expect(await screen.findByRole('button', { name: 'Inscribirme al evento' })).toBeEnabled();
+    });
+
+    it('muestra el error de verificación y permite reintentar', async () => {
+        const usuario = userEvent.setup();
+        tieneInscripcionActivaMock
+            .mockRejectedValueOnce({
+                isAxiosError: true,
+                response: { data: { error: 'No se pudo consultar la inscripción.' } },
+            })
+            .mockResolvedValueOnce(true);
+        const errorConsola = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+        renderDetalle();
+
+        expect(await screen.findByRole('alert')).toHaveTextContent(
+            'No se pudo verificar si ya estás inscrito: No se pudo consultar la inscripción.',
+        );
+        await usuario.click(screen.getByRole('button', { name: 'Reintentar verificación' }));
+
+        expect(await screen.findByRole('button', { name: 'Ya estás inscrito' })).toBeDisabled();
+        errorConsola.mockRestore();
     });
 
     it('muestra la confirmación tras inscribir y no expone el código QR de la respuesta', async () => {
@@ -154,6 +198,7 @@ describe('DetalleEvento', () => {
 
         expect(await screen.findByText('Los administradores no pueden inscribirse en eventos.')).toBeInTheDocument();
         expect(screen.queryByRole('button', { name: 'Inscribirme al evento' })).not.toBeInTheDocument();
+        expect(tieneInscripcionActivaMock).not.toHaveBeenCalled();
     });
 
     it('indica que no hay cupos disponibles cuando el evento está agotado', async () => {

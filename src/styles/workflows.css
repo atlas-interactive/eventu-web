@@ -39,7 +39,8 @@
 }
 
 .workflow-button:disabled {
-  opacity: 0.6;
+  background-color: var(--color-eventu-disabled-button);
+  color: var(--color-eventu-secondary-text);
   cursor: not-allowed;
 }
 

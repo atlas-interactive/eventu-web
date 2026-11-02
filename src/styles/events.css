@@ -295,8 +295,10 @@
 }
 
 .evento-row-button:disabled {
+  border-color: var(--color-eventu-border);
+  background-color: var(--color-eventu-disabled-button);
+  color: var(--color-eventu-secondary-text);
   cursor: progress;
-  opacity: 0.6;
 }
 
 .evento-row-button--danger {
@@ -306,6 +308,10 @@
 
 .evento-row-button--danger:hover {
   background-color: var(--color-eventu-soft-red-background);
+}
+
+.evento-row-button:disabled:hover {
+  background-color: var(--color-eventu-disabled-button);
 }
 
 .evento-row-button:focus-visible {
