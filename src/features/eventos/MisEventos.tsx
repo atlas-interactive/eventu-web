@@ -21,7 +21,7 @@ const estaCancelado = (evento: Evento) => evento.estado.toUpperCase() === 'CANCE
 const fechasInvalidas = (filtros: FiltrosEvento) =>
     Boolean(filtros.fechaDesde && filtros.fechaHasta && filtros.fechaDesde > filtros.fechaHasta);
 
-// El organizador ve sus eventos publicados; el administrador ve todos (puede editar cualquiera)
+// El organizador ve sus eventos publicados y cancelados; el administrador ve todos (puede editar cualquiera)
 export function MisEventos() {
     const location = useLocation();
     const mensajeNavegacion = (location.state as { mensaje?: string } | null)?.mensaje ?? '';
@@ -239,14 +239,6 @@ export function MisEventos() {
                                 </span>
                             </div>
                             <div className="evento-card-actions">
-                                <Link
-                                    to={`/organizador/eventos/${evento.id}/editar`}
-                                    className="evento-row-button gap-1.5"
-                                    aria-label={`Editar evento ${evento.titulo}`}
-                                >
-                                    <Pencil className="h-4 w-4 shrink-0" aria-hidden="true" />
-                                    Editar
-                                </Link>
                                 {!estaCancelado(evento) && (
                                     <button
                                         type="button"
@@ -274,6 +266,16 @@ export function MisEventos() {
                                         <CircleX className="h-4 w-4 shrink-0" aria-hidden="true" />
                                         Cancelar
                                     </button>
+                                )}
+                                {!estaCancelado(evento) && (
+                                    <Link
+                                        to={`/organizador/eventos/${evento.id}/editar`}
+                                        className="evento-row-button gap-1.5"
+                                        aria-label={`Editar evento ${evento.titulo}`}
+                                    >
+                                        <Pencil className="h-4 w-4 shrink-0" aria-hidden="true" />
+                                        Editar
+                                    </Link>
                                 )}
                             </div>
                         </li>

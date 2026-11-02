@@ -1,5 +1,7 @@
 import { axiosClient } from '../../../api';
 import { convertirErrorBlob } from '../../../api/descargas';
+import { esOrganizador } from '../../sesion/sesion';
+import { obtenerSesion } from '../../sesion/sesion';
 import type { Evento, EventoActualizacion, EventoSolicitud, FiltrosEvento, RespuestaEvento } from '../../../types/evento';
 
 // El organizador se identifica con el token JWT (el interceptor de axios lo envía), por eso ninguna llamada lleva su id
@@ -11,9 +13,11 @@ export const listarEventos = async (filtros: FiltrosEvento = {}): Promise<Evento
             .map(([clave, valor]) => [clave, typeof valor === 'string' ? valor.trim() : valor])
             .filter(([, valor]) => valor !== undefined && valor !== ''),
     );
-    const { data } = Object.keys(params).length > 0
-        ? await axiosClient.get<Evento[]>('/eventos', { params })
-        : await axiosClient.get<Evento[]>('/eventos');
+    
+    const sesion = obtenerSesion();
+    const url = esOrganizador(sesion) ? '/eventos/mios' : '/eventos';
+
+    const { data } = await axiosClient.get<Evento[]>(url, { params });
     if (!Array.isArray(data)) {
         throw new Error('La respuesta de /eventos no es una lista.');
     }
