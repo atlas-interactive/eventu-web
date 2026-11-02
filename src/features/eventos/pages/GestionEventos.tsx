@@ -5,7 +5,7 @@ import { Skeleton, SkeletonEstado } from '../../../components/ui/Skeleton';
 import { FiltrosEventos } from '../components/FiltrosEventos';
 import { TarjetaEvento } from '../components/TarjetaEvento';
 import { ConfirmarCancelacionEvento } from '../components/ConfirmarCancelacionEvento';
-import { useGestionEventos } from '../hooks/useGestionEventos';
+import { useGestionEventos } from '../../../hooks/eventos/useGestionEventos';
 import '../../../styles/events.css';
 
 export function GestionEventos() {

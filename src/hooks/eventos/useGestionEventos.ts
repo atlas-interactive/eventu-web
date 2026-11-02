@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react';
-import type { Evento, FiltrosEvento } from '../../../types/evento';
-import type { Categoria } from '../../../types/categoria';
-import { mensajeDeError } from '../../../api/mensajeDeError';
-import { guardarArchivo } from '../../../api/descargas';
-import { esAdministrador, obtenerSesion } from '../../sesion/sesion';
+import type { Evento, FiltrosEvento } from '../../types/evento';
+import type { Categoria } from '../../types/categoria';
+import { mensajeDeError } from '../../api/mensajeDeError';
+import { guardarArchivo } from '../../api/descargas';
+import { esAdministrador, obtenerSesion } from '../../features/sesion/sesion';
 import {
     cancelarEvento,
     descargarReporteEvento,
     listarEventos,
     listarMisEventos,
-} from '../services/eventoService';
-import { listarCategorias } from '../../categorias/services/categoriaService';
+} from '../../features/eventos/services/eventoService';
+import { listarCategorias } from '../../features/categorias/services/categoriaService';
 
 const fechasInvalidas = (filtros: FiltrosEvento) =>
     Boolean(filtros.fechaDesde && filtros.fechaHasta && filtros.fechaDesde > filtros.fechaHasta);

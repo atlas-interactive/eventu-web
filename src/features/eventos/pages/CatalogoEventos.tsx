@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { SkeletonEstado } from '../../../components/ui/Skeleton';
 import { FiltrosEventos } from '../components/FiltrosEventos';
-import { useCatalogoEventos } from '../hooks/useCatalogoEventos';
+import { useCatalogoEventos } from '../../../hooks/eventos/useCatalogoEventos';
 import type { Evento } from '../../../types/evento';
 import '../../../styles/event-catalog.css';
 
