@@ -4,8 +4,11 @@ import { CalendarDays, Clock3, MapPin, Users } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
 import { mensajeDeError } from '../../api/mensajeDeError';
 import { Skeleton, SkeletonEstado } from '../../components/ui/Skeleton';
+import { esAdministrador, esOrganizador, esUsuario, obtenerSesion } from '../sesion/sesion';
 import type { Evento } from '../../types/evento';
+import { ConfirmacionInscripcion } from './components/ConfirmacionInscripcion';
 import { obtenerEvento } from './services/eventoService';
+import { useInscripcionEvento } from '../../hooks/eventos/useInscripcionEvento';
 import '../../styles/event-detail.css';
 
 const formatoFecha = new Intl.DateTimeFormat('es-CO', { dateStyle: 'long' });
@@ -16,6 +19,7 @@ const estaCancelado = (evento: Evento) => evento.estado.toUpperCase() === 'CANCE
 export function DetalleEvento() {
     const { id } = useParams();
     const idEvento = Number(id);
+    const inscripcion = useInscripcionEvento();
     const [evento, setEvento] = useState<Evento | null>(null);
     const [cargando, setCargando] = useState(true);
     const [error, setError] = useState('');
@@ -92,6 +96,14 @@ export function DetalleEvento() {
         evento.cuposMaximos > 0 ? Math.min(100, (inscritos / evento.cuposMaximos) * 100) : 0;
     const fechaInicio = new Date(evento.fechaInicio);
     const estadoVisible = cancelado ? 'Evento cancelado' : agotado ? 'Cupos agotados' : '';
+    const sesion = obtenerSesion();
+    const esPropio = evento.organizadorId === sesion?.usuarioId;
+    const puedeInscribirse = esUsuario(sesion) || esOrganizador(sesion);
+    const noPublicado = evento.estado.toUpperCase() !== 'PUBLICADO';
+
+    if (inscripcion.inscripcionRealizada) {
+        return <ConfirmacionInscripcion evento={evento} />;
+    }
 
     return (
         <main className="detalle-evento-page">
@@ -159,15 +171,35 @@ export function DetalleEvento() {
                         <p className="detalle-evento-panel-estado">Evento cancelado</p>
                     ) : agotado ? (
                         <p className="detalle-evento-panel-estado">Cupos agotados</p>
+                    ) : noPublicado ? (
+                        <p className="detalle-evento-panel-estado">
+                            No se permiten inscripciones en eventos que no estén publicados.
+                        </p>
+                    ) : esPropio ? (
+                        <p className="detalle-evento-panel-estado">
+                            No puedes inscribirte en un evento que tú organizas.
+                        </p>
+                    ) : !puedeInscribirse ? (
+                        <p className="detalle-evento-panel-estado">
+                            {esAdministrador(sesion)
+                                ? 'Los administradores no pueden inscribirse en eventos.'
+                                : 'Debes iniciar sesión para inscribirte.'}
+                        </p>
                     ) : (
                         <button
                             type="button"
                             className="detalle-evento-inscripcion"
-                            disabled
-                            aria-label="Inscribirme al evento; inscripción no disponible"
+                            disabled={inscripcion.inscribiendo}
+                            aria-busy={inscripcion.inscribiendo}
+                            onClick={() => inscripcion.inscribir(evento.id)}
                         >
-                            Inscribirme al evento
+                            {inscripcion.inscribiendo ? 'Inscribiendo…' : 'Inscribirme al evento'}
                         </button>
+                    )}
+                    {inscripcion.error && (
+                        <p role="alert" className="detalle-evento-error">
+                            {inscripcion.error}
+                        </p>
                     )}
                     <div className="detalle-evento-panel-categoria">
                         <span>Categoría</span>
