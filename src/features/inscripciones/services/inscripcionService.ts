@@ -1,14 +1,15 @@
 import { axiosClient } from '../../../api';
+import type { Inscripcion, RespuestaCancelacionInscripcion } from '../../../types/inscripcion';
+
+interface InscripcionDelUsuario {
+    eventoId: number;
+    estado: string;
+}
 
 export interface RespuestaInscripcion {
     mensaje: string;
     inscripcionId: number;
     codigoQr: string;
-}
-
-interface InscripcionDelUsuario {
-    eventoId: number;
-    estado: string;
 }
 
 export const inscribirEnEvento = async (eventoId: number): Promise<RespuestaInscripcion> =>
@@ -32,4 +33,41 @@ export const tieneInscripcionActiva = async (eventoId: number): Promise<boolean>
         (inscripcion) =>
             inscripcion.eventoId === eventoId && inscripcion.estado.toUpperCase() === 'ACTIVA',
     );
+};
+
+export const listarMisInscripciones = async (): Promise<Inscripcion[]> => {
+    const { data } = await axiosClient.get<Inscripcion[]>('/inscripciones/mias');
+    if (
+        !Array.isArray(data) ||
+        data.some(
+            (inscripcion) =>
+                !inscripcion ||
+                typeof inscripcion.id !== 'number' ||
+                typeof inscripcion.eventoId !== 'number' ||
+                !['ACTIVA', 'CANCELADA'].includes(inscripcion.estado) ||
+                typeof inscripcion.eventoTitulo !== 'string' ||
+                typeof inscripcion.eventoFechaInicio !== 'string' ||
+                typeof inscripcion.eventoUbicacion !== 'string',
+        )
+    ) {
+        throw new Error('La respuesta de /inscripciones/mias no es una lista válida.');
+    }
+
+    return data;
+};
+
+export const cancelarInscripcion = async (
+    inscripcionId: number,
+): Promise<RespuestaCancelacionInscripcion> => {
+    const { data } = await axiosClient.delete<RespuestaCancelacionInscripcion>(
+        `/inscripciones/${inscripcionId}`,
+    );
+    if (
+        !data ||
+        typeof data.mensaje !== 'string' ||
+        typeof data.inscripcionId !== 'number'
+    ) {
+        throw new Error('La respuesta de cancelación de inscripción no es válida.');
+    }
+    return data;
 };

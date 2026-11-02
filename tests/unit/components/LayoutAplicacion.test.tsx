@@ -54,6 +54,10 @@ describe('LayoutAplicacion', () => {
         renderizar();
 
         expect(screen.getByRole('link', { name: 'Explorar eventos' })).toHaveAttribute('href', '/eventos');
+        expect(screen.getByRole('link', { name: 'Mis inscripciones' })).toHaveAttribute(
+            'href',
+            '/mis-inscripciones',
+        );
         expect(screen.getByRole('link', { name: 'Mis eventos' })).toHaveAttribute('href', '/organizador/eventos');
         expect(screen.getByRole('link', { name: 'Estadísticas' })).toHaveAttribute('href', '/organizador/estadisticas');
         expect(screen.queryByRole('link', { name: 'Categorías' })).not.toBeInTheDocument();
@@ -75,6 +79,10 @@ describe('LayoutAplicacion', () => {
         expect(screen.getByRole('link', { name: 'Eventos en campus' })).toHaveAttribute(
             'href',
             '/eventos',
+        );
+        expect(screen.getByRole('link', { name: 'Mis inscripciones' })).toHaveAttribute(
+            'href',
+            '/mis-inscripciones',
         );
         expect(screen.queryByRole('link', { name: 'Mis eventos' })).not.toBeInTheDocument();
     });
