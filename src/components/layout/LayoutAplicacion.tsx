@@ -1,4 +1,4 @@
-import { CalendarDays, ChartPie, LogOut, Tags, UserCog } from 'lucide-react';
+import { CalendarCog, CalendarDays, ChartPie, LogOut, Tags, UserCog } from 'lucide-react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { obtenerSesion } from '../../features/sesion/sesion';
 import { cerrarSesion, esAdministrador, esUsuario, puedeGestionarEventos } from '../../features/sesion/sesion';
@@ -58,8 +58,18 @@ export function LayoutAplicacion() {
                                 )}
                                 {puedeGestionarEventos(sesion) && (
                                     <>
+                                        {!esAdministrador(sesion) && (
+                                            <NavLink
+                                                to="/eventos"
+                                                end
+                                                className={({ isActive }) => `${claseEnlace({ isActive })} gap-1.5`}
+                                            >
+                                                <CalendarDays className="h-4 w-4 shrink-0" aria-hidden="true" />
+                                                Explorar eventos
+                                            </NavLink>
+                                        )}
                                         <NavLink to="/organizador/eventos" className={({ isActive }) => `${claseEnlace({ isActive })} gap-1.5`}>
-                                            <CalendarDays className="h-4 w-4 shrink-0" aria-hidden="true" />
+                                            <CalendarCog className="h-4 w-4 shrink-0" aria-hidden="true" />
                                             {esAdministrador(sesion) ? 'Eventos' : 'Mis eventos'}
                                         </NavLink>
                                         <NavLink
@@ -73,7 +83,8 @@ export function LayoutAplicacion() {
                                 )}
                                 {esUsuario(sesion) && (
                                     <NavLink
-                                        to="/usuario/eventos"
+                                        to="/eventos"
+                                        end
                                         className={({ isActive }) => `${claseEnlace({ isActive })} gap-1.5`}
                                     >
                                         <CalendarDays className="h-4 w-4 shrink-0" aria-hidden="true" />

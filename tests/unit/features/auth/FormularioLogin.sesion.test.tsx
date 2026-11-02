@@ -26,8 +26,9 @@ const renderizar = () =>
             <Routes>
                 <Route path="/login" element={<FormularioLogin />} />
                 <Route path="/admin/categorias" element={<p>Pantalla de categorías</p>} />
-                <Route path="/usuario" element={<Navigate to="/usuario/eventos" replace />} />
-                <Route path="/usuario/eventos" element={<h1>Eventos en campus</h1>} />
+                <Route path="/usuario" element={<Navigate to="/eventos" replace />} />
+                <Route path="/usuario/eventos" element={<Navigate to="/eventos" replace />} />
+                <Route path="/eventos" element={<h1>Eventos en campus</h1>} />
             </Routes>
         </MemoryRouter>,
     );

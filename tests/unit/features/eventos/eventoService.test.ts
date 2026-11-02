@@ -1,11 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { axiosClient } from '../../../../src/api';
+import { guardarSesion } from '../../../../src/features/sesion/sesion';
 import {
     cancelarEvento,
     crearEvento,
     descargarReporteEvento,
     editarEvento,
     listarEventos,
+    listarMisEventos,
     obtenerEvento,
 } from '../../../../src/features/eventos/services/eventoService';
 
@@ -33,6 +35,21 @@ describe('eventoService', () => {
         expect(resultado).toEqual([{ id: 1 }]);
     });
 
+    it('usa el endpoint de catálogo incluso con una sesión de organizador', async () => {
+        guardarSesion({
+            token: 't',
+            usuarioId: 2,
+            nombre: 'Ana',
+            correo: 'ana@unillanos.edu.co',
+            rol: 'ORGANIZADOR',
+        });
+        clienteMock.get.mockResolvedValue({ data: [] });
+
+        await listarEventos();
+
+        expect(clienteMock.get).toHaveBeenCalledWith('/eventos');
+    });
+
     it('rechaza una respuesta que no es una lista', async () => {
         clienteMock.get.mockResolvedValue({ data: '<!doctype html>' });
 
@@ -56,6 +73,16 @@ describe('eventoService', () => {
                 fechaHasta: '2026-10-31',
                 texto: 'feria',
             },
+        });
+    });
+
+    it('lista los eventos propios del organizador mediante el endpoint específico', async () => {
+        clienteMock.get.mockResolvedValue({ data: [{ id: 2 }] });
+
+        await listarMisEventos({ texto: '  feria  ' });
+
+        expect(clienteMock.get).toHaveBeenCalledWith('/eventos/mios', {
+            params: { texto: 'feria' },
         });
     });
 

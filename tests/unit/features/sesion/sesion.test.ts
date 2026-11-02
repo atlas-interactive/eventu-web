@@ -55,7 +55,7 @@ describe('sesion', () => {
         expect(puedeGestionarEventos(usuario)).toBe(false);
         expect(obtenerRutaInicio(administrador)).toBe('/admin/categorias');
         expect(obtenerRutaInicio(organizador)).toBe('/organizador/eventos');
-        expect(obtenerRutaInicio(usuario)).toBe('/usuario/eventos');
+        expect(obtenerRutaInicio(usuario)).toBe('/eventos');
         expect(obtenerRutaInicio(desconocido)).toBe('/no-autorizado');
         expect(esAdministrador(null)).toBe(false);
     });

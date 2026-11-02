@@ -1,31 +1,36 @@
 import { axiosClient } from '../../../api';
 import { convertirErrorBlob } from '../../../api/descargas';
-import { esOrganizador } from '../../sesion/sesion';
-import { obtenerSesion } from '../../sesion/sesion';
 import type { Evento, EventoActualizacion, EventoSolicitud, FiltrosEvento, RespuestaEvento } from '../../../types/evento';
 
 // El organizador se identifica con el token JWT (el interceptor de axios lo envía), por eso ninguna llamada lleva su id
 
-// El backend aplica los filtros y limita la visibilidad según el rol del token.
-export const listarEventos = async (filtros: FiltrosEvento = {}): Promise<Evento[]> => {
-    const params = Object.fromEntries(
+const obtenerParametros = (filtros: FiltrosEvento) =>
+    Object.fromEntries(
         Object.entries(filtros)
             .map(([clave, valor]) => [clave, typeof valor === 'string' ? valor.trim() : valor])
             .filter(([, valor]) => valor !== undefined && valor !== ''),
     );
-    
-    const sesion = obtenerSesion();
-    const url = esOrganizador(sesion) ? '/eventos/mios' : '/eventos';
 
+const consultarEventos = async (url: string, filtros: FiltrosEvento): Promise<Evento[]> => {
+    const params = obtenerParametros(filtros);
     const { data } = Object.keys(params).length > 0
         ? await axiosClient.get<Evento[]>(url, { params })
         : await axiosClient.get<Evento[]>(url);
     if (!Array.isArray(data)) {
-        throw new Error('La respuesta de /eventos no es una lista.');
+        throw new Error(`La respuesta de ${url} no es una lista.`);
     }
     return data;
 };
 
+// El backend limita los eventos visibles según el rol del token.
+export const listarEventos = (filtros: FiltrosEvento = {}): Promise<Evento[]> =>
+    consultarEventos('/eventos', filtros);
+
+// Lista solo los eventos creados por el organizador autenticado, incluidos los cancelados.
+export const listarMisEventos = (filtros: FiltrosEvento = {}): Promise<Evento[]> =>
+    consultarEventos('/eventos/mios', filtros);
+
+//Para obtener los detalles de un evento específico 
 export const obtenerEvento = async (id: number): Promise<Evento> => {
     const { data } = await axiosClient.get<Evento>(`/eventos/${id}`);
     if (!data || typeof data !== 'object' || Array.isArray(data)) {
