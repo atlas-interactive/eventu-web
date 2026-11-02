@@ -2,7 +2,7 @@ import { cleanup, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { MisEventos } from '../../../../src/features/eventos/MisEventos';
+import { GestionEventos } from '../../../../src/features/eventos/pages/GestionEventos';
 import { cancelarEvento, descargarReporteEvento, listarEventos } from '../../../../src/features/eventos/services/eventoService';
 import { guardarArchivo } from '../../../../src/api/descargas';
 import { guardarSesion } from '../../../../src/features/sesion/sesion';
@@ -47,11 +47,11 @@ const evento = (id: number, titulo: string, organizadorId = 3): Evento => ({
 const renderizar = () =>
     render(
         <MemoryRouter>
-            <MisEventos />
+            <GestionEventos />
         </MemoryRouter>,
     );
 
-describe('MisEventos (HU-07)', () => {
+describe('GestionEventos (HU-07)', () => {
     beforeEach(() => {
         localStorage.clear();
         guardarSesion({
@@ -84,6 +84,25 @@ describe('MisEventos (HU-07)', () => {
 
         expect(await screen.findByRole('heading', { name: 'Feria cultural' })).toBeInTheDocument();
         expect(screen.queryByRole('heading', { name: 'Evento de otro organizador' })).not.toBeInTheDocument();
+    });
+
+    it('muestra todos los eventos y un título adecuado al administrador', async () => {
+        guardarSesion({
+            token: 'token-prueba',
+            usuarioId: 1,
+            nombre: 'Admin',
+            correo: 'admin@unillanos.edu.co',
+            rol: 'ADMIN',
+        });
+        listarMock.mockResolvedValue([
+            evento(9, 'Feria cultural', 3),
+            evento(10, 'Evento de otro organizador', 8),
+        ]);
+        renderizar();
+
+        expect(await screen.findByRole('heading', { name: 'Todos los eventos' })).toBeInTheDocument();
+        expect(await screen.findByRole('heading', { name: 'Feria cultural' })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: 'Evento de otro organizador' })).toBeInTheDocument();
     });
 
     it('aplica filtros a la consulta sin cambiar las tarjetas de gestión', async () => {
@@ -140,7 +159,7 @@ describe('MisEventos (HU-07)', () => {
     });
 });
 
-describe('MisEventos (HU-17)', () => {
+describe('GestionEventos (HU-17)', () => {
     beforeEach(() => {
         localStorage.clear();
         guardarSesion({

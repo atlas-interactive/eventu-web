@@ -2,7 +2,7 @@ import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
-import { InicioUsuario } from '../../../../src/features/sesion/InicioUsuario';
+import { CatalogoEventos } from '../../../../src/features/eventos/pages/CatalogoEventos';
 import { listarCategorias } from '../../../../src/features/categorias/services/categoriaService';
 import { listarEventos } from '../../../../src/features/eventos/services/eventoService';
 import type { Evento } from '../../../../src/types/evento';
@@ -33,7 +33,7 @@ const evento: Evento = {
     categoriaNombre: 'Académico',
 };
 
-describe('InicioUsuario (HU-08)', () => {
+describe('CatalogoEventos (HU-08)', () => {
     beforeEach(() => {
         listarCategoriasMock.mockReset().mockResolvedValue([
             { id: 4, nombre: 'Académico', activo: true, creadoEn: '', eventosActivos: 1 },
@@ -49,7 +49,7 @@ describe('InicioUsuario (HU-08)', () => {
     it('muestra el catálogo y enlaza cada evento con su detalle', async () => {
         render(
             <MemoryRouter>
-                <InicioUsuario />
+                <CatalogoEventos />
             </MemoryRouter>,
         );
 
@@ -68,7 +68,7 @@ describe('InicioUsuario (HU-08)', () => {
         const usuario = userEvent.setup();
         render(
             <MemoryRouter>
-                <InicioUsuario />
+                <CatalogoEventos />
             </MemoryRouter>,
         );
 

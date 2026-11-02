@@ -26,17 +26,17 @@ const CrearEvento = lazy(() =>
 const EditarEvento = lazy(() =>
     import('../features/eventos/EditarEvento').then((modulo) => ({ default: modulo.EditarEvento })),
 );
-const MisEventos = lazy(() =>
-    import('../features/eventos/MisEventos').then((modulo) => ({ default: modulo.MisEventos })),
+const GestionEventos = lazy(() =>
+    import('../features/eventos/pages/GestionEventos').then((modulo) => ({ default: modulo.GestionEventos })),
+);
+const CatalogoEventos = lazy(() =>
+    import('../features/eventos/pages/CatalogoEventos').then((modulo) => ({ default: modulo.CatalogoEventos })),
 );
 const DetalleEvento = lazy(() =>
     import('../features/eventos/DetalleEvento').then((modulo) => ({ default: modulo.DetalleEvento })),
 );
 const DashboardEstadisticas = lazy(() =>
     import('../features/estadisticas/DashboardEstadisticas').then((modulo) => ({ default: modulo.DashboardEstadisticas })),
-);
-const InicioUsuario = lazy(() =>
-    import('../features/sesion/InicioUsuario').then((modulo) => ({ default: modulo.InicioUsuario })),
 );
 
 const pantallaDiferida = (pantalla: ReactNode, fallback: ReactNode = <SkeletonPagina />) => (
@@ -70,7 +70,7 @@ export function AppRoutes() {
 
             <Route element={<RutaOrganizador />}>
                 <Route element={<LayoutAplicacion />}>
-                    <Route path="/organizador/eventos" element={pantallaDiferida(<MisEventos />)} />
+                    <Route path="/organizador/eventos" element={pantallaDiferida(<GestionEventos />)} />
                     <Route path="/organizador/eventos/nuevo" element={pantallaDiferida(<CrearEvento />)} />
                     <Route path="/organizador/eventos/:id/editar" element={pantallaDiferida(<EditarEvento />)} />
                     <Route path="/organizador/estadisticas" element={pantallaDiferida(<DashboardEstadisticas />)} />
@@ -80,7 +80,7 @@ export function AppRoutes() {
             <Route element={<RutaUsuario />}>
                 <Route element={<LayoutAplicacion />}>
                     <Route path="/usuario" element={<Navigate to="/usuario/eventos" replace />} />
-                    <Route path="/usuario/eventos" element={pantallaDiferida(<InicioUsuario />)} />
+                    <Route path="/usuario/eventos" element={pantallaDiferida(<CatalogoEventos />)} />
                     <Route path="/usuario/eventos/:id" element={pantallaDiferida(<DetalleEvento />)} />
                 </Route>
             </Route>

@@ -26,6 +26,7 @@ export const listarEventos = async (filtros: FiltrosEvento = {}): Promise<Evento
     return data;
 };
 
+//Para obtener los detalles de un evento específico 
 export const obtenerEvento = async (id: number): Promise<Evento> => {
     const { data } = await axiosClient.get<Evento>(`/eventos/${id}`);
     if (!data || typeof data !== 'object' || Array.isArray(data)) {
