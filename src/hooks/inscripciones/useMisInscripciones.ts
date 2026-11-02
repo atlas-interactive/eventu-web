@@ -1,10 +1,7 @@
 import { useEffect, useState } from 'react';
 import { mensajeDeError } from '../../api/mensajeDeError';
 import type { EstadoInscripcion, Inscripcion } from '../../types/inscripcion';
-import {
-    cancelarInscripcion,
-    listarMisInscripciones,
-} from '../../features/inscripciones/services/inscripcionService';
+import { listarMisInscripciones } from '../../features/inscripciones/services/inscripcionService';
 
 export type FiltroInscripcion = 'TODAS' | EstadoInscripcion;
 
@@ -13,10 +10,6 @@ export function useMisInscripciones() {
     const [cargando, setCargando] = useState(true);
     const [error, setError] = useState('');
     const [filtro, setFiltro] = useState<FiltroInscripcion>('TODAS');
-    const [aCancelar, setACancelar] = useState<Inscripcion | null>(null);
-    const [cancelando, setCancelando] = useState(false);
-    const [errorCancelacion, setErrorCancelacion] = useState('');
-    const [mensajeExito, setMensajeExito] = useState('');
 
     useEffect(() => {
         let vigente = true;
@@ -49,43 +42,6 @@ export function useMisInscripciones() {
         ? inscripciones
         : inscripciones.filter((inscripcion) => inscripcion.estado === filtro);
 
-    const solicitarCancelacion = (inscripcion: Inscripcion) => {
-        setMensajeExito('');
-        setErrorCancelacion('');
-        setACancelar(inscripcion);
-    };
-
-    const cerrarConfirmacion = () => {
-        if (cancelando) return;
-        setACancelar(null);
-        setErrorCancelacion('');
-    };
-
-    const confirmarCancelacion = async () => {
-        const inscripcionACancelar = aCancelar;
-        if (!inscripcionACancelar || cancelando) return;
-
-        setCancelando(true);
-        setErrorCancelacion('');
-        try {
-            const respuesta = await cancelarInscripcion(inscripcionACancelar.id);
-            setInscripciones((actuales) =>
-                actuales.map((inscripcion) =>
-                    inscripcion.id === inscripcionACancelar.id
-                        ? { ...inscripcion, estado: 'CANCELADA' }
-                        : inscripcion,
-                ),
-            );
-            setMensajeExito(respuesta.mensaje);
-            setACancelar(null);
-        } catch (err: unknown) {
-            console.error('No se pudo cancelar la inscripción:', err);
-            setErrorCancelacion(mensajeDeError(err));
-        } finally {
-            setCancelando(false);
-        }
-    };
-
     return {
         inscripciones: visibles,
         conteos,
@@ -93,12 +49,5 @@ export function useMisInscripciones() {
         error,
         filtro,
         setFiltro,
-        aCancelar,
-        cancelando,
-        errorCancelacion,
-        mensajeExito,
-        solicitarCancelacion,
-        cerrarConfirmacion,
-        confirmarCancelacion,
     };
 }

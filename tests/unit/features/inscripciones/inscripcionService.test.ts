@@ -4,22 +4,19 @@ import {
     inscribirEnEvento,
     tieneInscripcionActiva,
     listarMisInscripciones,
-    cancelarInscripcion,
 } from '../../../../src/features/inscripciones/services/inscripcionService';
 
 vi.mock('../../../../src/api', () => ({
-    axiosClient: { get: vi.fn(), post: vi.fn(), delete: vi.fn() },
+    axiosClient: { get: vi.fn(), post: vi.fn() },
 }));
 
 const postMock = vi.mocked(axiosClient.post);
 const getMock = vi.mocked(axiosClient.get);
-const deleteMock = vi.mocked(axiosClient.delete);
 
 describe('inscripcionService', () => {
     beforeEach(() => {
         postMock.mockReset();
         getMock.mockReset();
-        deleteMock.mockReset();
     });
 
     it('envía el id del evento como parámetro y devuelve la respuesta del backend', async () => {
@@ -86,19 +83,4 @@ describe('inscripcionService', () => {
         expect(getMock).toHaveBeenCalledWith('/inscripciones/mias');
     });
 
-    it('cancela una inscripción por su identificador', async () => {
-        const respuesta = { mensaje: 'Inscripción cancelada.', inscripcionId: 8 };
-        deleteMock.mockResolvedValue({ data: respuesta });
-
-        await expect(cancelarInscripcion(8)).resolves.toEqual(respuesta);
-        expect(deleteMock).toHaveBeenCalledWith('/inscripciones/8');
-    });
-
-    it('rechaza una respuesta inválida al cancelar una inscripción', async () => {
-        deleteMock.mockResolvedValue({ data: { mensaje: 'Cancelada' } });
-
-        await expect(cancelarInscripcion(8)).rejects.toThrow(
-            'La respuesta de cancelación de inscripción no es válida.',
-        );
-    });
 });

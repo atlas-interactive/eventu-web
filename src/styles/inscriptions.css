@@ -29,11 +29,6 @@
   line-height: 1.25rem;
 }
 
-.inscripciones-mensaje--exito {
-  background-color: var(--color-eventu-green-background);
-  color: var(--color-eventu-success);
-}
-
 .inscripciones-mensaje--error {
   background-color: var(--color-eventu-red-background);
   color: var(--color-eventu-error);
@@ -133,6 +128,10 @@
   color: var(--color-eventu-secondary-text);
 }
 
+.evento-row-button.inscripcion-cancelar-presentacion {
+  cursor: default;
+}
+
 .inscripciones-vacio {
   display: flex;
   align-items: center;
@@ -140,33 +139,6 @@
   color: var(--color-eventu-secondary-text);
   font-size: 0.875rem;
   line-height: 1.25rem;
-}
-
-.inscripcion-dialog-icon {
-  display: flex;
-  width: 3rem;
-  height: 3rem;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  border-radius: 9999px;
-  background-color: var(--color-eventu-red-background);
-  color: var(--color-eventu-error);
-  font-size: 1.25rem;
-  line-height: 1.75rem;
-  font-weight: 700;
-}
-
-.inscripcion-dialog-title {
-  overflow-wrap: break-word;
-  color: var(--color-eventu-main-ink);
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-  font-weight: 500;
-}
-
-.inscripcion-dialog-error {
-  margin-top: 0.75rem;
 }
 
 @media (min-width: 40rem) {

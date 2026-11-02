@@ -1,5 +1,5 @@
 import { axiosClient } from '../../../api';
-import type { Inscripcion, RespuestaCancelacionInscripcion } from '../../../types/inscripcion';
+import type { Inscripcion } from '../../../types/inscripcion';
 
 interface InscripcionDelUsuario {
     eventoId: number;
@@ -53,21 +53,5 @@ export const listarMisInscripciones = async (): Promise<Inscripcion[]> => {
         throw new Error('La respuesta de /inscripciones/mias no es una lista válida.');
     }
 
-    return data;
-};
-
-export const cancelarInscripcion = async (
-    inscripcionId: number,
-): Promise<RespuestaCancelacionInscripcion> => {
-    const { data } = await axiosClient.delete<RespuestaCancelacionInscripcion>(
-        `/inscripciones/${inscripcionId}`,
-    );
-    if (
-        !data ||
-        typeof data.mensaje !== 'string' ||
-        typeof data.inscripcionId !== 'number'
-    ) {
-        throw new Error('La respuesta de cancelación de inscripción no es válida.');
-    }
     return data;
 };

@@ -3,7 +3,6 @@ import { IconoAviso } from '../../../components/ui/IconoAviso';
 import { Skeleton, SkeletonEstado } from '../../../components/ui/Skeleton';
 import { useMisInscripciones } from '../../../hooks/inscripciones/useMisInscripciones';
 import type { FiltroInscripcion } from '../../../hooks/inscripciones/useMisInscripciones';
-import { ConfirmarCancelacionInscripcion } from '../components/ConfirmarCancelacionInscripcion';
 import '../../../styles/inscriptions.css';
 import '../../../styles/events.css';
 
@@ -32,12 +31,6 @@ export function MisInscripciones() {
                 <h1 className="inscripciones-titulo">Mis inscripciones</h1>
             </header>
 
-            {misInscripciones.mensajeExito && (
-                <p role="status" className="inscripciones-mensaje inscripciones-mensaje--exito">
-                    <IconoAviso tipo="exito" className="h-4 w-4 shrink-0" />
-                    {misInscripciones.mensajeExito}
-                </p>
-            )}
             {misInscripciones.error && (
                 <p role="alert" className="inscripciones-mensaje inscripciones-mensaje--error">
                     <IconoAviso tipo="error" className="h-4 w-4 shrink-0" />
@@ -105,31 +98,19 @@ export function MisInscripciones() {
                                         {activa ? 'Inscripción activa' : 'Cancelada'}
                                     </span>
                                     {activa && (
-                                        <button
-                                            type="button"
-                                            className="evento-row-button evento-row-button--danger gap-1.5"
-                                            aria-label={`Cancelar inscripción a ${inscripcion.eventoTitulo}`}
-                                            onClick={() => misInscripciones.solicitarCancelacion(inscripcion)}
+                                        <span
+                                            className="evento-row-button evento-row-button--danger gap-1.5 inscripcion-cancelar-presentacion"
+                                            aria-hidden="true"
                                         >
                                             <CircleX className="h-4 w-4 shrink-0" aria-hidden="true" />
                                             Cancelar
-                                        </button>
+                                        </span>
                                     )}
                                 </div>
                             </li>
                         );
                     })}
                 </ul>
-            )}
-
-            {misInscripciones.aCancelar && (
-                <ConfirmarCancelacionInscripcion
-                    inscripcion={misInscripciones.aCancelar}
-                    cancelando={misInscripciones.cancelando}
-                    error={misInscripciones.errorCancelacion}
-                    onCerrar={misInscripciones.cerrarConfirmacion}
-                    onConfirmar={misInscripciones.confirmarCancelacion}
-                />
             )}
         </main>
     );
