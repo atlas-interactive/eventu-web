@@ -64,32 +64,28 @@
   color: var(--color-eventu-white-surface);
 }
 
-.inscripciones-filtro:focus-visible,
-.inscripcion-cancelar:focus-visible {
+.inscripciones-filtro:focus-visible {
   outline: 2px solid var(--color-eventu-institutional-red);
   outline-offset: 2px;
 }
 
 .inscripciones-lista {
-  overflow: hidden;
-  border: 1px solid var(--color-eventu-border);
-  border-radius: 0.625rem;
-  background-color: var(--color-eventu-white-surface);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
   list-style: none;
 }
 
 .inscripcion-fila {
   display: flex;
-  min-height: 3.75rem;
+  min-height: 5rem;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  border-bottom: 1px solid var(--color-eventu-border);
-  padding: 0.75rem 1rem;
-}
-
-.inscripcion-fila:last-child {
-  border-bottom: 0;
+  gap: 1.25rem;
+  border: 1px solid var(--color-eventu-border);
+  border-radius: 0.625rem;
+  background-color: var(--color-eventu-white-surface);
+  padding: 1rem 1.25rem;
 }
 
 .inscripcion-evento {
@@ -99,32 +95,32 @@
 .inscripcion-evento h2 {
   overflow: hidden;
   color: var(--color-eventu-main-ink);
-  font-size: 0.75rem;
-  line-height: 1rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
   font-weight: 600;
   text-overflow: ellipsis;
 }
 
 .inscripcion-evento time {
   display: block;
-  margin-top: 0.125rem;
+  margin-top: 0.25rem;
   color: var(--color-eventu-secondary-text);
-  font-size: 0.625rem;
-  line-height: 0.875rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
 }
 
 .inscripcion-acciones {
   display: flex;
   flex-shrink: 0;
   align-items: center;
-  gap: 0.75rem;
+  gap: 1rem;
 }
 
 .inscripcion-estado {
   border-radius: 0.25rem;
-  padding: 0.125rem 0.375rem;
-  font-size: 0.625rem;
-  line-height: 0.875rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
 }
 
 .inscripcion-estado--activa {
@@ -135,20 +131,6 @@
 .inscripcion-estado--cancelada {
   background-color: var(--color-eventu-disabled-button);
   color: var(--color-eventu-secondary-text);
-}
-
-.inscripcion-cancelar {
-  border: 0;
-  background: transparent;
-  padding: 0.25rem;
-  color: var(--color-eventu-institutional-red);
-  font-size: 0.6875rem;
-  line-height: 1rem;
-  cursor: pointer;
-}
-
-.inscripcion-cancelar:hover {
-  text-decoration: underline;
 }
 
 .inscripciones-vacio {

@@ -1,10 +1,11 @@
-import { CalendarDays } from 'lucide-react';
+import { CalendarDays, CircleX } from 'lucide-react';
 import { IconoAviso } from '../../../components/ui/IconoAviso';
 import { Skeleton, SkeletonEstado } from '../../../components/ui/Skeleton';
 import { useMisInscripciones } from '../../../hooks/inscripciones/useMisInscripciones';
 import type { FiltroInscripcion } from '../../../hooks/inscripciones/useMisInscripciones';
 import { ConfirmarCancelacionInscripcion } from '../components/ConfirmarCancelacionInscripcion';
 import '../../../styles/inscriptions.css';
+import '../../../styles/events.css';
 
 const formatoFecha = new Intl.DateTimeFormat('es-CO', {
     day: '2-digit',
@@ -64,10 +65,10 @@ export function MisInscripciones() {
                         {Array.from({ length: 3 }, (_, indice) => (
                             <li key={indice} className="inscripcion-fila" aria-hidden="true">
                                 <div className="inscripcion-evento">
-                                    <Skeleton className="h-4 w-48 max-w-full" />
-                                    <Skeleton className="mt-2 h-3 w-36" />
+                                    <Skeleton className="h-5 w-52 max-w-full" />
+                                    <Skeleton className="mt-2 h-4 w-40" />
                                 </div>
-                                <Skeleton className="h-6 w-24" />
+                                <Skeleton className="h-8 w-28" />
                             </li>
                         ))}
                     </ul>
@@ -106,10 +107,11 @@ export function MisInscripciones() {
                                     {activa && (
                                         <button
                                             type="button"
-                                            className="inscripcion-cancelar"
+                                            className="evento-row-button evento-row-button--danger gap-1.5"
                                             aria-label={`Cancelar inscripción a ${inscripcion.eventoTitulo}`}
                                             onClick={() => misInscripciones.solicitarCancelacion(inscripcion)}
                                         >
+                                            <CircleX className="h-4 w-4 shrink-0" aria-hidden="true" />
                                             Cancelar
                                         </button>
                                     )}
