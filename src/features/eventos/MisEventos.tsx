@@ -21,7 +21,7 @@ const estaCancelado = (evento: Evento) => evento.estado.toUpperCase() === 'CANCE
 const fechasInvalidas = (filtros: FiltrosEvento) =>
     Boolean(filtros.fechaDesde && filtros.fechaHasta && filtros.fechaDesde > filtros.fechaHasta);
 
-// El organizador ve sus eventos publicados; el administrador ve todos (puede editar cualquiera)
+// El organizador ve sus eventos publicados y cancelados; el administrador ve todos (puede editar cualquiera)
 export function MisEventos() {
     const location = useLocation();
     const mensajeNavegacion = (location.state as { mensaje?: string } | null)?.mensaje ?? '';
