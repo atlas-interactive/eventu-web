@@ -1,21 +1,34 @@
 import { cleanup, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { DetalleEvento } from '../../../../src/features/eventos/DetalleEvento';
 import { obtenerEvento } from '../../../../src/features/eventos/services/eventoService';
+import {
+    inscribirEnEvento,
+    tieneInscripcionActiva,
+} from '../../../../src/features/inscripciones/services/inscripcionService';
+import { guardarSesion } from '../../../../src/features/sesion/sesion';
 import type { Evento } from '../../../../src/types/evento';
 
 vi.mock('../../../../src/features/eventos/services/eventoService', () => ({
     obtenerEvento: vi.fn(),
 }));
 
+vi.mock('../../../../src/features/inscripciones/services/inscripcionService', () => ({
+    inscribirEnEvento: vi.fn(),
+    tieneInscripcionActiva: vi.fn(),
+}));
+
 const obtenerEventoMock = vi.mocked(obtenerEvento);
+const inscribirEnEventoMock = vi.mocked(inscribirEnEvento);
+const tieneInscripcionActivaMock = vi.mocked(tieneInscripcionActiva);
 
 const evento: Evento = {
     id: 5,
     titulo: 'Feria de proyectos',
     descripcion: 'Espacio para la presentación de proyectos innovadores.',
-    fechaInicio: '2026-09-12T09:00:00',
+    fechaInicio: '2099-09-12T09:00:00',
     ubicacion: 'Auditorio Eduardo Carranza, Unillanos',
     cuposMaximos: 120,
     cuposDisponibles: 38,
@@ -39,6 +52,20 @@ const renderDetalle = (ruta = '/eventos/5') =>
 describe('DetalleEvento', () => {
     beforeEach(() => {
         obtenerEventoMock.mockReset().mockResolvedValue(evento);
+        inscribirEnEventoMock.mockReset().mockResolvedValue({
+            mensaje: 'Inscripción realizada exitosamente.',
+            inscripcionId: 12,
+            codigoQr: 'EVENTU-QR-SECRETO',
+        });
+        tieneInscripcionActivaMock.mockReset().mockResolvedValue(false);
+        localStorage.clear();
+        guardarSesion({
+            token: 'token-prueba',
+            usuarioId: 1,
+            nombre: 'Ana',
+            correo: 'ana@unillanos.edu.co',
+            rol: 'USUARIO',
+        });
     });
 
     afterEach(() => {
@@ -46,7 +73,7 @@ describe('DetalleEvento', () => {
         vi.restoreAllMocks();
     });
 
-    it('consulta el evento y muestra sus datos con inscripción disponible', async () => {
+    it('consulta el evento y permite iniciar la inscripción', async () => {
         renderDetalle();
 
         expect(await screen.findByRole('heading', { name: 'Feria de proyectos' })).toBeInTheDocument();
@@ -54,7 +81,124 @@ describe('DetalleEvento', () => {
         expect(screen.getByText('Espacio para la presentación de proyectos innovadores.')).toBeInTheDocument();
         expect(screen.getByText(/82\s+inscritos de\s+120 cupos/)).toBeInTheDocument();
         expect(screen.getByText('38 cupos disponibles')).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: 'Inscribirme al evento; inscripción no disponible' })).toBeDisabled();
+        expect(screen.getByRole('button', { name: 'Inscribirme al evento' })).toBeEnabled();
+        expect(tieneInscripcionActivaMock).toHaveBeenCalledWith(5);
+    });
+
+    it('deshabilita la inscripción si ya existe una inscripción activa', async () => {
+        tieneInscripcionActivaMock.mockResolvedValue(true);
+        renderDetalle();
+
+        const boton = await screen.findByRole('button', { name: 'Ya estás inscrito' });
+
+        expect(boton).toBeDisabled();
+        expect(inscribirEnEventoMock).not.toHaveBeenCalled();
+    });
+
+    it('no considera una inscripción cancelada como activa', async () => {
+        tieneInscripcionActivaMock.mockResolvedValue(false);
+        renderDetalle();
+
+        expect(await screen.findByRole('button', { name: 'Inscribirme al evento' })).toBeEnabled();
+    });
+
+    it('muestra el error de verificación y permite reintentar', async () => {
+        const usuario = userEvent.setup();
+        tieneInscripcionActivaMock
+            .mockRejectedValueOnce({
+                isAxiosError: true,
+                response: { data: { error: 'No se pudo consultar la inscripción.' } },
+            })
+            .mockResolvedValueOnce(true);
+        const errorConsola = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+        renderDetalle();
+
+        expect(await screen.findByRole('alert')).toHaveTextContent(
+            'No se pudo verificar si ya estás inscrito: No se pudo consultar la inscripción.',
+        );
+        await usuario.click(screen.getByRole('button', { name: 'Reintentar verificación' }));
+
+        expect(await screen.findByRole('button', { name: 'Ya estás inscrito' })).toBeDisabled();
+        errorConsola.mockRestore();
+    });
+
+    it('muestra la confirmación tras inscribir y no expone el código QR de la respuesta', async () => {
+        const usuario = userEvent.setup();
+        renderDetalle();
+
+        await usuario.click(await screen.findByRole('button', { name: 'Inscribirme al evento' }));
+
+        expect(inscribirEnEventoMock).toHaveBeenCalledWith(5);
+        expect(await screen.findByRole('heading', { name: 'Inscripción realizada' })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: 'Feria de proyectos' })).toBeInTheDocument();
+        expect(screen.getByText(/Auditorio Eduardo Carranza, Unillanos/)).toBeInTheDocument();
+        expect(screen.queryByText('EVENTU-QR-SECRETO')).not.toBeInTheDocument();
+        expect(screen.queryByText('Inscripción realizada exitosamente.')).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: /QR/i })).not.toBeInTheDocument();
+    });
+
+    it('muestra el error del backend y permite volver a intentar', async () => {
+        const usuario = userEvent.setup();
+        inscribirEnEventoMock.mockRejectedValue({
+            isAxiosError: true,
+            response: { data: { error: 'Ya tienes una inscripción activa para este evento.' } },
+        });
+        const errorConsola = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+        renderDetalle();
+
+        await usuario.click(await screen.findByRole('button', { name: 'Inscribirme al evento' }));
+
+        expect(await screen.findByRole('alert')).toHaveTextContent(
+            'Ya tienes una inscripción activa para este evento.',
+        );
+        expect(screen.getByRole('button', { name: 'Inscribirme al evento' })).toBeEnabled();
+        errorConsola.mockRestore();
+    });
+
+    it('permite al organizador inscribirse a eventos de otro organizador', async () => {
+        const usuario = userEvent.setup();
+        guardarSesion({
+            token: 'token-prueba',
+            usuarioId: 3,
+            nombre: 'Laura',
+            correo: 'laura@unillanos.edu.co',
+            rol: 'ORGANIZADOR',
+        });
+        renderDetalle();
+
+        await usuario.click(await screen.findByRole('button', { name: 'Inscribirme al evento' }));
+
+        expect(inscribirEnEventoMock).toHaveBeenCalledWith(5);
+    });
+
+    it('no permite al organizador inscribirse a su propio evento', async () => {
+        guardarSesion({
+            token: 'token-prueba',
+            usuarioId: evento.organizadorId,
+            nombre: 'Laura',
+            correo: 'laura@unillanos.edu.co',
+            rol: 'ORGANIZADOR',
+        });
+        renderDetalle();
+
+        expect(await screen.findByText('No puedes inscribirte en un evento que tú organizas.')).toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Inscribirme al evento' })).not.toBeInTheDocument();
+        expect(inscribirEnEventoMock).not.toHaveBeenCalled();
+    });
+
+    it('no ofrece inscripción al administrador', async () => {
+        guardarSesion({
+            token: 'token-prueba',
+            usuarioId: 4,
+            nombre: 'Admin',
+            correo: 'admin@unillanos.edu.co',
+            rol: 'ADMIN',
+        });
+        renderDetalle();
+
+        expect(await screen.findByText('Los administradores no pueden inscribirse en eventos.')).toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Inscribirme al evento' })).not.toBeInTheDocument();
+        expect(tieneInscripcionActivaMock).not.toHaveBeenCalled();
     });
 
     it('indica que no hay cupos disponibles cuando el evento está agotado', async () => {

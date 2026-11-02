@@ -61,6 +61,14 @@
   background-color: var(--color-eventu-institutional-red-hover);
 }
 
+.register-submit:disabled,
+.register-submit:disabled:hover {
+  background-color: var(--color-eventu-disabled-button);
+  color: var(--color-eventu-secondary-text);
+  cursor: not-allowed;
+  opacity: 1;
+}
+
 .register-submit:focus-visible {
   outline: 0.125rem solid var(--color-eventu-institutional-red);
   outline-offset: 0.125rem;
