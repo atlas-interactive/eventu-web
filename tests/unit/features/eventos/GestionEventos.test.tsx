@@ -3,7 +3,12 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { GestionEventos } from '../../../../src/features/eventos/pages/GestionEventos';
-import { cancelarEvento, descargarReporteEvento, listarEventos } from '../../../../src/features/eventos/services/eventoService';
+import {
+    cancelarEvento,
+    descargarReporteEvento,
+    listarEventos,
+    listarMisEventos,
+} from '../../../../src/features/eventos/services/eventoService';
 import { guardarArchivo } from '../../../../src/api/descargas';
 import { guardarSesion } from '../../../../src/features/sesion/sesion';
 import type { Evento } from '../../../../src/types/evento';
@@ -13,6 +18,7 @@ vi.mock('../../../../src/features/eventos/services/eventoService', () => ({
     cancelarEvento: vi.fn(),
     descargarReporteEvento: vi.fn(),
     listarEventos: vi.fn(),
+    listarMisEventos: vi.fn(),
 }));
 
 vi.mock('../../../../src/features/categorias/services/categoriaService', () => ({
@@ -26,7 +32,8 @@ vi.mock('../../../../src/api/descargas', () => ({
 const cancelarMock = vi.mocked(cancelarEvento);
 const descargarMock = vi.mocked(descargarReporteEvento);
 const guardarMock = vi.mocked(guardarArchivo);
-const listarMock = vi.mocked(listarEventos);
+const listarTodosMock = vi.mocked(listarEventos);
+const listarMisMock = vi.mocked(listarMisEventos);
 const listarCategoriasMock = vi.mocked(listarCategorias);
 
 const evento = (id: number, titulo: string, organizadorId = 3): Evento => ({
@@ -61,7 +68,8 @@ describe('GestionEventos (HU-07)', () => {
             correo: 'laura@unillanos.edu.co',
             rol: 'ORGANIZADOR',
         });
-        listarMock.mockReset().mockResolvedValue([evento(9, 'Feria cultural')]);
+        listarTodosMock.mockReset().mockResolvedValue([]);
+        listarMisMock.mockReset().mockResolvedValue([evento(9, 'Feria cultural')]);
         listarCategoriasMock.mockReset().mockResolvedValue([
             { id: 2, nombre: 'Cultural', activo: true, creadoEn: '', eventosActivos: 1 },
         ]);
@@ -75,15 +83,14 @@ describe('GestionEventos (HU-07)', () => {
         vi.restoreAllMocks();
     });
 
-    it('muestra solo los eventos del organizador', async () => {
-        listarMock.mockResolvedValue([
-            evento(9, 'Feria cultural', 3),
-            evento(10, 'Evento de otro organizador', 8),
-        ]);
+    it('carga los eventos propios del organizador desde su endpoint', async () => {
+        listarMisMock.mockResolvedValue([evento(9, 'Feria cultural', 3)]);
         renderizar();
 
         expect(await screen.findByRole('heading', { name: 'Feria cultural' })).toBeInTheDocument();
         expect(screen.queryByRole('heading', { name: 'Evento de otro organizador' })).not.toBeInTheDocument();
+        expect(listarMisMock).toHaveBeenCalledWith({});
+        expect(listarTodosMock).not.toHaveBeenCalled();
     });
 
     it('muestra todos los eventos y un título adecuado al administrador', async () => {
@@ -94,7 +101,7 @@ describe('GestionEventos (HU-07)', () => {
             correo: 'admin@unillanos.edu.co',
             rol: 'ADMIN',
         });
-        listarMock.mockResolvedValue([
+        listarTodosMock.mockResolvedValue([
             evento(9, 'Feria cultural', 3),
             evento(10, 'Evento de otro organizador', 8),
         ]);
@@ -103,6 +110,8 @@ describe('GestionEventos (HU-07)', () => {
         expect(await screen.findByRole('heading', { name: 'Todos los eventos' })).toBeInTheDocument();
         expect(await screen.findByRole('heading', { name: 'Feria cultural' })).toBeInTheDocument();
         expect(screen.getByRole('heading', { name: 'Evento de otro organizador' })).toBeInTheDocument();
+        expect(listarTodosMock).toHaveBeenCalledWith({});
+        expect(listarMisMock).not.toHaveBeenCalled();
     });
 
     it('aplica filtros a la consulta sin cambiar las tarjetas de gestión', async () => {
@@ -113,8 +122,8 @@ describe('GestionEventos (HU-07)', () => {
         expect(listarCategoriasMock).toHaveBeenCalledWith(true);
         await usuario.click(screen.getByRole('button', { name: 'Cultural' }));
 
-        await vi.waitFor(() => expect(listarMock).toHaveBeenCalledTimes(2));
-        expect(listarMock).toHaveBeenLastCalledWith({ categoriaId: 2 });
+        await vi.waitFor(() => expect(listarMisMock).toHaveBeenCalledTimes(2));
+        expect(listarMisMock).toHaveBeenLastCalledWith({ categoriaId: 2 });
         expect(screen.getByRole('link', { name: 'Editar evento Feria cultural' })).toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Cancelar evento Feria cultural' })).toBeInTheDocument();
     });
@@ -169,7 +178,8 @@ describe('GestionEventos (HU-17)', () => {
             correo: 'laura@unillanos.edu.co',
             rol: 'ORGANIZADOR',
         });
-        listarMock.mockReset().mockResolvedValue([evento(9, 'Feria cultural')]);
+        listarTodosMock.mockReset().mockResolvedValue([]);
+        listarMisMock.mockReset().mockResolvedValue([evento(9, 'Feria cultural')]);
         listarCategoriasMock.mockReset().mockResolvedValue([
             { id: 2, nombre: 'Cultural', activo: true, creadoEn: '', eventosActivos: 1 },
         ]);
@@ -211,7 +221,7 @@ describe('GestionEventos (HU-17)', () => {
     });
 
     it('no ofrece reporte para un evento cancelado', async () => {
-        listarMock.mockResolvedValue([{ ...evento(9, 'Feria cultural'), estado: 'CANCELADO' }]);
+        listarMisMock.mockResolvedValue([{ ...evento(9, 'Feria cultural'), estado: 'CANCELADO' }]);
         renderizar();
 
         await screen.findByRole('heading', { name: 'Feria cultural' });

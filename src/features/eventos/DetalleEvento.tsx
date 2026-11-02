@@ -75,7 +75,7 @@ export function DetalleEvento() {
     if (noEncontrado || error || !evento) {
         return (
             <main className="detalle-evento-page">
-                <Link to="/usuario/eventos" className="detalle-evento-volver">
+                <Link to="/eventos" className="detalle-evento-volver">
                     ← Volver a eventos
                 </Link>
                 <p role="alert" className="detalle-evento-error">
@@ -95,7 +95,7 @@ export function DetalleEvento() {
 
     return (
         <main className="detalle-evento-page">
-            <Link to="/usuario/eventos" className="detalle-evento-volver">
+            <Link to="/eventos" className="detalle-evento-volver">
                 ← Volver a eventos
             </Link>
             <div className="detalle-evento-layout">

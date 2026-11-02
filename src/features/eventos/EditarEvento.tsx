@@ -3,7 +3,8 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import type { Evento } from '../../types/evento';
 import { Skeleton, SkeletonEstado } from '../../components/ui/Skeleton';
 import { FormularioEvento } from './FormularioEvento';
-import { listarEventos } from './services/eventoService';
+import { esAdministrador, obtenerSesion } from '../sesion/sesion';
+import { listarEventos, listarMisEventos } from './services/eventoService';
 import '../../styles/events.css';
 
 // HU-06: el organizador dueño (o un administrador) edita un evento publicado
@@ -18,7 +19,7 @@ export function EditarEvento() {
         // Evita actualizar el estado si la respuesta llega después de desmontar la pantalla.
         let vigente = true;
         // No hay consulta por id en el backend: se busca en los eventos publicados (un evento cancelado no aparece)
-        listarEventos()
+        (esAdministrador(obtenerSesion()) ? listarEventos() : listarMisEventos())
             .then((eventos) => {
                 if (!vigente) return;
                 const encontrado = eventos.find((e) => String(e.id) === id);

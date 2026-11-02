@@ -105,7 +105,7 @@ export function CatalogoEventos() {
                                     {evento.cuposDisponibles} cupos disponibles de {evento.cuposMaximos}
                                 </p>
                                 <Link
-                                    to={`/usuario/eventos/${evento.id}`}
+                                    to={`/eventos/${evento.id}`}
                                     className="catalogo-evento-detalle"
                                     aria-label={`Ver detalle de ${evento.titulo}`}
                                 >

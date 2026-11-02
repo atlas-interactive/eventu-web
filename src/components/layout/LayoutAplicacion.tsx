@@ -58,6 +58,16 @@ export function LayoutAplicacion() {
                                 )}
                                 {puedeGestionarEventos(sesion) && (
                                     <>
+                                        {!esAdministrador(sesion) && (
+                                            <NavLink
+                                                to="/eventos"
+                                                end
+                                                className={({ isActive }) => `${claseEnlace({ isActive })} gap-1.5`}
+                                            >
+                                                <CalendarDays className="h-4 w-4 shrink-0" aria-hidden="true" />
+                                                Explorar eventos
+                                            </NavLink>
+                                        )}
                                         <NavLink to="/organizador/eventos" className={({ isActive }) => `${claseEnlace({ isActive })} gap-1.5`}>
                                             <CalendarDays className="h-4 w-4 shrink-0" aria-hidden="true" />
                                             {esAdministrador(sesion) ? 'Eventos' : 'Mis eventos'}
@@ -73,7 +83,8 @@ export function LayoutAplicacion() {
                                 )}
                                 {esUsuario(sesion) && (
                                     <NavLink
-                                        to="/usuario/eventos"
+                                        to="/eventos"
+                                        end
                                         className={({ isActive }) => `${claseEnlace({ isActive })} gap-1.5`}
                                     >
                                         <CalendarDays className="h-4 w-4 shrink-0" aria-hidden="true" />

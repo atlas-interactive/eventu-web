@@ -26,10 +26,11 @@ const evento: Evento = {
     categoriaNombre: 'Académico',
 };
 
-const renderDetalle = (ruta = '/usuario/eventos/5') =>
+const renderDetalle = (ruta = '/eventos/5') =>
     render(
         <MemoryRouter initialEntries={[ruta]}>
             <Routes>
+                <Route path="/eventos/:id" element={<DetalleEvento />} />
                 <Route path="/usuario/eventos/:id" element={<DetalleEvento />} />
             </Routes>
         </MemoryRouter>,
@@ -82,11 +83,11 @@ describe('DetalleEvento', () => {
         renderDetalle();
 
         expect(await screen.findByRole('alert')).toHaveTextContent('No se encontró el evento solicitado.');
-        expect(screen.getByRole('link', { name: '← Volver a eventos' })).toHaveAttribute('href', '/usuario/eventos');
+        expect(screen.getByRole('link', { name: '← Volver a eventos' })).toHaveAttribute('href', '/eventos');
     });
 
     it('no consulta cuando el id de la ruta no es válido', async () => {
-        renderDetalle('/usuario/eventos/abc');
+        renderDetalle('/eventos/abc');
 
         expect(await screen.findByRole('alert')).toHaveTextContent('No se encontró el evento solicitado.');
         expect(obtenerEventoMock).not.toHaveBeenCalled();

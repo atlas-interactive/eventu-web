@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { RutaAdministrador } from '../features/sesion/GuardiaRutaAdministrador';
 import { RutaOrganizador } from '../features/sesion/GuardiaRutaOrganizador';
 import { RutaUsuario } from '../features/sesion/GuardiaRutaUsuario';
+import { RutaExploracionEventos } from '../features/sesion/GuardiaRutaExploracionEventos';
 import { LayoutAutenticacion } from '../components/layout/LayoutAutenticacion';
 import { LayoutAplicacion } from '../components/layout/LayoutAplicacion';
 import { obtenerRutaInicio, obtenerSesion } from '../features/sesion/sesion';
@@ -77,10 +78,17 @@ export function AppRoutes() {
                 </Route>
             </Route>
 
+            <Route element={<RutaExploracionEventos />}>
+                <Route element={<LayoutAplicacion />}>
+                    <Route path="/eventos" element={pantallaDiferida(<CatalogoEventos />)} />
+                    <Route path="/eventos/:id" element={pantallaDiferida(<DetalleEvento />)} />
+                </Route>
+            </Route>
+
             <Route element={<RutaUsuario />}>
                 <Route element={<LayoutAplicacion />}>
-                    <Route path="/usuario" element={<Navigate to="/usuario/eventos" replace />} />
-                    <Route path="/usuario/eventos" element={pantallaDiferida(<CatalogoEventos />)} />
+                    <Route path="/usuario" element={<Navigate to="/eventos" replace />} />
+                    <Route path="/usuario/eventos" element={<Navigate to="/eventos" replace />} />
                     <Route path="/usuario/eventos/:id" element={pantallaDiferida(<DetalleEvento />)} />
                 </Route>
             </Route>

@@ -4,7 +4,12 @@ import type { Categoria } from '../../../types/categoria';
 import { mensajeDeError } from '../../../api/mensajeDeError';
 import { guardarArchivo } from '../../../api/descargas';
 import { esAdministrador, obtenerSesion } from '../../sesion/sesion';
-import { cancelarEvento, descargarReporteEvento, listarEventos } from '../services/eventoService';
+import {
+    cancelarEvento,
+    descargarReporteEvento,
+    listarEventos,
+    listarMisEventos,
+} from '../services/eventoService';
 import { listarCategorias } from '../../categorias/services/categoriaService';
 
 const fechasInvalidas = (filtros: FiltrosEvento) =>
@@ -43,7 +48,6 @@ export function useGestionEventos(mensajeInicial = '') {
 
     useEffect(() => {
         let vigente = true;
-        const sesion = obtenerSesion();
         if (rangoFechasInvalido) {
             setCargando(false);
             return () => {
@@ -55,14 +59,10 @@ export function useGestionEventos(mensajeInicial = '') {
         setError('');
         const espera = filtros.texto?.trim() ? 300 : 0;
         const temporizador = window.setTimeout(() => {
-            listarEventos(filtros)
+            (administrador ? listarEventos(filtros) : listarMisEventos(filtros))
                 .then((datos) => {
                     if (!vigente) return;
-                    setEventos(
-                        esAdministrador(sesion)
-                            ? datos
-                            : datos.filter((evento) => evento.organizadorId === sesion?.usuarioId),
-                    );
+                    setEventos(datos);
                 })
                 .catch((err: unknown) => {
                     console.error('No se pudo cargar el listado de eventos:', err);
@@ -77,7 +77,14 @@ export function useGestionEventos(mensajeInicial = '') {
             vigente = false;
             window.clearTimeout(temporizador);
         };
-    }, [filtros.categoriaId, filtros.fechaDesde, filtros.fechaHasta, filtros.texto, rangoFechasInvalido]);
+    }, [
+        administrador,
+        filtros.categoriaId,
+        filtros.fechaDesde,
+        filtros.fechaHasta,
+        filtros.texto,
+        rangoFechasInvalido,
+    ]);
 
     const solicitarCancelacion = (evento: Evento) => {
         setMensajeExito('');
@@ -98,7 +105,7 @@ export function useGestionEventos(mensajeInicial = '') {
         setErrorCancelar('');
         try {
             const respuesta = await cancelarEvento(eventoACancelar.id);
-            // GET /eventos solo trae publicados: el cancelado sale de la lista sin recargar
+            // Actualiza la lista local sin volver a consultar el endpoint.
             setEventos((previos) => previos.filter((evento) => evento.id !== eventoACancelar.id));
             setMensajeExito(respuesta.mensaje || `El evento «${eventoACancelar.titulo}» fue cancelado.`);
             setACancelar(null);

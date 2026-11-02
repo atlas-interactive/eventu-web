@@ -3,21 +3,21 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { EditarEvento } from '../../../../src/features/eventos/EditarEvento';
-import { editarEvento, listarEventos } from '../../../../src/features/eventos/services/eventoService';
+import { editarEvento, listarMisEventos } from '../../../../src/features/eventos/services/eventoService';
 import { listarCategorias } from '../../../../src/features/categorias/services/categoriaService';
 import type { Evento } from '../../../../src/types/evento';
 
 vi.mock('../../../../src/features/eventos/services/eventoService', () => ({
     crearEvento: vi.fn(),
     editarEvento: vi.fn(),
-    listarEventos: vi.fn(),
+    listarMisEventos: vi.fn(),
 }));
 vi.mock('../../../../src/features/categorias/services/categoriaService', () => ({
     listarCategorias: vi.fn(),
 }));
 
 const editarMock = vi.mocked(editarEvento);
-const listarEventosMock = vi.mocked(listarEventos);
+const listarMisEventosMock = vi.mocked(listarMisEventos);
 const listarCategoriasMock = vi.mocked(listarCategorias);
 
 const evento: Evento = {
@@ -54,7 +54,7 @@ const renderizar = () =>
 describe('EditarEvento (HU-06)', () => {
     beforeEach(() => {
         editarMock.mockReset();
-        listarEventosMock.mockReset().mockResolvedValue([evento]);
+        listarMisEventosMock.mockReset().mockResolvedValue([evento]);
         listarCategoriasMock.mockReset().mockResolvedValue([
             { id: 2, nombre: 'Cultural', activo: true, eventosActivos: 1, creadoEn: '2026-10-01T10:00:00' },
         ]);
@@ -78,7 +78,7 @@ describe('EditarEvento (HU-06)', () => {
     });
 
     it('muestra un error cuando el evento no existe en el listado', async () => {
-        listarEventosMock.mockResolvedValue([]);
+        listarMisEventosMock.mockResolvedValue([]);
         renderizar();
 
         expect(await screen.findByRole('alert')).toHaveTextContent(

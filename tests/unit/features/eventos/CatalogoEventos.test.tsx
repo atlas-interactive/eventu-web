@@ -60,7 +60,7 @@ describe('CatalogoEventos (HU-08)', () => {
         expect(screen.getByText('38 cupos disponibles de 120')).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Ver detalle de Feria de proyectos' })).toHaveAttribute(
             'href',
-            '/usuario/eventos/5',
+            '/eventos/5',
         );
     });
 

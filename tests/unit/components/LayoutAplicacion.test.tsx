@@ -42,7 +42,7 @@ describe('LayoutAplicacion', () => {
         expect(screen.getByText('Administrador')).toBeInTheDocument();
     });
 
-    it('limita la navegación del organizador a sus eventos y estadísticas', () => {
+    it('ofrece al organizador explorar eventos, gestionar los propios y ver estadísticas', () => {
         guardarSesion({
             token: 't',
             usuarioId: 2,
@@ -53,6 +53,7 @@ describe('LayoutAplicacion', () => {
 
         renderizar();
 
+        expect(screen.getByRole('link', { name: 'Explorar eventos' })).toHaveAttribute('href', '/eventos');
         expect(screen.getByRole('link', { name: 'Mis eventos' })).toHaveAttribute('href', '/organizador/eventos');
         expect(screen.getByRole('link', { name: 'Estadísticas' })).toHaveAttribute('href', '/organizador/estadisticas');
         expect(screen.queryByRole('link', { name: 'Categorías' })).not.toBeInTheDocument();
@@ -73,7 +74,7 @@ describe('LayoutAplicacion', () => {
 
         expect(screen.getByRole('link', { name: 'Eventos en campus' })).toHaveAttribute(
             'href',
-            '/usuario/eventos',
+            '/eventos',
         );
         expect(screen.queryByRole('link', { name: 'Mis eventos' })).not.toBeInTheDocument();
     });
