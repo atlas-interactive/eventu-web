@@ -239,14 +239,6 @@ export function MisEventos() {
                                 </span>
                             </div>
                             <div className="evento-card-actions">
-                                <Link
-                                    to={`/organizador/eventos/${evento.id}/editar`}
-                                    className="evento-row-button gap-1.5"
-                                    aria-label={`Editar evento ${evento.titulo}`}
-                                >
-                                    <Pencil className="h-4 w-4 shrink-0" aria-hidden="true" />
-                                    Editar
-                                </Link>
                                 {!estaCancelado(evento) && (
                                     <button
                                         type="button"
