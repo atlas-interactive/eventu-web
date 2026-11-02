@@ -39,6 +39,9 @@ const DetalleEvento = lazy(() =>
 const DashboardEstadisticas = lazy(() =>
     import('../features/estadisticas/DashboardEstadisticas').then((modulo) => ({ default: modulo.DashboardEstadisticas })),
 );
+const MisInscripciones = lazy(() =>
+    import('../features/inscripciones/pages/MisInscripciones').then((modulo) => ({ default: modulo.MisInscripciones })),
+);
 
 const pantallaDiferida = (pantalla: ReactNode, fallback: ReactNode = <SkeletonPagina />) => (
     <Suspense fallback={fallback}>{pantalla}</Suspense>
@@ -82,6 +85,7 @@ export function AppRoutes() {
                 <Route element={<LayoutAplicacion />}>
                     <Route path="/eventos" element={pantallaDiferida(<CatalogoEventos />)} />
                     <Route path="/eventos/:id" element={pantallaDiferida(<DetalleEvento />)} />
+                    <Route path="/mis-inscripciones" element={pantallaDiferida(<MisInscripciones />)} />
                 </Route>
             </Route>
 

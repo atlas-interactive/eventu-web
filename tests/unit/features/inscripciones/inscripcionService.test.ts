@@ -3,6 +3,7 @@ import { axiosClient } from '../../../../src/api';
 import {
     inscribirEnEvento,
     tieneInscripcionActiva,
+    listarMisInscripciones,
 } from '../../../../src/features/inscripciones/services/inscripcionService';
 
 vi.mock('../../../../src/api', () => ({
@@ -62,4 +63,24 @@ describe('inscripcionService', () => {
             'La respuesta de /inscripciones/mias no es una lista válida.',
         );
     });
+
+    it('lista y valida las inscripciones sin exponer códigos QR en la pantalla', async () => {
+        const inscripciones = [
+            {
+                id: 8,
+                estado: 'ACTIVA',
+                codigoQr: 'NO-RENDERIZAR',
+                fechaInscripcion: '2026-03-01T10:00:00',
+                eventoId: 5,
+                eventoTitulo: 'Festival universitario',
+                eventoFechaInicio: '2026-04-02T09:00:00',
+                eventoUbicacion: 'Campus',
+            },
+        ];
+        getMock.mockResolvedValue({ data: inscripciones });
+
+        await expect(listarMisInscripciones()).resolves.toEqual(inscripciones);
+        expect(getMock).toHaveBeenCalledWith('/inscripciones/mias');
+    });
+
 });
