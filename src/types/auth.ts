@@ -28,3 +28,16 @@ export interface RespuestaAutenticacion {
     rol: string;
     cuentaReactivada: boolean;
 }
+
+export interface SolicitudRecuperacionContrasenaDTO {
+    correo: string;
+}
+
+export interface RestablecerContrasenaDTO {
+    token: string;
+    password: string;
+}
+
+export interface RespuestaRecuperacionContrasena {
+    mensaje: string;
+}
