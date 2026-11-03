@@ -10,3 +10,8 @@ export interface Inscripcion {
     eventoFechaInicio: string;
     eventoUbicacion: string;
 }
+
+export interface RespuestaCancelacionInscripcion {
+    mensaje: string;
+    inscripcionId: number;
+}
