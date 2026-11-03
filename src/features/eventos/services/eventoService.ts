@@ -1,6 +1,13 @@
 import { axiosClient } from '../../../api';
 import { convertirErrorBlob } from '../../../api/descargas';
-import type { Evento, EventoActualizacion, EventoSolicitud, FiltrosEvento, RespuestaEvento } from '../../../types/evento';
+import type {
+    Evento,
+    EventoActualizacion,
+    EventoSolicitud,
+    FiltrosEvento,
+    InscritoEvento,
+    RespuestaEvento,
+} from '../../../types/evento';
 
 // El organizador se identifica con el token JWT (el interceptor de axios lo envía), por eso ninguna llamada lleva su id
 
@@ -36,6 +43,28 @@ export const obtenerEvento = async (id: number): Promise<Evento> => {
     if (!data || typeof data !== 'object' || Array.isArray(data)) {
         throw new Error('La respuesta de /eventos/{id} no es un evento válido.');
     }
+    return data;
+};
+
+export const listarInscritosEvento = async (id: number): Promise<InscritoEvento[]> => {
+    const url = `/eventos/${id}/inscritos`;
+    const { data } = await axiosClient.get<InscritoEvento[]>(url);
+    if (
+        !Array.isArray(data) ||
+        data.some(
+            (inscrito) =>
+                !inscrito ||
+                typeof inscrito.inscripcionId !== 'number' ||
+                typeof inscrito.usuarioId !== 'number' ||
+                typeof inscrito.nombre !== 'string' ||
+                typeof inscrito.correo !== 'string' ||
+                typeof inscrito.fechaInscripcion !== 'string' ||
+                typeof inscrito.asistio !== 'boolean',
+        )
+    ) {
+        throw new Error(`La respuesta de ${url} no es una lista válida de inscritos.`);
+    }
+
     return data;
 };
 

@@ -30,6 +30,9 @@ const EditarEvento = lazy(() =>
 const GestionEventos = lazy(() =>
     import('../features/eventos/pages/GestionEventos').then((modulo) => ({ default: modulo.GestionEventos })),
 );
+const ParticipantesEvento = lazy(() =>
+    import('../features/eventos/pages/ParticipantesEvento').then((modulo) => ({ default: modulo.ParticipantesEvento })),
+);
 const CatalogoEventos = lazy(() =>
     import('../features/eventos/pages/CatalogoEventos').then((modulo) => ({ default: modulo.CatalogoEventos })),
 );
@@ -76,6 +79,7 @@ export function AppRoutes() {
                 <Route element={<LayoutAplicacion />}>
                     <Route path="/organizador/eventos" element={pantallaDiferida(<GestionEventos />)} />
                     <Route path="/organizador/eventos/nuevo" element={pantallaDiferida(<CrearEvento />)} />
+                    <Route path="/organizador/eventos/:id/inscritos" element={pantallaDiferida(<ParticipantesEvento />)} />
                     <Route path="/organizador/eventos/:id/editar" element={pantallaDiferida(<EditarEvento />)} />
                     <Route path="/organizador/estadisticas" element={pantallaDiferida(<DashboardEstadisticas />)} />
                 </Route>

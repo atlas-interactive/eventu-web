@@ -7,6 +7,7 @@ import {
     descargarReporteEvento,
     editarEvento,
     listarEventos,
+    listarInscritosEvento,
     listarMisEventos,
     obtenerEvento,
 } from '../../../../src/features/eventos/services/eventoService';
@@ -107,6 +108,32 @@ describe('eventoService', () => {
         clienteMock.get.mockResolvedValue({ data: [] });
 
         await expect(obtenerEvento(7)).rejects.toThrow('no es un evento válido');
+    });
+
+    it('consulta y valida los inscritos activos de un evento', async () => {
+        const inscritos = [
+            {
+                inscripcionId: 31,
+                usuarioId: 9,
+                nombre: 'Laura Gómez',
+                correo: 'laura@unillanos.edu.co',
+                fechaInscripcion: '2026-09-10T14:20:00',
+                asistio: true,
+            },
+        ];
+        clienteMock.get.mockResolvedValue({ data: inscritos });
+
+        await expect(listarInscritosEvento(7)).resolves.toEqual(inscritos);
+
+        expect(clienteMock.get).toHaveBeenCalledWith('/eventos/7/inscritos');
+    });
+
+    it('rechaza una respuesta inválida del endpoint de inscritos', async () => {
+        clienteMock.get.mockResolvedValue({ data: [{ nombre: 'Laura' }] });
+
+        await expect(listarInscritosEvento(7)).rejects.toThrow(
+            'La respuesta de /eventos/7/inscritos no es una lista válida de inscritos.',
+        );
     });
 
     it('crea el evento sin enviar el id del organizador (va en el token)', async () => {
