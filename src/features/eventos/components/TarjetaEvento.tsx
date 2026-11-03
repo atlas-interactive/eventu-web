@@ -1,4 +1,4 @@
-import { CalendarDays, CircleX, FileDown, MapPin, Pencil, Tag, Users } from 'lucide-react';
+import { Armchair, CalendarDays, CircleX, FileDown, MapPin, Pencil, Tag, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import type { Evento } from '../../../types/evento';
 
@@ -53,9 +53,17 @@ export function TarjetaEvento({
                     )}
                 </div>
                 <span className="evento-card-meta evento-card-capacity">
-                    <Users className="h-4 w-4 shrink-0" aria-hidden="true" />
+                    <Armchair className="h-4 w-4 shrink-0" aria-hidden="true" />
                     Cupos: {evento.cuposDisponibles} disponibles de {evento.cuposMaximos}
                 </span>
+                <Link
+                    to={`/organizador/eventos/${evento.id}/inscritos`}
+                    className="evento-card-meta evento-card-participants"
+                    aria-label={`Ver inscritos y asistencias de ${evento.titulo}`}
+                >
+                    <Users className="h-4 w-4 shrink-0" aria-hidden="true" />
+                    Ver inscritos y asistencias
+                </Link>
             </div>
             <div className="evento-card-actions">
                 {!estaCancelado && (

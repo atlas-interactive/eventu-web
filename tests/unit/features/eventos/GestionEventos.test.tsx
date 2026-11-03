@@ -89,6 +89,10 @@ describe('GestionEventos (HU-07)', () => {
 
         expect(await screen.findByRole('heading', { name: 'Feria cultural' })).toBeInTheDocument();
         expect(screen.queryByRole('heading', { name: 'Evento de otro organizador' })).not.toBeInTheDocument();
+        expect(screen.getByRole('link', { name: 'Ver inscritos y asistencias de Feria cultural' })).toHaveAttribute(
+            'href',
+            '/organizador/eventos/9/inscritos',
+        );
         expect(listarMisMock).toHaveBeenCalledWith({});
         expect(listarTodosMock).not.toHaveBeenCalled();
     });
