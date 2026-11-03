@@ -3,11 +3,15 @@ import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import { MisInscripciones } from '../../../../src/features/inscripciones/pages/MisInscripciones';
-import { listarMisInscripciones } from '../../../../src/features/inscripciones/services/inscripcionService';
+import {
+    cancelarInscripcion,
+    listarMisInscripciones,
+} from '../../../../src/features/inscripciones/services/inscripcionService';
 import type { Inscripcion } from '../../../../src/types/inscripcion';
 
 vi.mock('../../../../src/features/inscripciones/services/inscripcionService', () => ({
     listarMisInscripciones: vi.fn(),
+    cancelarInscripcion: vi.fn(),
 }));
 
 const inscripciones: Inscripcion[] = [
@@ -34,6 +38,7 @@ const inscripciones: Inscripcion[] = [
 ];
 
 const listarMock = vi.mocked(listarMisInscripciones);
+const cancelarMock = vi.mocked(cancelarInscripcion);
 
 const renderizar = () =>
     render(
@@ -45,6 +50,7 @@ const renderizar = () =>
 describe('MisInscripciones', () => {
     beforeEach(() => {
         listarMock.mockReset();
+        cancelarMock.mockReset();
         listarMock.mockResolvedValue(inscripciones);
     });
 
@@ -58,6 +64,8 @@ describe('MisInscripciones', () => {
         expect(screen.getByRole('button', { name: 'Todas (2)' })).toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Activas (1)' })).toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Canceladas (1)' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Cancelar inscripción a Festival universitario' })).toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Cancelar inscripción a Feria cultural' })).not.toBeInTheDocument();
         expect(screen.queryByText(/NO-RENDERIZAR/)).not.toBeInTheDocument();
         expect(screen.queryByText(/TAMPOCO-RENDERIZAR/)).not.toBeInTheDocument();
     });
@@ -74,14 +82,82 @@ describe('MisInscripciones', () => {
         expect(screen.queryByRole('button', { name: 'Cancelar inscripción a Feria cultural' })).not.toBeInTheDocument();
     });
 
-    it('muestra el botón de cancelar solo como presentación', async () => {
+    it('confirma la cancelación, actualiza el estado y deja de ofrecer cancelación', async () => {
+        const user = userEvent.setup();
+        cancelarMock.mockResolvedValue({
+            mensaje: 'Inscripción cancelada exitosamente.',
+            inscripcionId: 8,
+        });
         renderizar();
 
-        const botonDePresentacion = await screen.findByText('Cancelar', { selector: 'span' });
-        expect(botonDePresentacion).toHaveClass('evento-row-button', 'evento-row-button--danger');
-        expect(botonDePresentacion).toHaveAttribute('aria-hidden', 'true');
-        expect(screen.queryByRole('button', { name: /Cancelar inscripción/ })).not.toBeInTheDocument();
+        await user.click(await screen.findByRole('button', { name: 'Cancelar inscripción a Festival universitario' }));
+        expect(screen.getByRole('dialog', { name: '¿Cancelar inscripción?' })).toBeInTheDocument();
+        await user.click(screen.getByRole('button', { name: 'Confirmar cancelación' }));
+
+        expect(await screen.findByRole('status')).toHaveTextContent('Inscripción cancelada exitosamente.');
+        expect(screen.getAllByText('Cancelada')).toHaveLength(2);
+        expect(screen.getByRole('button', { name: 'Activas (0)' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Canceladas (2)' })).toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Cancelar inscripción a Festival universitario' })).not.toBeInTheDocument();
+        expect(cancelarMock).toHaveBeenCalledWith(8);
         expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    });
+
+    it('conserva la inscripción y muestra el error backend si no se puede cancelar', async () => {
+        const user = userEvent.setup();
+        cancelarMock.mockRejectedValue({
+            isAxiosError: true,
+            response: { data: { error: 'No puedes cancelar tu inscripción porque ya asististe al evento.' } },
+        });
+        renderizar();
+
+        await user.click(await screen.findByRole('button', { name: 'Cancelar inscripción a Festival universitario' }));
+        await user.click(screen.getByRole('button', { name: 'Confirmar cancelación' }));
+
+        expect(await screen.findByRole('alert')).toHaveTextContent(
+            'No puedes cancelar tu inscripción porque ya asististe al evento.',
+        );
+        expect(screen.getByText('Inscripción activa')).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Cancelar inscripción a Festival universitario' })).toBeInTheDocument();
+        expect(screen.getByRole('dialog', { name: '¿Cancelar inscripción?' })).toBeInTheDocument();
+    });
+
+    it('permite cerrar la confirmación sin cancelar', async () => {
+        const user = userEvent.setup();
+        renderizar();
+
+        await user.click(await screen.findByRole('button', { name: 'Cancelar inscripción a Festival universitario' }));
+        await user.click(screen.getByRole('button', { name: 'Volver' }));
+
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+        expect(cancelarMock).not.toHaveBeenCalled();
+        expect(screen.getByRole('button', { name: 'Cancelar inscripción a Festival universitario' })).toBeInTheDocument();
+    });
+
+    it('evita solicitudes duplicadas mientras se cancela', async () => {
+        const user = userEvent.setup();
+        let completarCancelacion: (() => void) | undefined;
+        cancelarMock.mockImplementation(
+            () =>
+                new Promise((resolve) => {
+                    completarCancelacion = () =>
+                        resolve({
+                            mensaje: 'Inscripción cancelada exitosamente.',
+                            inscripcionId: 8,
+                        });
+                }),
+        );
+        renderizar();
+
+        await user.click(await screen.findByRole('button', { name: 'Cancelar inscripción a Festival universitario' }));
+        await user.click(screen.getByRole('button', { name: 'Confirmar cancelación' }));
+
+        expect(screen.getByRole('button', { name: 'Cancelando…' })).toBeDisabled();
+        expect(screen.getByRole('button', { name: 'Volver' })).toBeDisabled();
+        expect(cancelarMock).toHaveBeenCalledOnce();
+
+        completarCancelacion?.();
+        expect(await screen.findByRole('status')).toHaveTextContent('Inscripción cancelada exitosamente.');
     });
 
     it('muestra un estado vacío cuando no hay inscripciones', async () => {

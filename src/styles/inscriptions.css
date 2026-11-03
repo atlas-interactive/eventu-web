@@ -34,6 +34,11 @@
   color: var(--color-eventu-error);
 }
 
+.inscripciones-mensaje--exito {
+  background-color: var(--color-eventu-green-background);
+  color: var(--color-eventu-success);
+}
+
 .inscripciones-filtros {
   display: flex;
   flex-wrap: wrap;
@@ -126,10 +131,6 @@
 .inscripcion-estado--cancelada {
   background-color: var(--color-eventu-disabled-button);
   color: var(--color-eventu-secondary-text);
-}
-
-.evento-row-button.inscripcion-cancelar-presentacion {
-  cursor: default;
 }
 
 .inscripciones-vacio {
