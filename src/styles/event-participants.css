@@ -7,7 +7,7 @@
 
 .participantes-volver {
   color: var(--color-eventu-institutional-red);
-  font-size: 0.75rem;
+  font-size: 0.825rem;
   line-height: 1rem;
   text-decoration: none;
 }
@@ -85,14 +85,14 @@
 
 .participantes-metrica strong {
   color: var(--color-eventu-institutional-red);
-  font-size: 1.125rem;
+  font-size: 1.625rem;
   line-height: 1.5rem;
   font-weight: 600;
 }
 
 .participantes-metrica span {
   color: var(--color-eventu-secondary-text);
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   line-height: 1rem;
 }
 
@@ -104,24 +104,46 @@
 }
 
 .participantes-tabla {
+  min-width: 52rem;
   width: 100%;
+  table-layout: fixed;
   border-collapse: collapse;
   text-align: left;
-  font-size: 0.75rem;
-  line-height: 1rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
 }
 
 .participantes-tabla th,
 .participantes-tabla td {
-  min-width: 9rem;
+  vertical-align: middle;
   border-bottom: 1px solid var(--color-eventu-border);
-  padding: 0.75rem 1rem;
+  padding: 0.875rem 1.25rem;
+}
+
+.participantes-tabla th:nth-child(1),
+.participantes-tabla td:nth-child(1) {
+  width: 20%;
+}
+
+.participantes-tabla th:nth-child(2),
+.participantes-tabla td:nth-child(2) {
+  width: 30%;
+}
+
+.participantes-tabla th:nth-child(3),
+.participantes-tabla td:nth-child(3) {
+  width: 32%;
+}
+
+.participantes-tabla th:nth-child(4),
+.participantes-tabla td:nth-child(4) {
+  width: 18%;
 }
 
 .participantes-tabla th {
   color: var(--color-eventu-secondary-text);
-  font-size: 0.625rem;
-  line-height: 0.875rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
   font-weight: 500;
   text-transform: uppercase;
 }
@@ -130,18 +152,22 @@
   color: var(--color-eventu-main-ink);
 }
 
+.participantes-tabla td:nth-child(2) {
+  overflow-wrap: anywhere;
+}
+
 .participantes-tabla tbody tr:last-child td {
   border-bottom: 0;
 }
 
 .participantes-asistencia {
   display: inline-flex;
-  min-width: 4rem;
+  min-width: 5rem;
   justify-content: center;
   border-radius: 0.25rem;
-  padding: 0.125rem 0.5rem;
-  font-size: 0.6875rem;
-  line-height: 1rem;
+  padding: 0.25rem 0.625rem;
+  font-size: 0.8125rem;
+  line-height: 1.125rem;
 }
 
 .participantes-asistencia--asistio {
