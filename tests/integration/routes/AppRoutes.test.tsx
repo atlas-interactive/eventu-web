@@ -102,4 +102,70 @@ describe('AppRoutes', () => {
         expect(await screen.findByRole('heading', { name: 'Feria de proyectos', level: 1 })).toBeInTheDocument();
         expect(screen.getByText('Muestra de proyectos universitarios.')).toBeInTheDocument();
     });
+
+    it.each(['ORGANIZADOR', 'ADMIN'])('permite consultar inscritos al rol %s', async (rol) => {
+        const evento = {
+            id: 5,
+            titulo: 'Feria de proyectos',
+            descripcion: 'Descripción',
+            fechaInicio: '2026-11-20T14:30:00',
+            ubicacion: 'Auditorio central',
+            cuposMaximos: 120,
+            cuposDisponibles: 38,
+            estado: 'PUBLICADO',
+            organizadorId: 2,
+            organizadorNombre: 'Laura',
+            categoriaId: 4,
+            categoriaNombre: 'Académico',
+        };
+        server.use(
+            http.get('*/eventos/5', () => HttpResponse.json(evento)),
+            http.get('*/eventos/5/inscritos', () =>
+                HttpResponse.json([
+                    {
+                        inscripcionId: 31,
+                        usuarioId: 10,
+                        nombre: 'Laura Gómez',
+                        correo: 'laura@unillanos.edu.co',
+                        fechaInscripcion: '2026-09-10T14:20:00',
+                        asistio: true,
+                    },
+                ]),
+            ),
+        );
+        guardarSesion({
+            token: 'token-de-prueba',
+            usuarioId: rol === 'ADMIN' ? 1 : 2,
+            nombre: 'Laura Ejemplo',
+            correo: 'laura@unillanos.edu.co',
+            rol,
+        });
+
+        render(
+            <MemoryRouter initialEntries={['/organizador/eventos/5/inscritos']}>
+                <AppRoutes />
+            </MemoryRouter>,
+        );
+
+        expect(await screen.findByRole('heading', { name: 'Participantes inscritos' })).toBeInTheDocument();
+        expect(screen.getByText('Laura Gómez')).toBeInTheDocument();
+    });
+
+    it('deniega la consulta de inscritos a usuarios', async () => {
+        guardarSesion({
+            token: 'token-de-prueba',
+            usuarioId: 1,
+            nombre: 'Ana Ejemplo',
+            correo: 'ana@unillanos.edu.co',
+            rol: 'USUARIO',
+        });
+
+        render(
+            <MemoryRouter initialEntries={['/organizador/eventos/5/inscritos']}>
+                <AppRoutes />
+            </MemoryRouter>,
+        );
+
+        expect(await screen.findByRole('heading', { name: 'Sin permiso' })).toBeInTheDocument();
+    });
 });

@@ -1,0 +1,215 @@
+.participantes-page {
+  width: 100%;
+  max-width: 70rem;
+  margin-inline: auto;
+  padding: 1.5rem 1rem 2rem;
+}
+
+.participantes-volver {
+  color: var(--color-eventu-institutional-red);
+  font-size: 0.825rem;
+  line-height: 1rem;
+  text-decoration: none;
+}
+
+.participantes-volver:hover {
+  text-decoration: underline;
+}
+
+.participantes-header {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.participantes-titulo {
+  color: var(--color-eventu-main-ink);
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+}
+
+.participantes-evento {
+  margin-top: 0.125rem;
+  color: var(--color-eventu-secondary-text);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.participantes-busqueda {
+  display: flex;
+  width: 100%;
+  height: 2.5rem;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--color-eventu-field-border);
+  border-radius: 0.375rem;
+  background-color: var(--color-eventu-white-surface);
+  padding-inline: 0.75rem;
+  color: var(--color-eventu-secondary-text);
+}
+
+.participantes-busqueda:focus-within {
+  border-color: var(--color-eventu-institutional-red);
+  box-shadow: 0 0 0 1px var(--color-eventu-institutional-red);
+}
+
+.participantes-busqueda input {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: var(--color-eventu-main-ink);
+  font-size: 0.75rem;
+  outline: none;
+}
+
+.participantes-busqueda input::placeholder {
+  color: var(--color-eventu-secondary-text);
+}
+
+.participantes-resumen {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-block: 1.25rem;
+}
+
+.participantes-metrica {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.participantes-metrica strong {
+  color: var(--color-eventu-institutional-red);
+  font-size: 1.625rem;
+  line-height: 1.5rem;
+  font-weight: 600;
+}
+
+.participantes-metrica span {
+  color: var(--color-eventu-secondary-text);
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+.participantes-tabla-contenedor {
+  overflow-x: auto;
+  border: 1px solid var(--color-eventu-border);
+  border-radius: 0.625rem;
+  background-color: var(--color-eventu-white-surface);
+}
+
+.participantes-tabla {
+  min-width: 52rem;
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.participantes-tabla th,
+.participantes-tabla td {
+  vertical-align: middle;
+  border-bottom: 1px solid var(--color-eventu-border);
+  padding: 0.875rem 1.25rem;
+}
+
+.participantes-tabla th:nth-child(1),
+.participantes-tabla td:nth-child(1) {
+  width: 20%;
+}
+
+.participantes-tabla th:nth-child(2),
+.participantes-tabla td:nth-child(2) {
+  width: 30%;
+}
+
+.participantes-tabla th:nth-child(3),
+.participantes-tabla td:nth-child(3) {
+  width: 32%;
+}
+
+.participantes-tabla th:nth-child(4),
+.participantes-tabla td:nth-child(4) {
+  width: 18%;
+}
+
+.participantes-tabla th {
+  color: var(--color-eventu-secondary-text);
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.participantes-tabla td {
+  color: var(--color-eventu-main-ink);
+}
+
+.participantes-tabla td:nth-child(2) {
+  overflow-wrap: anywhere;
+}
+
+.participantes-tabla tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.participantes-asistencia {
+  display: inline-flex;
+  min-width: 5rem;
+  justify-content: center;
+  border-radius: 0.25rem;
+  padding: 0.25rem 0.625rem;
+  font-size: 0.8125rem;
+  line-height: 1.125rem;
+}
+
+.participantes-asistencia--asistio {
+  background-color: var(--color-eventu-green-background);
+  color: var(--color-eventu-success);
+}
+
+.participantes-asistencia--pendiente {
+  background-color: var(--color-eventu-disabled-button);
+  color: var(--color-eventu-secondary-text);
+}
+
+.participantes-error,
+.participantes-vacio {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  color: var(--color-eventu-secondary-text);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.participantes-error {
+  color: var(--color-eventu-error);
+}
+
+@media (min-width: 40rem) {
+  .participantes-page {
+    padding-inline: 2rem;
+  }
+
+  .participantes-header {
+    flex-direction: row;
+    align-items: flex-end;
+  }
+
+  .participantes-busqueda {
+    width: min(100%, 20rem);
+  }
+
+  .participantes-resumen {
+    max-width: 35rem;
+  }
+}
