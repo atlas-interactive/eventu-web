@@ -164,6 +164,12 @@ export const FormularioLogin: React.FC = () => {
                 </Link>
             </p>
 
+            <p className="register-login-link mt-2 text-center text-sm leading-5">
+                <Link to="/recuperar-contrasena" className="font-medium hover:underline">
+                    ¿Olvidaste tu contraseña?
+                </Link>
+            </p>
+
             {respuestaPendiente && (
                 <ModalAccesible
                     titulo="Cuenta reactivada"
