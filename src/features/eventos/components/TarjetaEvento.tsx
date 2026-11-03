@@ -80,6 +80,16 @@ export function TarjetaEvento({
                     </button>
                 )}
                 {!estaCancelado && (
+                    <Link
+                        to={`/organizador/eventos/${evento.id}/editar`}
+                        className="evento-row-button gap-1.5"
+                        aria-label={`Editar evento ${evento.titulo}`}
+                    >
+                        <Pencil className="h-4 w-4 shrink-0" aria-hidden="true" />
+                        Editar
+                    </Link>
+                )}
+                {!estaCancelado && (
                     <button
                         type="button"
                         className="evento-row-button evento-row-button--danger gap-1.5"
@@ -89,16 +99,6 @@ export function TarjetaEvento({
                         <CircleX className="h-4 w-4 shrink-0" aria-hidden="true" />
                         Cancelar
                     </button>
-                )}
-                {!estaCancelado && (
-                    <Link
-                        to={`/organizador/eventos/${evento.id}/editar`}
-                        className="evento-row-button gap-1.5"
-                        aria-label={`Editar evento ${evento.titulo}`}
-                    >
-                        <Pencil className="h-4 w-4 shrink-0" aria-hidden="true" />
-                        Editar
-                    </Link>
                 )}
             </div>
         </li>
