@@ -11,6 +11,16 @@
   box-shadow: inset 0 0 1px 1px var(--color-eventu-border);
 }
 
+.link_form {
+  color: var(--color-eventu-institutional-red);
+  font-weight: bold;
+}
+
+.link_form:hover {
+  color: var(--color-eventu-institutional-red-hover);
+  text-decoration: underline; 
+}
+
 .register-subtitle {
   color: var(--color-eventu-secondary-text);
 }
