@@ -20,4 +20,14 @@ export const handlers = [
             cuentaReactivada: false,
         }),
     ),
+    http.post('*/auth/recuperar-contrasena', () =>
+        HttpResponse.json({
+            mensaje: 'Si el correo está registrado, te enviamos un enlace para restablecer tu contraseña.',
+        }),
+    ),
+    http.post('*/auth/restablecer-contrasena', () =>
+        HttpResponse.json({
+            mensaje: 'Tu contraseña se actualizó. Ya puedes iniciar sesión.',
+        }),
+    ),
 ];

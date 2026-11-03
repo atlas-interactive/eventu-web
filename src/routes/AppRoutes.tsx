@@ -15,6 +15,16 @@ const FormularioLogin = lazy(() =>
 const FormularioRegistro = lazy(() =>
     import('../features/auth/FormularioRegistro').then((modulo) => ({ default: modulo.FormularioRegistro })),
 );
+const FormularioRecuperacionContrasena = lazy(() =>
+    import('../features/auth/FormularioRecuperacionContrasena').then((modulo) => ({
+        default: modulo.FormularioRecuperacionContrasena,
+    })),
+);
+const FormularioRestablecerContrasena = lazy(() =>
+    import('../features/auth/FormularioRestablecerContrasena').then((modulo) => ({
+        default: modulo.FormularioRestablecerContrasena,
+    })),
+);
 const GestionCategorias = lazy(() =>
     import('../features/categorias/GestionCategorias').then((modulo) => ({ default: modulo.GestionCategorias })),
 );
@@ -64,6 +74,14 @@ export function AppRoutes() {
             <Route element={<LayoutAutenticacion />}>
                 <Route path="/login" element={pantallaDiferida(<RutaLogin />, <SkeletonAutenticacion />)} />
                 <Route path="/registro" element={pantallaDiferida(<FormularioRegistro />, <SkeletonAutenticacion />)} />
+                <Route
+                    path="/recuperar-contrasena"
+                    element={pantallaDiferida(<FormularioRecuperacionContrasena />, <SkeletonAutenticacion />)}
+                />
+                <Route
+                    path="/restablecer-contrasena"
+                    element={pantallaDiferida(<FormularioRestablecerContrasena />, <SkeletonAutenticacion />)}
+                />
             </Route>
 
             {/* Cada guardia y layout se aplica a todas las rutas anidadas en su grupo. */}

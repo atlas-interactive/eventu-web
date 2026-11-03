@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IconoAviso } from '../../components/ui/IconoAviso';
 import '../../styles/auth.css';
 import { mensajeDeError } from '../../api/mensajeDeError';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import iconoEventU from '../../assets/icons/iconoEventU.png';
 import { autenticarUsuario } from './services/authService';
 import { obtenerRutaInicio, guardarSesion } from '../sesion/sesion';
@@ -13,6 +13,14 @@ const correoInstitucionalRegex = /^[a-zA-Z0-9._%+-]+@unillanos\.edu\.co$/;
 
 export const FormularioLogin: React.FC = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+    const mensajeRecuperacion =
+        location.state &&
+        typeof location.state === 'object' &&
+        'mensajeRecuperacion' in location.state &&
+        typeof location.state.mensajeRecuperacion === 'string'
+            ? location.state.mensajeRecuperacion
+            : null;
     const [formData, setFormData] = useState<AutenticacionDTO>({
         correo: '',
         password: '',
@@ -21,8 +29,14 @@ export const FormularioLogin: React.FC = () => {
     // Estado de carga y mensajes del formulario
     const [loading, setLoading] = useState(false);
     const [mensajeError, setMensajeError] = useState<string | null>(null);
-    const [mensajeExito, setMensajeExito] = useState<string | null>(null);
+    const [mensajeExito, setMensajeExito] = useState<string | null>(mensajeRecuperacion);
     const [respuestaPendiente, setRespuestaPendiente] = useState<RespuestaAutenticacion | null>(null);
+
+    useEffect(() => {
+        if (mensajeRecuperacion) {
+            navigate('/login', { replace: true, state: null });
+        }
+    }, [mensajeRecuperacion, navigate]);
 
     // Validación del correo institucional y la contraseña
     const campoInvalido = {
@@ -159,8 +173,14 @@ export const FormularioLogin: React.FC = () => {
 
             <p className="register-login-link mt-2 text-center text-sm leading-5">
                 ¿No tienes cuenta?{' '}
-                <Link to="/registro" className="font-medium hover:underline">
+                <Link to="/registro" className="font-medium link_form hover:link_form-hover">
                     Regístrate
+                </Link>
+            </p>
+
+            <p className="register-login-link mt-2 text-center text-sm leading-5">
+                <Link to="/recuperar-contrasena" className="font-medium link_form hover:link_form-hover">
+                    ¿Olvidaste tu contraseña?
                 </Link>
             </p>
 
