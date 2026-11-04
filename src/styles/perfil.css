@@ -69,15 +69,10 @@
 }
 
 .perfil-card {
+  overflow: hidden;
   border: 1px solid var(--color-eventu-border);
   border-radius: 0.75rem;
   background-color: var(--color-eventu-white-surface);
-  padding: 1.25rem;
-}
-
-.perfil-card--identity {
-  overflow: hidden;
-  padding: 0;
   box-shadow: 0 1px 2px rgb(26 26 24 / 8%);
 }
 
@@ -329,10 +324,19 @@
   line-height: 1.25rem;
 }
 
-.perfil-disabled-form {
+.perfil-password-form {
   display: grid;
-  gap: 0.75rem;
+  gap: 1rem;
   margin-top: 1rem;
+}
+
+.perfil-password-field {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.perfil-password-field .perfil-input {
+  margin-top: 0;
 }
 
 .perfil-password-submit {
@@ -353,14 +357,6 @@
 @media (min-width: 40rem) {
   .perfil-page {
     padding-inline: 2rem;
-  }
-
-  .perfil-card {
-    padding: 1.5rem;
-  }
-
-  .perfil-card--identity {
-    padding: 0;
   }
 
   .perfil-card-content {

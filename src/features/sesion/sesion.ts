@@ -25,6 +25,10 @@ export const cerrarSesion = (): void => {
     localStorage.removeItem(CLAVE_USUARIO);
 };
 
+export const actualizarTokenSesion = (token: string): void => {
+    localStorage.setItem(CLAVE_TOKEN, token);
+};
+
 export const actualizarNombreSesion = (nombre: string): void => {
     const sesion = obtenerSesion();
     if (!sesion) return;

@@ -4,12 +4,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { LayoutAplicacion } from '../../../../src/components/layout/LayoutAplicacion';
 import { Perfil } from '../../../../src/features/perfil/Perfil';
-import { actualizarPerfil, obtenerPerfil } from '../../../../src/features/perfil/services/perfilService';
+import { actualizarPerfil, cambiarContrasena, obtenerPerfil } from '../../../../src/features/perfil/services/perfilService';
 import { guardarSesion } from '../../../../src/features/sesion/sesion';
-import type { PerfilUsuario } from '../../../../src/features/perfil/types/perfil';
+import type { PerfilUsuario } from '../../../../src/types/perfil';
 
 vi.mock('../../../../src/features/perfil/services/perfilService', () => ({
     actualizarPerfil: vi.fn(),
+    cambiarContrasena: vi.fn(),
     obtenerPerfil: vi.fn(),
 }));
 
@@ -38,6 +39,7 @@ describe('Perfil', () => {
         localStorage.clear();
         obtenerPerfilMock.mockReset();
         actualizarPerfilMock.mockReset();
+        cambiarContrasenaMock.mockReset();
         obtenerPerfilMock.mockResolvedValue(perfil);
         guardarSesion({
             token: 'token-de-prueba',
@@ -62,7 +64,9 @@ describe('Perfil', () => {
         expect(screen.getByText('Miembro desde')).toBeInTheDocument();
         expect(screen.queryByText('16001234')).not.toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Desactivar mi cuenta' })).toBeDisabled();
-        expect(screen.getByRole('button', { name: 'Actualizar contraseña' })).toBeDisabled();
+        expect(screen.getByRole('button', { name: 'Actualizar contraseña' })).toBeEnabled();
+        expect(document.querySelectorAll('.perfil-card')).toHaveLength(3);
+        expect(document.querySelectorAll('.perfil-card-accent')).toHaveLength(3);
     });
 
     it('actualiza el nombre conservando el código institucional y sincroniza la sesión visible', async () => {
@@ -113,7 +117,73 @@ describe('Perfil', () => {
         await user.click(screen.getByRole('button', { name: 'Reintentar' }));
         expect(await screen.findByRole('heading', { name: 'Laura Gomez' })).toBeInTheDocument();
     });
+
+    it('cambia la contraseña, guarda el token renovado y conserva la sesión', async () => {
+        cambiarContrasenaMock.mockResolvedValue({
+            mensaje: 'Contraseña actualizada exitosamente.',
+            token: 'token-renovado',
+        });
+        const user = userEvent.setup();
+        renderizar();
+
+        await screen.findByRole('heading', { name: 'Laura Gomez' });
+        await user.type(screen.getByLabelText('Contraseña actual'), 'clave-anterior');
+        await user.type(screen.getByLabelText('Nueva contraseña'), 'clave-nueva-123');
+        await user.type(screen.getByLabelText('Confirmar nueva contraseña'), 'clave-nueva-123');
+        await user.click(screen.getByRole('button', { name: 'Actualizar contraseña' }));
+
+        expect(cambiarContrasenaMock).toHaveBeenCalledWith({
+            passwordActual: 'clave-anterior',
+            passwordNueva: 'clave-nueva-123',
+        });
+        expect(await screen.findByRole('status')).toHaveTextContent('Contraseña actualizada exitosamente.');
+        expect(localStorage.getItem('auth_token')).toBe('token-renovado');
+        expect(JSON.parse(localStorage.getItem('auth_usuario') ?? '{}')).toMatchObject({
+            nombre: 'Laura Gomez',
+            correo: perfil.correo,
+        });
+        expect(screen.getByLabelText('Contraseña actual')).toHaveValue('');
+        expect(screen.getByLabelText('Nueva contraseña')).toHaveValue('');
+        expect(screen.getByLabelText('Confirmar nueva contraseña')).toHaveValue('');
+    });
+
+    it('valida la longitud y confirmación de contraseña antes de llamar al servicio', async () => {
+        const user = userEvent.setup();
+        renderizar();
+
+        await screen.findByRole('heading', { name: 'Laura Gomez' });
+        await user.type(screen.getByLabelText('Contraseña actual'), 'clave-anterior');
+        await user.type(screen.getByLabelText('Nueva contraseña'), 'clave-nueva-123');
+        await user.type(screen.getByLabelText('Confirmar nueva contraseña'), 'no-coincide');
+        await user.click(screen.getByRole('button', { name: 'Actualizar contraseña' }));
+
+        expect(await screen.findByRole('alert')).toHaveTextContent(
+            'La confirmación no coincide con la nueva contraseña.',
+        );
+        expect(cambiarContrasenaMock).not.toHaveBeenCalled();
+        expect(localStorage.getItem('auth_token')).toBe('token-de-prueba');
+    });
+
+    it('muestra el error del cambio de contraseña sin cerrar la sesión', async () => {
+        vi.spyOn(console, 'error').mockImplementation(() => undefined);
+        cambiarContrasenaMock.mockRejectedValue(new Error('Error de prueba'));
+        const user = userEvent.setup();
+        renderizar();
+
+        await screen.findByRole('heading', { name: 'Laura Gomez' });
+        await user.type(screen.getByLabelText('Contraseña actual'), 'incorrecta');
+        await user.type(screen.getByLabelText('Nueva contraseña'), 'clave-nueva-123');
+        await user.type(screen.getByLabelText('Confirmar nueva contraseña'), 'clave-nueva-123');
+        await user.click(screen.getByRole('button', { name: 'Actualizar contraseña' }));
+
+        expect(await screen.findByRole('alert')).toHaveTextContent(
+            'Ocurrió un error inesperado al conectar con el servidor.',
+        );
+        expect(localStorage.getItem('auth_token')).toBe('token-de-prueba');
+        expect(localStorage.getItem('auth_usuario')).not.toBeNull();
+    });
 });
 
 const obtenerPerfilMock = vi.mocked(obtenerPerfil);
 const actualizarPerfilMock = vi.mocked(actualizarPerfil);
+const cambiarContrasenaMock = vi.mocked(cambiarContrasena);

@@ -3,10 +3,10 @@ import type { FormEvent } from 'react';
 import { CalendarDays, LockKeyhole, Mail, Pencil, ShieldAlert } from 'lucide-react';
 import { mensajeDeError } from '../../api/mensajeDeError';
 import { Skeleton, SkeletonEstado } from '../../components/ui/Skeleton';
-import { actualizarNombreSesion } from '../sesion/sesion';
-import { actualizarPerfil, obtenerPerfil } from './services/perfilService';
-import type { PerfilUsuario } from './types/perfil';
-import './perfil.css';
+import { actualizarNombreSesion, actualizarTokenSesion } from '../sesion/sesion';
+import { actualizarPerfil, cambiarContrasena, obtenerPerfil } from './services/perfilService';
+import type { PerfilUsuario } from '../../types/perfil';
+import '../../styles/perfil.css';
 
 const ETIQUETA_ROL: Record<string, string> = {
     ADMIN: 'Administrador',
@@ -40,6 +40,11 @@ export function Perfil() {
     const [guardando, setGuardando] = useState(false);
     const [errorGuardado, setErrorGuardado] = useState('');
     const [mensajeExito, setMensajeExito] = useState('');
+    const [passwordActual, setPasswordActual] = useState('');
+    const [passwordNueva, setPasswordNueva] = useState('');
+    const [confirmacionContrasena, setConfirmacionContrasena] = useState('');
+    const [cambiandoContrasena, setCambiandoContrasena] = useState(false);
+    const [errorContrasena, setErrorContrasena] = useState('');
 
     useEffect(() => {
         let vigente = true;
@@ -107,6 +112,36 @@ export function Perfil() {
             setErrorGuardado(mensajeDeError(error));
         } finally {
             setGuardando(false);
+        }
+    };
+
+    const guardarContrasena = async (evento: FormEvent<HTMLFormElement>) => {
+        evento.preventDefault();
+        setErrorContrasena('');
+        setMensajeExito('');
+
+        if (passwordNueva.length < 8 || passwordNueva.length > 72) {
+            setErrorContrasena('La contraseña debe tener entre 8 y 72 caracteres.');
+            return;
+        }
+        if (passwordNueva !== confirmacionContrasena) {
+            setErrorContrasena('La confirmación no coincide con la nueva contraseña.');
+            return;
+        }
+
+        setCambiandoContrasena(true);
+        try {
+            const respuesta = await cambiarContrasena({ passwordActual, passwordNueva });
+            actualizarTokenSesion(respuesta.token);
+            setPasswordActual('');
+            setPasswordNueva('');
+            setConfirmacionContrasena('');
+            setMensajeExito(respuesta.mensaje || 'Tu contraseña se actualizó correctamente.');
+        } catch (error: unknown) {
+            console.error('No se pudo cambiar la contraseña:', error);
+            setErrorContrasena(mensajeDeError(error));
+        } finally {
+            setCambiandoContrasena(false);
         }
     };
 
@@ -243,53 +278,104 @@ export function Perfil() {
                             </div>
                         </section>
 
-                        <section className="perfil-card perfil-card--password">
-                            <h2 className="perfil-section-title">
-                                <LockKeyhole className="perfil-section-icon" aria-hidden="true" />
-                                Cambiar contraseña
-                            </h2>
-                            <p className="perfil-section-description">
-                                La edición de contraseña estará disponible en una próxima etapa.
-                            </p>
-                            <div className="perfil-disabled-form" aria-label="Cambio de contraseña no disponible">
-                                <label className="perfil-label">
-                                    Contraseña actual
-                                    <input disabled type="password" placeholder="Ingresa tu contraseña actual" className="perfil-input" />
-                                </label>
-                                <label className="perfil-label">
-                                    Nueva contraseña
-                                    <input disabled type="password" placeholder="Mínimo 8 caracteres" className="perfil-input" />
-                                </label>
-                                <label className="perfil-label">
-                                    Confirmar nueva contraseña
-                                    <input disabled type="password" placeholder="Repite tu nueva contraseña" className="perfil-input" />
-                                </label>
-                                <button
-                                    type="button"
-                                    disabled
-                                    className="perfil-button perfil-button--primary perfil-password-submit"
-                                >
-                                    Actualizar contraseña
-                                </button>
+                        <section className="perfil-card">
+                            <div className="perfil-card-accent" aria-hidden="true" />
+                            <div className="perfil-card-content">
+                                <h2 className="perfil-section-title">
+                                    <LockKeyhole className="perfil-section-icon" aria-hidden="true" />
+                                    Cambiar contraseña
+                                </h2>
+                                <p className="perfil-section-description">
+                                    Usa tu contraseña actual para confirmar el cambio.
+                                </p>
+                                <form className="perfil-password-form" onSubmit={guardarContrasena}>
+                                    <div className="perfil-password-field">
+                                        <label htmlFor="password-actual" className="perfil-label">
+                                            Contraseña actual
+                                        </label>
+                                        <input
+                                            id="password-actual"
+                                            name="passwordActual"
+                                            type="password"
+                                            autoComplete="current-password"
+                                            value={passwordActual}
+                                            onChange={(evento) => setPasswordActual(evento.target.value)}
+                                            required
+                                            className="perfil-input"
+                                            placeholder="Ingresa tu contraseña actual"
+                                        />
+                                    </div>
+                                    <div className="perfil-password-field">
+                                        <label htmlFor="password-nueva" className="perfil-label">
+                                            Nueva contraseña
+                                        </label>
+                                        <input
+                                            id="password-nueva"
+                                            name="passwordNueva"
+                                            type="password"
+                                            autoComplete="new-password"
+                                            value={passwordNueva}
+                                            onChange={(evento) => setPasswordNueva(evento.target.value)}
+                                            minLength={8}
+                                            maxLength={72}
+                                            required
+                                            className="perfil-input"
+                                            placeholder="Entre 8 y 72 caracteres"
+                                        />
+                                    </div>
+                                    <div className="perfil-password-field">
+                                        <label htmlFor="password-confirmacion" className="perfil-label">
+                                            Confirmar nueva contraseña
+                                        </label>
+                                        <input
+                                            id="password-confirmacion"
+                                            name="confirmacionContrasena"
+                                            type="password"
+                                            autoComplete="new-password"
+                                            value={confirmacionContrasena}
+                                            onChange={(evento) => setConfirmacionContrasena(evento.target.value)}
+                                            minLength={8}
+                                            maxLength={72}
+                                            required
+                                            className="perfil-input"
+                                            placeholder="Repite tu nueva contraseña"
+                                        />
+                                    </div>
+                                    {errorContrasena && (
+                                        <p role="alert" className="perfil-inline-error">
+                                            {errorContrasena}
+                                        </p>
+                                    )}
+                                    <button
+                                        type="submit"
+                                        disabled={cambiandoContrasena}
+                                        className="perfil-button perfil-button--primary perfil-password-submit"
+                                    >
+                                        {cambiandoContrasena ? 'Actualizando…' : 'Actualizar contraseña'}
+                                    </button>
+                                </form>
                             </div>
                         </section>
                     </div>
 
-                    <section className="perfil-card perfil-card--deactivation">
-                        <h2 className="perfil-section-title">
-                            <ShieldAlert className="perfil-section-icon perfil-section-icon--warning" aria-hidden="true" />
-                            Desactivar cuenta
-                        </h2>
-                        <p className="perfil-section-description">
-                            La gestión de desactivación de cuenta estará disponible en una próxima etapa.
-                        </p>
-                        <button
-                            type="button"
-                            disabled
-                            className="perfil-button perfil-button--danger"
-                        >
-                            Desactivar mi cuenta
-                        </button>
+                    <section className="perfil-card">
+                        <div className="perfil-card-accent" aria-hidden="true" />
+                        <div className="perfil-card-content">
+                            <h2 className="perfil-section-title">
+                                <ShieldAlert className="perfil-section-icon perfil-section-icon--warning" aria-hidden="true" />
+                                Desactivar cuenta
+                            </h2>
+                            <p className="perfil-section-description">
+                                La gestión de desactivación de cuenta estará disponible en una próxima etapa.
+                            </p>
+                            <button
+                                type="button"
+                                disabled
+                                className="perfil-button perfil-button--danger"
+                            >
+                                Desactivar mi cuenta
+                            </button>
+                        </div>
                     </section>
                 </div>
             )}
