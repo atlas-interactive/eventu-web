@@ -324,6 +324,27 @@
   line-height: 1.25rem;
 }
 
+.perfil-restricciones-desactivacion {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding-left: 1.25rem;
+  color: var(--color-eventu-secondary-text);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  list-style: disc;
+}
+
+.perfil-desactivacion-form {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.perfil-desactivacion-form .workflow-dialog-actions {
+  margin-top: 0.75rem;
+}
+
 .perfil-password-form {
   display: grid;
   gap: 1rem;

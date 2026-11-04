@@ -1,16 +1,22 @@
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { LayoutAplicacion } from '../../../../src/components/layout/LayoutAplicacion';
 import { Perfil } from '../../../../src/features/perfil/Perfil';
-import { actualizarPerfil, cambiarContrasena, obtenerPerfil } from '../../../../src/features/perfil/services/perfilService';
+import {
+    actualizarPerfil,
+    cambiarContrasena,
+    desactivarCuenta,
+    obtenerPerfil,
+} from '../../../../src/features/perfil/services/perfilService';
 import { guardarSesion } from '../../../../src/features/sesion/sesion';
 import type { PerfilUsuario } from '../../../../src/types/perfil';
 
 vi.mock('../../../../src/features/perfil/services/perfilService', () => ({
     actualizarPerfil: vi.fn(),
     cambiarContrasena: vi.fn(),
+    desactivarCuenta: vi.fn(),
     obtenerPerfil: vi.fn(),
 }));
 
@@ -30,6 +36,7 @@ const renderizar = () =>
                 <Route element={<LayoutAplicacion />}>
                     <Route path="/perfil" element={<Perfil />} />
                 </Route>
+                <Route path="/login" element={<p>Inicio de sesión</p>} />
             </Routes>
         </MemoryRouter>,
     );
@@ -40,6 +47,7 @@ describe('Perfil', () => {
         obtenerPerfilMock.mockReset();
         actualizarPerfilMock.mockReset();
         cambiarContrasenaMock.mockReset();
+        desactivarCuentaMock.mockReset();
         obtenerPerfilMock.mockResolvedValue(perfil);
         guardarSesion({
             token: 'token-de-prueba',
@@ -63,7 +71,7 @@ describe('Perfil', () => {
         expect(screen.getByText('Usuario')).toBeInTheDocument();
         expect(screen.getByText('Miembro desde')).toBeInTheDocument();
         expect(screen.queryByText('16001234')).not.toBeInTheDocument();
-        expect(screen.getByRole('button', { name: 'Desactivar mi cuenta' })).toBeDisabled();
+        expect(screen.getByRole('button', { name: 'Desactivar mi cuenta' })).toBeEnabled();
         expect(screen.getByRole('button', { name: 'Actualizar contraseña' })).toBeEnabled();
         expect(document.querySelectorAll('.perfil-card')).toHaveLength(3);
         expect(document.querySelectorAll('.perfil-card-accent')).toHaveLength(3);
@@ -182,8 +190,64 @@ describe('Perfil', () => {
         expect(localStorage.getItem('auth_token')).toBe('token-de-prueba');
         expect(localStorage.getItem('auth_usuario')).not.toBeNull();
     });
+
+    it('permite cancelar la desactivación sin enviar la contraseña', async () => {
+        const user = userEvent.setup();
+        renderizar();
+
+        await user.click(await screen.findByRole('button', { name: 'Desactivar mi cuenta' }));
+        const dialogo = screen.getByRole('dialog');
+        expect(dialogo).toHaveTextContent('Confirmar desactivación de cuenta');
+        await user.type(within(dialogo).getByLabelText('Contraseña actual'), 'clave-actual');
+        await user.click(screen.getByRole('button', { name: 'Volver' }));
+
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+        expect(desactivarCuentaMock).not.toHaveBeenCalled();
+        expect(localStorage.getItem('auth_token')).toBe('token-de-prueba');
+    });
+
+    it('desactiva la cuenta, limpia la sesión local y redirige al inicio de sesión', async () => {
+        desactivarCuentaMock.mockResolvedValue({
+            mensaje: 'La cuenta se desactivó correctamente.',
+        });
+        const user = userEvent.setup();
+        renderizar();
+
+        await user.click(await screen.findByRole('button', { name: 'Desactivar mi cuenta' }));
+        await user.type(within(screen.getByRole('dialog')).getByLabelText('Contraseña actual'), 'clave-actual');
+        await user.click(screen.getByRole('button', { name: 'Confirmar desactivación' }));
+
+        expect(desactivarCuentaMock).toHaveBeenCalledWith('clave-actual');
+        expect(await screen.findByText('Inicio de sesión')).toBeInTheDocument();
+        expect(localStorage.getItem('auth_token')).toBeNull();
+        expect(localStorage.getItem('auth_usuario')).toBeNull();
+    });
+
+    it('muestra errores del servidor y conserva la sesión cuando no se permite desactivar', async () => {
+        vi.spyOn(console, 'error').mockImplementation(() => undefined);
+        desactivarCuentaMock.mockRejectedValue(
+            Object.assign(new Error('Conflicto'), {
+                isAxiosError: true,
+                response: { data: { error: 'No puedes desactivar la cuenta mientras seas el único administrador.' } },
+            }),
+        );
+        const user = userEvent.setup();
+        renderizar();
+
+        await user.click(await screen.findByRole('button', { name: 'Desactivar mi cuenta' }));
+        await user.type(within(screen.getByRole('dialog')).getByLabelText('Contraseña actual'), 'clave-actual');
+        await user.click(screen.getByRole('button', { name: 'Confirmar desactivación' }));
+
+        expect(await screen.findByRole('alert')).toHaveTextContent(
+            'No puedes desactivar la cuenta mientras seas el único administrador.',
+        );
+        expect(screen.getByRole('dialog')).toBeInTheDocument();
+        expect(localStorage.getItem('auth_token')).toBe('token-de-prueba');
+        expect(within(screen.getByRole('dialog')).getByLabelText('Contraseña actual')).toHaveValue('');
+    });
 });
 
 const obtenerPerfilMock = vi.mocked(obtenerPerfil);
 const actualizarPerfilMock = vi.mocked(actualizarPerfil);
 const cambiarContrasenaMock = vi.mocked(cambiarContrasena);
+const desactivarCuentaMock = vi.mocked(desactivarCuenta);

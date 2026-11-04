@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { CalendarCog, CalendarDays, ChartPie, ChevronDown, ClipboardList, LogOut, Tags, UserCog, UserRound } from 'lucide-react';
+import { CalendarCog, CalendarDays, ChartPie, ChevronDown, ClipboardList, LogOut, Tags, UserCog, UserRound, PersonStanding } from 'lucide-react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import {
     cerrarSesion,
@@ -170,7 +170,7 @@ export function LayoutAplicacion() {
                                 aria-controls="menu-perfil"
                                 onClick={() => setMenuAbierto((abierto) => !abierto)}
                                 title="Menú de perfil"
-                                className="flex min-w-0 items-center border-1 border-eventu-border justify-center sm:gap-0 rounded-2xl text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red hover:bg-eventu-page-background sm:gap-4 sm:px-2.75 sm:py-1.25 shadow"
+                                className="flex min-w-0 items-center border-1 border-eventu-border justify-center sm:gap-0 rounded-2xl text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red hover:bg-eventu-page-background sm:gap-4 sm:px-2.25 sm:py-1.25 shadow"
                             >
                                 <span
                                     role="img"
@@ -212,6 +212,14 @@ export function LayoutAplicacion() {
                                     >
                                         <UserRound className="h-4 w-4" aria-hidden="true" />
                                         Perfil
+                                    </NavLink>
+                                    <NavLink
+                                        to=""
+                                        role="menuitem"
+                                        onClick={() => setMenuAbierto(false)}
+                                        className="flex w-full items-center gap-2 rounded px-3 py-2 text-left text-sm text-eventu-main-ink hover:bg-eventu-page-background focus-visible:bg-eventu-page-background focus-visible:outline-none">
+                                        <PersonStanding className="h-4 w-4" aria-hidden="true" />
+                                        Accesibilidad
                                     </NavLink>
                                     <div role="separator" className="mx-2 my-1 border-t border-eventu-border" />
                                     <button

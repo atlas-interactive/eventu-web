@@ -21,6 +21,14 @@ export const FormularioLogin: React.FC = () => {
         typeof location.state.mensajeRecuperacion === 'string'
             ? location.state.mensajeRecuperacion
             : null;
+    const mensajeCuentaDesactivada =
+        location.state &&
+        typeof location.state === 'object' &&
+        'mensajeCuentaDesactivada' in location.state &&
+        typeof location.state.mensajeCuentaDesactivada === 'string'
+            ? location.state.mensajeCuentaDesactivada
+            : null;
+    const mensajeNavegacion = mensajeCuentaDesactivada ?? mensajeRecuperacion;
     const [formData, setFormData] = useState<AutenticacionDTO>({
         correo: '',
         password: '',
@@ -29,14 +37,14 @@ export const FormularioLogin: React.FC = () => {
     // Estado de carga y mensajes del formulario
     const [loading, setLoading] = useState(false);
     const [mensajeError, setMensajeError] = useState<string | null>(null);
-    const [mensajeExito, setMensajeExito] = useState<string | null>(mensajeRecuperacion);
+    const [mensajeExito, setMensajeExito] = useState<string | null>(mensajeNavegacion);
     const [respuestaPendiente, setRespuestaPendiente] = useState<RespuestaAutenticacion | null>(null);
 
     useEffect(() => {
-        if (mensajeRecuperacion) {
+        if (mensajeNavegacion) {
             navigate('/login', { replace: true, state: null });
         }
-    }, [mensajeRecuperacion, navigate]);
+    }, [mensajeNavegacion, navigate]);
 
     // Validación del correo institucional y la contraseña
     const campoInvalido = {

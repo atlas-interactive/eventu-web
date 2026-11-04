@@ -1,10 +1,17 @@
 import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
-import { CalendarDays, LockKeyhole, Mail, Pencil, ShieldAlert } from 'lucide-react';
+import { CalendarDays, KeyRound, Mail, Pencil, ShieldAlert } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { mensajeDeError } from '../../api/mensajeDeError';
+import { ModalAccesible } from '../../components/ui/ModalAccesible';
 import { Skeleton, SkeletonEstado } from '../../components/ui/Skeleton';
-import { actualizarNombreSesion, actualizarTokenSesion } from '../sesion/sesion';
-import { actualizarPerfil, cambiarContrasena, obtenerPerfil } from './services/perfilService';
+import { actualizarNombreSesion, actualizarTokenSesion, cerrarSesion } from '../sesion/sesion';
+import {
+    actualizarPerfil,
+    cambiarContrasena,
+    desactivarCuenta,
+    obtenerPerfil,
+} from './services/perfilService';
 import type { PerfilUsuario } from '../../types/perfil';
 import '../../styles/perfil.css';
 
@@ -31,6 +38,7 @@ const fechaRegistro = (fecha: string | null): string => {
 };
 
 export function Perfil() {
+    const navigate = useNavigate();
     const [perfil, setPerfil] = useState<PerfilUsuario | null>(null);
     const [cargando, setCargando] = useState(true);
     const [errorCarga, setErrorCarga] = useState('');
@@ -45,6 +53,10 @@ export function Perfil() {
     const [confirmacionContrasena, setConfirmacionContrasena] = useState('');
     const [cambiandoContrasena, setCambiandoContrasena] = useState(false);
     const [errorContrasena, setErrorContrasena] = useState('');
+    const [modalDesactivacionAbierto, setModalDesactivacionAbierto] = useState(false);
+    const [passwordDesactivacion, setPasswordDesactivacion] = useState('');
+    const [desactivandoCuenta, setDesactivandoCuenta] = useState(false);
+    const [errorDesactivacion, setErrorDesactivacion] = useState('');
 
     useEffect(() => {
         let vigente = true;
@@ -142,6 +154,44 @@ export function Perfil() {
             setErrorContrasena(mensajeDeError(error));
         } finally {
             setCambiandoContrasena(false);
+        }
+    };
+
+    const abrirModalDesactivacion = () => {
+        setPasswordDesactivacion('');
+        setErrorDesactivacion('');
+        setModalDesactivacionAbierto(true);
+    };
+
+    const cerrarModalDesactivacion = () => {
+        if (desactivandoCuenta) return;
+        setModalDesactivacionAbierto(false);
+        setPasswordDesactivacion('');
+        setErrorDesactivacion('');
+    };
+
+    const confirmarDesactivacion = async (evento: FormEvent<HTMLFormElement>) => {
+        evento.preventDefault();
+        if (desactivandoCuenta || !passwordDesactivacion.trim()) {
+            setErrorDesactivacion('Ingresa tu contraseña para confirmar la desactivación.');
+            return;
+        }
+
+        setDesactivandoCuenta(true);
+        setErrorDesactivacion('');
+        try {
+            const respuesta = await desactivarCuenta(passwordDesactivacion);
+            cerrarSesion();
+            navigate('/login', {
+                replace: true,
+                state: { mensajeCuentaDesactivada: respuesta.mensaje },
+            });
+        } catch (error: unknown) {
+            console.error('No se pudo desactivar la cuenta:', error);
+            setPasswordDesactivacion('');
+            setErrorDesactivacion(mensajeDeError(error));
+        } finally {
+            setDesactivandoCuenta(false);
         }
     };
 
@@ -285,11 +335,24 @@ export function Perfil() {
                                     Desactivar cuenta
                                 </h2>
                                 <p className="perfil-section-description">
-                                    La gestión de desactivación de cuenta estará disponible en una próxima etapa.
+                                    Tu cuenta se conservará y podrás reactivarla iniciando sesión de nuevo.
+                                    Antes de continuar, ten en cuenta estas restricciones:
                                 </p>
+                                <ul className="perfil-restricciones-desactivacion">
+                                    <li>
+                                        Si eres el único administrador activo, no podrás desactivar tu cuenta.
+                                    </li>
+                                    <li>
+                                        Si eres organizador, primero debes cancelar o esperar a que finalicen tus eventos publicados.
+                                    </li>
+                                    <li>
+                                        Tus inscripciones activas a eventos que aún no inician se cancelarán y sus cupos se liberarán.
+                                        Las asistencias ya registradas se conservarán.
+                                    </li>
+                                </ul>
                                 <button
                                     type="button"
-                                    disabled
+                                    onClick={abrirModalDesactivacion}
                                     className="perfil-button perfil-button--danger"
                                 >
                                     Desactivar mi cuenta
@@ -302,7 +365,7 @@ export function Perfil() {
                         <div className="perfil-card-accent" aria-hidden="true" />
                         <div className="perfil-card-content">
                             <h2 className="perfil-section-title">
-                                <LockKeyhole className="perfil-section-icon" aria-hidden="true" />
+                                <KeyRound className="perfil-section-icon" aria-hidden="true" />
                                 Cambiar contraseña
                             </h2>
                             <p className="perfil-section-description">
@@ -377,6 +440,57 @@ export function Perfil() {
                         </div>
                     </section>
                 </div>
+            )}
+            {modalDesactivacionAbierto && (
+                <ModalAccesible
+                    titulo="Confirmar desactivación de cuenta"
+                    idTitulo="titulo-desactivar-cuenta"
+                    onCerrar={cerrarModalDesactivacion}
+                    icono={<ShieldAlert className="perfil-section-icon perfil-section-icon--warning" aria-hidden="true" />}
+                >
+                    <p className="workflow-dialog-copy">
+                        Ingresa tu contraseña para confirmar. Se cerrará tu sesión y podrás reactivar tu cuenta al iniciar sesión de nuevo.
+                    </p>
+                    <form className="perfil-desactivacion-form" onSubmit={confirmarDesactivacion}>
+                        <label htmlFor="password-desactivacion" className="perfil-label">
+                            Contraseña actual
+                        </label>
+                        <input
+                            id="password-desactivacion"
+                            name="passwordDesactivacion"
+                            type="password"
+                            autoComplete="current-password"
+                            value={passwordDesactivacion}
+                            onChange={(evento) => setPasswordDesactivacion(evento.target.value)}
+                            required
+                            autoFocus
+                            disabled={desactivandoCuenta}
+                            className="perfil-input"
+                        />
+                        {errorDesactivacion && (
+                            <p role="alert" className="perfil-inline-error">
+                                {errorDesactivacion}
+                            </p>
+                        )}
+                        <div className="workflow-dialog-actions">
+                            <button
+                                type="button"
+                                className="workflow-button workflow-button--secondary"
+                                onClick={cerrarModalDesactivacion}
+                                disabled={desactivandoCuenta}
+                            >
+                                Volver
+                            </button>
+                            <button
+                                type="submit"
+                                className="workflow-button workflow-button--primary"
+                                disabled={desactivandoCuenta || !passwordDesactivacion.trim()}
+                            >
+                                {desactivandoCuenta ? 'Desactivando…' : 'Confirmar desactivación'}
+                            </button>
+                        </div>
+                    </form>
+                </ModalAccesible>
             )}
         </main>
     );

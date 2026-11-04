@@ -11,6 +11,10 @@ export interface RespuestaCambioContrasena {
     token: string;
 }
 
+export interface RespuestaDesactivacionCuenta {
+    mensaje: string;
+}
+
 export const obtenerPerfil = async (): Promise<PerfilUsuario> =>
     (await axiosClient.get<PerfilUsuario>('/perfil')).data;
 
@@ -23,6 +27,16 @@ export const cambiarContrasena = async (
     const { data } = await axiosClient.put<RespuestaCambioContrasena>('/perfil/contrasena', datos);
     if (typeof data.token !== 'string' || !data.token.trim()) {
         throw new Error('El servidor no devolvió un token válido después del cambio de contraseña.');
+    }
+    return data;
+};
+
+export const desactivarCuenta = async (password: string): Promise<RespuestaDesactivacionCuenta> => {
+    const { data } = await axiosClient.patch<RespuestaDesactivacionCuenta>('/perfil/desactivar', {
+        password,
+    });
+    if (!data || typeof data.mensaje !== 'string' || !data.mensaje.trim()) {
+        throw new Error('El servidor no devolvió un mensaje válido al desactivar la cuenta.');
     }
     return data;
 };

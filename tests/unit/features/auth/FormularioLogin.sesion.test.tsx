@@ -120,6 +120,27 @@ describe('FormularioLogin: sesión y redirección', () => {
         });
     });
 
+    it('muestra el mensaje de confirmación al llegar desde la desactivación de cuenta', async () => {
+        render(
+            <MemoryRouter
+                initialEntries={[
+                    {
+                        pathname: '/login',
+                        state: { mensajeCuentaDesactivada: 'La cuenta se desactivó correctamente.' },
+                    },
+                ]}
+            >
+                <Routes>
+                    <Route path="/login" element={<FormularioLogin />} />
+                </Routes>
+            </MemoryRouter>,
+        );
+
+        expect(await screen.findByRole('status')).toHaveTextContent(
+            'La cuenta se desactivó correctamente.',
+        );
+    });
+
     it('muestra el error de autenticación y no guarda una sesión', async () => {
         autenticarMock.mockRejectedValue(new Error('Credenciales incorrectas'));
         renderizar();
