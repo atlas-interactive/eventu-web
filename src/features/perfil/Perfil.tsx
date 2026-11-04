@@ -6,6 +6,7 @@ import { Skeleton, SkeletonEstado } from '../../components/ui/Skeleton';
 import { actualizarNombreSesion } from '../sesion/sesion';
 import { actualizarPerfil, obtenerPerfil } from './services/perfilService';
 import type { PerfilUsuario } from './types/perfil';
+import './perfil.css';
 
 const ETIQUETA_ROL: Record<string, string> = {
     ADMIN: 'Administrador',
@@ -110,34 +111,34 @@ export function Perfil() {
     };
 
     return (
-        <main className="mx-auto w-full max-w-[70rem] px-4 py-8 sm:px-8">
-            <header className="mb-6">
-                <h1 className="text-[1.375rem] font-semibold text-eventu-main-ink">Mi perfil</h1>
+        <main className="perfil-page">
+            <header className="perfil-page-header">
+                <h1 className="perfil-title">Mi perfil</h1>
             </header>
 
             {mensajeExito && (
-                <p role="status" className="mb-4 rounded-md bg-eventu-green-background px-4 py-3 text-sm text-eventu-success">
+                <p role="status" className="perfil-feedback perfil-feedback--success">
                     {mensajeExito}
                 </p>
             )}
 
             {cargando && (
-                <SkeletonEstado etiqueta="Cargando perfil" className="grid items-start gap-5 lg:grid-cols-2">
-                    <div className="space-y-5">
-                        <Skeleton className="h-44 rounded-xl" />
-                        <Skeleton className="h-64 rounded-xl" />
+                <SkeletonEstado etiqueta="Cargando perfil" className="perfil-loading-grid">
+                    <div className="perfil-loading-column">
+                        <Skeleton className="perfil-skeleton perfil-skeleton--profile" />
+                        <Skeleton className="perfil-skeleton perfil-skeleton--password" />
                     </div>
-                    <Skeleton className="h-44 rounded-xl" />
+                    <Skeleton className="perfil-skeleton perfil-skeleton--deactivation" />
                 </SkeletonEstado>
             )}
 
             {errorCarga && !cargando && (
-                <div role="alert" className="rounded-xl border border-eventu-border bg-eventu-white-surface p-5">
-                    <p className="text-sm text-eventu-error">{errorCarga}</p>
+                <div role="alert" className="perfil-load-error">
+                    <p>{errorCarga}</p>
                     <button
                         type="button"
                         onClick={() => setRecarga((valor) => valor + 1)}
-                        className="mt-4 rounded-md border border-eventu-field-border px-4 py-2 text-sm text-eventu-main-ink hover:bg-eventu-page-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red"
+                        className="perfil-button perfil-button--secondary perfil-retry-button"
                     >
                         Reintentar
                     </button>
@@ -145,34 +146,34 @@ export function Perfil() {
             )}
 
             {perfil && !cargando && (
-                <div className="grid items-start gap-5 lg:grid-cols-2">
-                    <div className="space-y-5">
-                        <section className="overflow-hidden rounded-xl border border-eventu-border bg-eventu-white-surface shadow-sm">
-                            <div className="h-1.5 bg-eventu-institutional-red" aria-hidden="true" />
-                            <div className="p-5 sm:p-6">
-                                <header className="flex items-center gap-4">
+                <div className="perfil-layout">
+                    <div className="perfil-column">
+                        <section className="perfil-card perfil-card--identity">
+                            <div className="perfil-card-accent" aria-hidden="true" />
+                            <div className="perfil-card-content">
+                                <header className="perfil-card-header">
                                     <div
                                         role="img"
                                         aria-label={`Avatar de ${perfil.nombre}`}
-                                        className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-eventu-soft-red-background text-lg font-semibold text-eventu-institutional-red ring-4 ring-eventu-soft-red-background/60"
+                                        className="perfil-avatar"
                                     >
                                         {inicialesNombre(perfil.nombre)}
                                     </div>
-                                    <div className="min-w-0">
+                                    <div className="perfil-identity">
                                         {!editando && (
-                                            <h2 className="mt-0.5 break-words text-lg font-bold leading-tight text-eventu-main-ink">
+                                            <h2 className="perfil-name">
                                                 {perfil.nombre}
                                             </h2>
                                         )}
-                                        <span className="mt-1 inline-flex rounded-full bg-eventu-soft-red-background px-2.5 py-0.5 text-xs font-medium text-eventu-institutional-red">
+                                        <span className="perfil-role">
                                             {ETIQUETA_ROL[perfil.rol.toUpperCase()] ?? perfil.rol}
                                         </span>
                                     </div>
                                 </header>
 
                                 {editando ? (
-                                    <form className="mt-6" onSubmit={guardarCambios}>
-                                        <label htmlFor="perfil-nombre" className="block text-sm font-medium text-eventu-main-ink">
+                                    <form className="perfil-edit-form" onSubmit={guardarCambios}>
+                                        <label htmlFor="perfil-nombre" className="perfil-label">
                                             Nombre completo
                                         </label>
                                         <input
@@ -184,18 +185,18 @@ export function Perfil() {
                                             maxLength={100}
                                             required
                                             autoFocus
-                                            className="mt-1 h-10 w-full rounded-md border border-eventu-field-border bg-eventu-white-surface px-3 text-sm text-eventu-main-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red"
+                                            className="perfil-input"
                                         />
                                         {errorGuardado && (
-                                            <p role="alert" className="mt-3 text-sm text-eventu-error">
+                                            <p role="alert" className="perfil-inline-error">
                                                 {errorGuardado}
                                             </p>
                                         )}
-                                        <div className="mt-4 flex flex-wrap gap-2">
+                                        <div className="perfil-form-actions">
                                             <button
                                                 type="submit"
                                                 disabled={guardando}
-                                                className="rounded-md bg-eventu-institutional-red px-4 py-2 text-sm font-medium text-eventu-white-surface transition-colors hover:bg-eventu-institutional-red-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red disabled:cursor-not-allowed disabled:opacity-60"
+                                                className="perfil-button perfil-button--primary"
                                             >
                                                 {guardando ? 'Guardando…' : 'Guardar cambios'}
                                             </button>
@@ -203,7 +204,7 @@ export function Perfil() {
                                                 type="button"
                                                 onClick={cancelarEdicion}
                                                 disabled={guardando}
-                                                className="rounded-md border border-eventu-field-border px-4 py-2 text-sm text-eventu-main-ink transition-colors hover:bg-eventu-page-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red disabled:cursor-not-allowed disabled:opacity-60"
+                                                className="perfil-button perfil-button--secondary"
                                             >
                                                 Cancelar
                                             </button>
@@ -211,20 +212,20 @@ export function Perfil() {
                                     </form>
                                 ) : (
                                     <>
-                                        <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                                            <div className="min-w-0 rounded-lg bg-eventu-page-background p-3">
-                                                <p className="flex items-center gap-2 text-xs font-medium text-eventu-secondary-text">
-                                                    <Mail className="h-4 w-4 shrink-0 text-eventu-institutional-red" aria-hidden="true" />
+                                        <div className="perfil-details">
+                                            <div className="perfil-detail">
+                                                <p className="perfil-detail-label">
+                                                    <Mail className="perfil-detail-icon" aria-hidden="true" />
                                                     Correo institucional
                                                 </p>
-                                                <p className="mt-1 break-all text-sm font-medium text-eventu-main-ink">{perfil.correo}</p>
+                                                <p className="perfil-detail-value perfil-detail-value--email">{perfil.correo}</p>
                                             </div>
-                                            <div className="rounded-lg bg-eventu-page-background p-3">
-                                                <p className="flex items-center gap-2 text-xs font-medium text-eventu-secondary-text">
-                                                    <CalendarDays className="h-4 w-4 shrink-0 text-eventu-institutional-red" aria-hidden="true" />
+                                            <div className="perfil-detail">
+                                                <p className="perfil-detail-label">
+                                                    <CalendarDays className="perfil-detail-icon" aria-hidden="true" />
                                                     Miembro desde
                                                 </p>
-                                                <p className="mt-1 text-sm font-medium text-eventu-main-ink">
+                                                <p className="perfil-detail-value">
                                                     {fechaRegistro(perfil.creadoEn)}
                                                 </p>
                                             </div>
@@ -232,9 +233,9 @@ export function Perfil() {
                                         <button
                                             type="button"
                                             onClick={iniciarEdicion}
-                                            className="mt-5 inline-flex items-center gap-2 rounded-md border border-eventu-institutional-red px-4 py-2 text-sm font-medium text-eventu-institutional-red transition-colors hover:bg-eventu-soft-red-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red"
+                                            className="perfil-button perfil-button--edit"
                                         >
-                                            <Pencil className="h-4 w-4" aria-hidden="true" />
+                                            <Pencil className="perfil-button-icon" aria-hidden="true" />
                                             Editar información
                                         </button>
                                     </>
@@ -242,31 +243,31 @@ export function Perfil() {
                             </div>
                         </section>
 
-                        <section className="rounded-xl border border-eventu-border bg-eventu-white-surface p-5 sm:p-6">
-                            <h2 className="flex items-center gap-2 text-base font-semibold text-eventu-main-ink">
-                                <LockKeyhole className="h-5 w-5 text-eventu-secondary-text" aria-hidden="true" />
+                        <section className="perfil-card perfil-card--password">
+                            <h2 className="perfil-section-title">
+                                <LockKeyhole className="perfil-section-icon" aria-hidden="true" />
                                 Cambiar contraseña
                             </h2>
-                            <p className="mt-2 text-sm text-eventu-secondary-text">
+                            <p className="perfil-section-description">
                                 La edición de contraseña estará disponible en una próxima etapa.
                             </p>
-                            <div className="mt-4 space-y-3" aria-label="Cambio de contraseña no disponible">
-                                <label className="block text-sm text-eventu-main-ink">
+                            <div className="perfil-disabled-form" aria-label="Cambio de contraseña no disponible">
+                                <label className="perfil-label">
                                     Contraseña actual
-                                    <input disabled type="password" placeholder="Ingresa tu contraseña actual" className="mt-1 h-10 w-full rounded-md border border-eventu-field-border px-3 text-sm disabled:cursor-not-allowed disabled:bg-eventu-page-background" />
+                                    <input disabled type="password" placeholder="Ingresa tu contraseña actual" className="perfil-input" />
                                 </label>
-                                <label className="block text-sm text-eventu-main-ink">
+                                <label className="perfil-label">
                                     Nueva contraseña
-                                    <input disabled type="password" placeholder="Mínimo 8 caracteres" className="mt-1 h-10 w-full rounded-md border border-eventu-field-border px-3 text-sm disabled:cursor-not-allowed disabled:bg-eventu-page-background" />
+                                    <input disabled type="password" placeholder="Mínimo 8 caracteres" className="perfil-input" />
                                 </label>
-                                <label className="block text-sm text-eventu-main-ink">
+                                <label className="perfil-label">
                                     Confirmar nueva contraseña
-                                    <input disabled type="password" placeholder="Repite tu nueva contraseña" className="mt-1 h-10 w-full rounded-md border border-eventu-field-border px-3 text-sm disabled:cursor-not-allowed disabled:bg-eventu-page-background" />
+                                    <input disabled type="password" placeholder="Repite tu nueva contraseña" className="perfil-input" />
                                 </label>
                                 <button
                                     type="button"
                                     disabled
-                                    className="w-full rounded-md bg-eventu-institutional-red px-4 py-2.5 text-sm text-eventu-white-surface disabled:cursor-not-allowed disabled:opacity-60"
+                                    className="perfil-button perfil-button--primary perfil-password-submit"
                                 >
                                     Actualizar contraseña
                                 </button>
@@ -274,18 +275,18 @@ export function Perfil() {
                         </section>
                     </div>
 
-                    <section className="rounded-xl border border-eventu-border bg-eventu-white-surface p-5 sm:p-6">
-                        <h2 className="flex items-center gap-2 text-base font-semibold text-eventu-main-ink">
-                            <ShieldAlert className="h-5 w-5 text-eventu-institutional-red" aria-hidden="true" />
+                    <section className="perfil-card perfil-card--deactivation">
+                        <h2 className="perfil-section-title">
+                            <ShieldAlert className="perfil-section-icon perfil-section-icon--warning" aria-hidden="true" />
                             Desactivar cuenta
                         </h2>
-                        <p className="mt-2 text-sm text-eventu-secondary-text">
+                        <p className="perfil-section-description">
                             La gestión de desactivación de cuenta estará disponible en una próxima etapa.
                         </p>
                         <button
                             type="button"
                             disabled
-                            className="mt-4 rounded-md border border-eventu-institutional-red px-4 py-2 text-sm text-eventu-institutional-red disabled:cursor-not-allowed disabled:opacity-60"
+                            className="perfil-button perfil-button--danger"
                         >
                             Desactivar mi cuenta
                         </button>
