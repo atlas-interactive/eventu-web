@@ -152,7 +152,7 @@ export const FormularioRegistro: React.FC = () => {
             </form>
             <p className="register-login-link mt-2 text-center text-sm leading-5">
                 ¿Ya tienes cuenta?{' '}
-                <Link to="/login" className="font-medium hover:underline">
+                <Link to="/login" className="link_form">
                     Inicia sesión
                 </Link>
             </p>
