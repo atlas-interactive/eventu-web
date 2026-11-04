@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { CalendarCog, CalendarDays, ChartPie, ClipboardList, LogOut, Tags, UserCog, UserRound } from 'lucide-react';
+import { CalendarCog, CalendarDays, ChartPie, ChevronDown, ClipboardList, LogOut, Tags, UserCog, UserRound } from 'lucide-react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import {
     cerrarSesion,
@@ -170,21 +170,8 @@ export function LayoutAplicacion() {
                                 aria-controls="menu-perfil"
                                 onClick={() => setMenuAbierto((abierto) => !abierto)}
                                 title="Menú de perfil"
-                                className="flex min-w-0 items-center justify-center gap-3 rounded-md text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red hover:bg-eventu-page-background sm:gap-3 sm:px-3 sm:py-1"
+                                className="flex min-w-0 items-center border-1 border-eventu-border justify-center sm:gap-0 rounded-2xl text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red hover:bg-eventu-page-background sm:gap-4 sm:px-2.75 sm:py-1.25 shadow"
                             >
-                                <span className="min-w-0">
-                                    <span
-                                        className="block truncate text-sm text-eventu-secondary-text sm:max-w-[11rem] lg:max-w-[16rem]"
-                                        title={nombreUsuario}
-                                    >
-                                        {nombreUsuario}
-                                    </span>
-                                    {ETIQUETA_ROL[sesion.rol.toUpperCase()] && (
-                                        <span className="mt-0 inline-block rounded bg-eventu-soft-red-background px-2 py-0.5 text-xs text-eventu-institutional-red">
-                                            {ETIQUETA_ROL[sesion.rol.toUpperCase()]}
-                                        </span>
-                                    )}
-                                </span>
                                 <span
                                     role="img"
                                     aria-label={`Avatar de ${nombreUsuario}`}
@@ -192,6 +179,23 @@ export function LayoutAplicacion() {
                                 >
                                     {inicialesNombre(nombreUsuario)}
                                 </span>
+                                <span className="flex min-w-0 flex-col items-start gap-1">
+                                    <span
+                                        className="block truncate text-base leading-4 text-eventu-main-ink sm:max-w-[11rem] lg:max-w-[16rem]"
+                                        title={nombreUsuario}
+                                    >
+                                        {nombreUsuario}
+                                    </span>
+                                    {ETIQUETA_ROL[sesion.rol.toUpperCase()] && (
+                                        <span className="inline-block rounded text-[0.6875rem] leading-3 text-eventu-institutional-red">
+                                            {ETIQUETA_ROL[sesion.rol.toUpperCase()]}
+                                        </span>
+                                    )}
+                                </span>
+                                <ChevronDown
+                                    className="h-5 w-4 shrink-0 text-eventu-secondary-text opacity-100 transition-opacity group-hover:opacity- group-focus-visible:opacity-100"
+                                    aria-hidden="true"
+                                />
                             </button>
                             {menuAbierto && (
                                 <div
@@ -209,6 +213,7 @@ export function LayoutAplicacion() {
                                         <UserRound className="h-4 w-4" aria-hidden="true" />
                                         Perfil
                                     </NavLink>
+                                    <div role="separator" className="mx-2 my-1 border-t border-eventu-border" />
                                     <button
                                         type="button"
                                         role="menuitem"
