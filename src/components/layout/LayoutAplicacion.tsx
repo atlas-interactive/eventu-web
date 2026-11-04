@@ -1,7 +1,7 @@
-import { CalendarCog, CalendarDays, ChartPie, ClipboardList, LogOut, Tags, UserCog } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { CalendarCog, CalendarDays, ChartPie, ClipboardList, LogOut, Tags, UserCog, UserRound } from 'lucide-react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { obtenerSesion } from '../../features/sesion/sesion';
-import { cerrarSesion, esAdministrador, esUsuario, puedeGestionarEventos } from '../../features/sesion/sesion';
+import { cerrarSesion, esAdministrador, esUsuario, obtenerSesion, puedeGestionarEventos } from '../../features/sesion/sesion';
 
 const ETIQUETA_ROL: Record<string, string> = {
     ADMIN: 'Administrador',
@@ -15,11 +15,50 @@ const nombreVisible = (nombre: string): string => {
     return `${partes[0]} ${partes[2]}`;
 };
 
+const inicialesNombre = (nombre: string): string =>
+    nombre
+        .split(/\s+/)
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((parte) => parte[0].toUpperCase())
+        .join('');
+
 // Pantallas internas: barra superior a todo el ancho (como el mockup) y contenido centrado debajo
 export function LayoutAplicacion() {
+    const [menuAbierto, setMenuAbierto] = useState(false);
+    const menuRef = useRef<HTMLDivElement>(null);
+    const botonMenuRef = useRef<HTMLButtonElement>(null);
     const navigate = useNavigate();
     const sesion = obtenerSesion();
     const nombreUsuario = sesion ? nombreVisible(sesion.nombre) : '';
+
+    useEffect(() => {
+        if (!menuAbierto) return;
+
+        const cerrarAlHacerClicFuera = (evento: MouseEvent) => {
+            if (evento.target instanceof Node && !menuRef.current?.contains(evento.target)) {
+                setMenuAbierto(false);
+            }
+        };
+        const cerrarConEscape = (evento: KeyboardEvent) => {
+            if (evento.key === 'Escape') {
+                setMenuAbierto(false);
+                botonMenuRef.current?.focus();
+            }
+        };
+
+        document.addEventListener('mousedown', cerrarAlHacerClicFuera);
+        document.addEventListener('keydown', cerrarConEscape);
+        return () => {
+            document.removeEventListener('mousedown', cerrarAlHacerClicFuera);
+            document.removeEventListener('keydown', cerrarConEscape);
+        };
+    }, [menuAbierto]);
+
+    const salir = () => {
+        cerrarSesion();
+        navigate('/login', { replace: true });
+    };
 
     const claseEnlace = ({ isActive }: { isActive: boolean }) =>
         `inline-flex h-full items-center text-sm ${
@@ -27,11 +66,6 @@ export function LayoutAplicacion() {
                 ? "relative font-semibold text-eventu-institutional-red after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:bg-eventu-institutional-red after:content-['']"
                 : 'text-eventu-main-ink hover:underline'
         }`;
-
-    const salir = () => {
-        cerrarSesion();
-        navigate('/login', { replace: true });
-    };
 
     return (
         <div className="min-h-screen bg-eventu-page-background">
@@ -113,28 +147,67 @@ export function LayoutAplicacion() {
                         )}
                     </div>
                     {sesion && (
-                        <div className="flex min-w-0 items-center justify-between gap-2 sm:ml-auto sm:flex-none sm:justify-end sm:gap-3">
-                            <div className="flex min-w-0 flex-1 items-center gap-x-2 sm:flex-none">
-                                <span
-                                    className="min-w-0 flex-1 truncate text-sm text-eventu-secondary-text sm:max-w-[11rem] sm:flex-none lg:max-w-[16rem]"
-                                    title={nombreUsuario}
-                                >
-                                    {nombreUsuario}
-                                </span>
-                                {ETIQUETA_ROL[sesion.rol.toUpperCase()] && (
-                                    <span className="shrink-0 rounded bg-eventu-soft-red-background px-2 py-0.5 text-xs text-eventu-institutional-red">
-                                        {ETIQUETA_ROL[sesion.rol.toUpperCase()]}
-                                    </span>
-                                )}
-                            </div>
+                        <div ref={menuRef} className="relative sm:ml-auto sm:flex-none">
                             <button
+                                ref={botonMenuRef}
                                 type="button"
-                                onClick={salir}
-                                className="inline-flex min-h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-[0.4375rem] border border-eventu-field-border bg-eventu-white-surface px-2.5 py-1 text-xs text-eventu-main-ink hover:bg-eventu-page-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red sm:min-h-9 sm:px-4 sm:text-sm"
+                                aria-label={`Menú de perfil de ${nombreUsuario}`}
+                                aria-haspopup="menu"
+                                aria-expanded={menuAbierto}
+                                aria-controls="menu-perfil"
+                                onClick={() => setMenuAbierto((abierto) => !abierto)}
+                                title="Menú de perfil"
+                                className="flex min-w-0 items-center justify-center gap-3 rounded-md text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red hover:bg-eventu-page-background sm:gap-3 sm:px-3 sm:py-1"
                             >
-                                <LogOut className="h-4 w-4 shrink-0" aria-hidden="true" />
-                                Cerrar sesión
+                                <span className="min-w-0">
+                                    <span
+                                        className="block truncate text-sm text-eventu-secondary-text sm:max-w-[11rem] lg:max-w-[16rem]"
+                                        title={nombreUsuario}
+                                    >
+                                        {nombreUsuario}
+                                    </span>
+                                    {ETIQUETA_ROL[sesion.rol.toUpperCase()] && (
+                                        <span className="mt-0 inline-block rounded bg-eventu-soft-red-background px-2 py-0.5 text-xs text-eventu-institutional-red">
+                                            {ETIQUETA_ROL[sesion.rol.toUpperCase()]}
+                                        </span>
+                                    )}
+                                </span>
+                                <span
+                                    role="img"
+                                    aria-label={`Avatar de ${nombreUsuario}`}
+                                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-eventu-soft-red-background text-lg font-medium text-eventu-institutional-red"
+                                >
+                                    {inicialesNombre(nombreUsuario)}
+                                </span>
                             </button>
+                            {menuAbierto && (
+                                <div
+                                    id="menu-perfil"
+                                    role="menu"
+                                    aria-label="Opciones de perfil"
+                                    className="absolute right-0 top-full z-50 mt-2 w-48 rounded-md border border-eventu-border bg-eventu-white-surface p-1 shadow-lg"
+                                >
+                                    <button
+                                        type="button"
+                                        role="menuitem"
+                                        aria-disabled="true"
+                                        onClick={() => setMenuAbierto(false)}
+                                        className="flex w-full cursor-default items-center gap-2 rounded px-3 py-2 text-left text-sm text-eventu-main-ink"
+                                    >
+                                        <UserRound className="h-4 w-4" aria-hidden="true" />
+                                        Perfil
+                                    </button>
+                                    <button
+                                        type="button"
+                                        role="menuitem"
+                                        onClick={salir}
+                                        className="flex w-full items-center gap-2 rounded px-3 py-2 text-left text-sm text-eventu-main-ink hover:bg-eventu-page-background focus-visible:bg-eventu-page-background focus-visible:outline-none"
+                                    >
+                                        <LogOut className="h-4 w-4" aria-hidden="true" />
+                                        Cerrar sesión
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
