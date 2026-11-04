@@ -10,6 +10,37 @@ import { server } from '../../mocks/server';
 describe('AppRoutes', () => {
     beforeEach(() => localStorage.clear());
 
+    it.each(['ADMIN', 'ORGANIZADOR', 'USUARIO'])('permite a %s consultar su perfil', async (rol) => {
+        server.use(
+            http.get('*/perfil', () =>
+                HttpResponse.json({
+                    id: 1,
+                    nombre: 'Laura Gomez',
+                    correo: 'laura@unillanos.edu.co',
+                    rol,
+                    codigoInstitucional: null,
+                    creadoEn: '2025-03-15T10:00:00',
+                }),
+            ),
+        );
+        guardarSesion({
+            token: 'token-de-prueba',
+            usuarioId: 1,
+            nombre: 'Laura Gomez',
+            correo: 'laura@unillanos.edu.co',
+            rol,
+        });
+
+        render(
+            <MemoryRouter initialEntries={['/perfil']}>
+                <AppRoutes />
+            </MemoryRouter>,
+        );
+
+        expect(await screen.findByRole('heading', { name: 'Mi perfil' })).toBeInTheDocument();
+        expect(await screen.findByText('laura@unillanos.edu.co')).toBeInTheDocument();
+    });
+
     it('redirige una ruta desconocida al login y carga el formulario diferido', async () => {
         render(
             <MemoryRouter initialEntries={['/ruta-inexistente']}>
@@ -82,6 +113,7 @@ describe('AppRoutes', () => {
             http.get('*/categorias', () => HttpResponse.json([])),
             http.get('*/eventos', () => HttpResponse.json([evento])),
             http.get('*/eventos/5', () => HttpResponse.json(evento)),
+            http.get('*/inscripciones/mias', () => HttpResponse.json([])),
         );
         guardarSesion({
             token: 'token-de-prueba',

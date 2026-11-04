@@ -2,6 +2,7 @@
 // Cuando entre el PR de JWT, el backend tomará la identidad del token y esto solo servirá para la interfaz.
 const CLAVE_TOKEN = 'auth_token';
 const CLAVE_USUARIO = 'auth_usuario';
+export const EVENTO_SESION_ACTUALIZADA = 'eventu:sesion-actualizada';
 
 export interface SesionUsuario {
     usuarioId: number;
@@ -22,6 +23,14 @@ export const guardarSesion = ({ token, ...usuario }: DatosLogin): void => {
 export const cerrarSesion = (): void => {
     localStorage.removeItem(CLAVE_TOKEN);
     localStorage.removeItem(CLAVE_USUARIO);
+};
+
+export const actualizarNombreSesion = (nombre: string): void => {
+    const sesion = obtenerSesion();
+    if (!sesion) return;
+
+    localStorage.setItem(CLAVE_USUARIO, JSON.stringify({ ...sesion, nombre }));
+    window.dispatchEvent(new Event(EVENTO_SESION_ACTUALIZADA));
 };
 
 export const obtenerSesion = (): SesionUsuario | null => {

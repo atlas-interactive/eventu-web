@@ -4,6 +4,7 @@ import { RutaAdministrador } from '../features/sesion/GuardiaRutaAdministrador';
 import { RutaOrganizador } from '../features/sesion/GuardiaRutaOrganizador';
 import { RutaUsuario } from '../features/sesion/GuardiaRutaUsuario';
 import { RutaExploracionEventos } from '../features/sesion/GuardiaRutaExploracionEventos';
+import { RutaPerfil } from '../features/sesion/GuardiaRutaPerfil';
 import { LayoutAutenticacion } from '../components/layout/LayoutAutenticacion';
 import { LayoutAplicacion } from '../components/layout/LayoutAplicacion';
 import { obtenerRutaInicio, obtenerSesion } from '../features/sesion/sesion';
@@ -54,6 +55,9 @@ const DashboardEstadisticas = lazy(() =>
 );
 const MisInscripciones = lazy(() =>
     import('../features/inscripciones/pages/MisInscripciones').then((modulo) => ({ default: modulo.MisInscripciones })),
+);
+const Perfil = lazy(() =>
+    import('../features/perfil/Perfil').then((modulo) => ({ default: modulo.Perfil })),
 );
 
 const pantallaDiferida = (pantalla: ReactNode, fallback: ReactNode = <SkeletonPagina />) => (
@@ -108,6 +112,12 @@ export function AppRoutes() {
                     <Route path="/eventos" element={pantallaDiferida(<CatalogoEventos />)} />
                     <Route path="/eventos/:id" element={pantallaDiferida(<DetalleEvento />)} />
                     <Route path="/mis-inscripciones" element={pantallaDiferida(<MisInscripciones />)} />
+                </Route>
+            </Route>
+
+            <Route element={<RutaPerfil />}>
+                <Route element={<LayoutAplicacion />}>
+                    <Route path="/perfil" element={pantallaDiferida(<Perfil />)} />
                 </Route>
             </Route>
 

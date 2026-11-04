@@ -1,7 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { CalendarCog, CalendarDays, ChartPie, ClipboardList, LogOut, Tags, UserCog, UserRound } from 'lucide-react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { cerrarSesion, esAdministrador, esUsuario, obtenerSesion, puedeGestionarEventos } from '../../features/sesion/sesion';
+import {
+    cerrarSesion,
+    esAdministrador,
+    esUsuario,
+    EVENTO_SESION_ACTUALIZADA,
+    obtenerSesion,
+    puedeGestionarEventos,
+} from '../../features/sesion/sesion';
 
 const ETIQUETA_ROL: Record<string, string> = {
     ADMIN: 'Administrador',
@@ -26,11 +33,17 @@ const inicialesNombre = (nombre: string): string =>
 // Pantallas internas: barra superior a todo el ancho (como el mockup) y contenido centrado debajo
 export function LayoutAplicacion() {
     const [menuAbierto, setMenuAbierto] = useState(false);
+    const [sesion, setSesion] = useState(obtenerSesion);
     const menuRef = useRef<HTMLDivElement>(null);
     const botonMenuRef = useRef<HTMLButtonElement>(null);
     const navigate = useNavigate();
-    const sesion = obtenerSesion();
     const nombreUsuario = sesion ? nombreVisible(sesion.nombre) : '';
+
+    useEffect(() => {
+        const actualizarSesion = () => setSesion(obtenerSesion());
+        window.addEventListener(EVENTO_SESION_ACTUALIZADA, actualizarSesion);
+        return () => window.removeEventListener(EVENTO_SESION_ACTUALIZADA, actualizarSesion);
+    }, []);
 
     useEffect(() => {
         if (!menuAbierto) return;
@@ -187,16 +200,15 @@ export function LayoutAplicacion() {
                                     aria-label="Opciones de perfil"
                                     className="absolute right-0 top-full z-50 mt-2 w-48 rounded-md border border-eventu-border bg-eventu-white-surface p-1 shadow-lg"
                                 >
-                                    <button
-                                        type="button"
+                                    <NavLink
+                                        to="/perfil"
                                         role="menuitem"
-                                        aria-disabled="true"
                                         onClick={() => setMenuAbierto(false)}
-                                        className="flex w-full cursor-default items-center gap-2 rounded px-3 py-2 text-left text-sm text-eventu-main-ink"
+                                        className="flex w-full items-center gap-2 rounded px-3 py-2 text-left text-sm text-eventu-main-ink hover:bg-eventu-page-background focus-visible:bg-eventu-page-background focus-visible:outline-none"
                                     >
                                         <UserRound className="h-4 w-4" aria-hidden="true" />
                                         Perfil
-                                    </button>
+                                    </NavLink>
                                     <button
                                         type="button"
                                         role="menuitem"

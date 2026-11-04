@@ -11,6 +11,7 @@ const renderizar = () =>
             <Routes>
                 <Route element={<LayoutAplicacion />}>
                     <Route path="/" element={<p>Contenido</p>} />
+                    <Route path="/perfil" element={<p>Pantalla de perfil</p>} />
                     <Route path="/login" element={<p>Pantalla de login</p>} />
                 </Route>
             </Routes>
@@ -104,7 +105,7 @@ describe('LayoutAplicacion', () => {
         expect(localStorage.getItem('auth_token')).toBe('jwt-de-prueba');
     });
 
-    it('abre el menú de perfil y cierra la sesión al seleccionar la opción', async () => {
+    it('abre el menú y navega a la pantalla de perfil', async () => {
         guardarSesion({
             token: 'jwt-de-prueba',
             usuarioId: 1,
@@ -118,7 +119,22 @@ describe('LayoutAplicacion', () => {
         await user.click(screen.getByRole('button', { name: 'Menú de perfil de Ana Gómez' }));
 
         expect(screen.getByRole('menu', { name: 'Opciones de perfil' })).toBeInTheDocument();
-        expect(screen.getByRole('menuitem', { name: 'Perfil' })).toHaveAttribute('aria-disabled', 'true');
+        await user.click(screen.getByRole('menuitem', { name: 'Perfil' }));
+        expect(await screen.findByText('Pantalla de perfil')).toBeInTheDocument();
+    });
+
+    it('mantiene disponible cerrar sesión en el menú de perfil', async () => {
+        guardarSesion({
+            token: 'jwt-de-prueba',
+            usuarioId: 1,
+            nombre: 'Ana Gómez',
+            correo: 'ana@unillanos.edu.co',
+            rol: 'ORGANIZADOR',
+        });
+        const user = userEvent.setup();
+        renderizar();
+
+        await user.click(screen.getByRole('button', { name: 'Menú de perfil de Ana Gómez' }));
         await user.click(screen.getByRole('menuitem', { name: 'Cerrar sesión' }));
 
         expect(await screen.findByText('Pantalla de login')).toBeInTheDocument();
