@@ -170,24 +170,24 @@ export function LayoutAplicacion() {
                                 aria-controls="menu-perfil"
                                 onClick={() => setMenuAbierto((abierto) => !abierto)}
                                 title="Menú de perfil"
-                                className="flex min-w-0 items-center border-1 border-eventu-border justify-center sm:gap-0 rounded-2xl text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red hover:bg-eventu-page-background sm:gap-4 sm:px-2.25 sm:py-1.25 shadow"
+                                className="flex min-w-0 items-center border-1 border-eventu-border justify-center sm:gap-0 rounded-2xl text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red hover:bg-eventu-page-background sm:gap-3 sm:px-2.25 sm:py-1.25 shadow"
                             >
                                 <span
                                     role="img"
                                     aria-label={`Avatar de ${nombreUsuario}`}
-                                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-eventu-soft-red-background text-lg font-medium text-eventu-institutional-red"
+                                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-eventu-soft-red-background text-lg font-medium text-eventu-institutional-red"
                                 >
                                     {inicialesNombre(nombreUsuario)}
                                 </span>
                                 <span className="flex min-w-0 flex-col items-start gap-1">
                                     <span
-                                        className="block truncate text-base leading-4 text-eventu-main-ink sm:max-w-[11rem] lg:max-w-[16rem]"
+                                        className="block truncate text-[0.875rem] leading-4 text-eventu-main-ink sm:max-w-[11rem] lg:max-w-[16rem]"
                                         title={nombreUsuario}
                                     >
                                         {nombreUsuario}
                                     </span>
                                     {ETIQUETA_ROL[sesion.rol.toUpperCase()] && (
-                                        <span className="inline-block rounded text-[0.6875rem] leading-3 text-eventu-institutional-red">
+                                        <span className="inline-block rounded text-[0.675rem] leading-3 text-eventu-institutional-red">
                                             {ETIQUETA_ROL[sesion.rol.toUpperCase()]}
                                         </span>
                                     )}
