@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useState, type SubmitEvent } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { IconoAviso } from '../../components/ui/IconoAviso';
 import { mensajeDeError } from '../../api/mensajeDeError';
@@ -18,7 +18,7 @@ export function FormularioRestablecerContrasena() {
     const passwordInvalida = password.length > 0 && !validarLongitudContrasena(password);
     const confirmacionInvalida = confirmacion.length > 0 && password !== confirmacion;
 
-    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
         event.preventDefault();
         setMensajeError(null);
 

@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useState, type SubmitEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { IconoAviso } from '../../components/ui/IconoAviso';
 import { mensajeDeError } from '../../api/mensajeDeError';
@@ -15,7 +15,7 @@ export function FormularioRecuperacionContrasena() {
     const correoNormalizado = correo.trim();
     const correoInvalido = correo.length > 0 && !validarCorreoInstitucional(correoNormalizado);
 
-    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
         event.preventDefault();
         setMensajeError(null);
         setMensajeExito(null);

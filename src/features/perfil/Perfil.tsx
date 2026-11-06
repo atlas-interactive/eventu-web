@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { FormEvent } from 'react';
+import type { SubmitEvent } from 'react';
 import { CalendarDays, KeyRound, Mail, Pencil, ShieldAlert } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { mensajeDeError } from '../../api/mensajeDeError';
@@ -92,7 +92,7 @@ export function Perfil() {
         setEditando(false);
     };
 
-    const guardarCambios = async (evento: FormEvent<HTMLFormElement>) => {
+    const guardarCambios = async (evento: SubmitEvent<HTMLFormElement>) => {
         evento.preventDefault();
         if (!perfil) return;
 
@@ -127,7 +127,7 @@ export function Perfil() {
         }
     };
 
-    const guardarContrasena = async (evento: FormEvent<HTMLFormElement>) => {
+    const guardarContrasena = async (evento: SubmitEvent<HTMLFormElement>) => {
         evento.preventDefault();
         setErrorContrasena('');
         setMensajeExito('');
@@ -170,7 +170,7 @@ export function Perfil() {
         setErrorDesactivacion('');
     };
 
-    const confirmarDesactivacion = async (evento: FormEvent<HTMLFormElement>) => {
+    const confirmarDesactivacion = async (evento: SubmitEvent<HTMLFormElement>) => {
         evento.preventDefault();
         if (desactivandoCuenta || !passwordDesactivacion.trim()) {
             setErrorDesactivacion('Ingresa tu contraseña para confirmar la desactivación.');

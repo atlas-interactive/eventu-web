@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { FormEvent } from 'react';
+import type { SubmitEvent } from 'react';
 import type { Categoria } from '../../types/categoria';
 import type { Evento, EventoActualizacion, EventoSolicitud } from '../../types/evento';
 import { Skeleton, SkeletonEstado } from '../../components/ui/Skeleton';
@@ -83,7 +83,7 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
     const alCambiar = (campo: keyof CamposEvento) => (e: { target: { value: string } }) =>
         setCampos((previos) => ({ ...previos, [campo]: e.target.value }));
 
-    const alEnviar = async (e: FormEvent<HTMLFormElement>) => {
+    const alEnviar = async (e: SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
         setErrorGeneral('');
 
