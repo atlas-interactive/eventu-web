@@ -9,6 +9,7 @@ import {
     obtenerSesion,
     puedeGestionarEventos,
 } from '../../features/sesion/sesion';
+import iconoEventU from '../../assets/icons/iconoEventU.png';
 
 const ETIQUETA_ROL: Record<string, string> = {
     ADMIN: 'Administrador',
@@ -85,7 +86,15 @@ export function LayoutAplicacion() {
             <header className="border-b border-eventu-border bg-eventu-white-surface">
                 <div className="mx-auto flex w-full flex-col gap-2 px-8 py-2 sm:min-h-[58px] sm:flex-row sm:items-center sm:gap-x-4 sm:gap-y-2 sm:px-10 sm:py-0">
                     <div className="flex min-w-0 items-center justify-between gap-4 sm:flex-none sm:justify-start sm:gap-x-8">
-                        <p className="self-center text-[1.0625rem] font-semibold text-eventu-main-ink">EventU</p>
+                        <div className="flex items-center gap-2 sm:gap-3">
+                            <img
+                                src={iconoEventU}
+                                alt="EventU"
+                                className="h-8 w-8.5 flex-none"
+                            />
+                            <p className="self-center text-[1.075rem] font-semibold text-eventu-main-ink">Event<span className="text-eventu-institutional-red">U</span></p>
+                        </div>
+                        
                         {sesion && (
                             <nav
                                 aria-label="Principal"
