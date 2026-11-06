@@ -11,7 +11,7 @@ import type {
 
 // El organizador se identifica con el token JWT (el interceptor de axios lo envía), por eso ninguna llamada lleva su id
 
-const obtenerParametros = (filtros: FiltrosEvento) =>
+const obtenerParametros = ({ estado: _estado, ...filtros }: FiltrosEvento) =>
     Object.fromEntries(
         Object.entries(filtros)
             .map(([clave, valor]) => [clave, typeof valor === 'string' ? valor.trim() : valor])

@@ -77,6 +77,14 @@ describe('eventoService', () => {
         });
     });
 
+    it('mantiene el estado como filtro local y no lo envía al backend', async () => {
+        clienteMock.get.mockResolvedValue({ data: [] });
+
+        await listarMisEventos({ estado: 'CANCELADO', categoriaId: 4 });
+
+        expect(clienteMock.get).toHaveBeenCalledWith('/eventos/mios', { params: { categoriaId: 4 } });
+    });
+
     it('lista los eventos propios del organizador mediante el endpoint específico', async () => {
         clienteMock.get.mockResolvedValue({ data: [{ id: 2 }] });
 

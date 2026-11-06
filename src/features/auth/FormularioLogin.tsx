@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, ChangeEvent, SubmitEvent } from 'react';
 import { IconoAviso } from '../../components/ui/IconoAviso';
 import '../../styles/auth.css';
 import { mensajeDeError } from '../../api/mensajeDeError';
@@ -57,7 +57,7 @@ export const FormularioLogin: React.FC = () => {
         formData[campo].length > 0 && campoInvalido[campo];
 
     // Actualiza el campo modificado sin alterar los demás valores
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
             ...prev,
@@ -78,7 +78,7 @@ export const FormularioLogin: React.FC = () => {
     };
 
     // Valida las credenciales y gestiona el inicio de sesión
-    const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
         setMensajeError(null);
         setMensajeExito(null);

@@ -19,7 +19,7 @@ export function useGestionEventos(mensajeInicial = '') {
     const [eventos, setEventos] = useState<Evento[]>([]);
     const [categorias, setCategorias] = useState<Categoria[]>([]);
     const [errorCategorias, setErrorCategorias] = useState('');
-    const [filtros, setFiltros] = useState<FiltrosEvento>({});
+    const [filtros, setFiltros] = useState<FiltrosEvento>({ estado: 'PUBLICADO' });
     const [cargando, setCargando] = useState(true);
     const [error, setError] = useState('');
     const [mensajeExito, setMensajeExito] = useState(mensajeInicial);
@@ -30,6 +30,9 @@ export function useGestionEventos(mensajeInicial = '') {
     const [errorReporte, setErrorReporte] = useState('');
     const administrador = esAdministrador(obtenerSesion());
     const rangoFechasInvalido = fechasInvalidas(filtros);
+    const eventosVisibles = filtros.estado && filtros.estado !== 'TODOS'
+        ? eventos.filter((evento) => evento.estado.toUpperCase() === filtros.estado)
+        : eventos;
 
     useEffect(() => {
         let vigente = true;
@@ -58,8 +61,9 @@ export function useGestionEventos(mensajeInicial = '') {
         setCargando(true);
         setError('');
         const espera = filtros.texto?.trim() ? 300 : 0;
+        const { estado: _estado, ...filtrosConsulta } = filtros;
         const temporizador = window.setTimeout(() => {
-            (administrador ? listarEventos(filtros) : listarMisEventos(filtros))
+            (administrador ? listarEventos(filtrosConsulta) : listarMisEventos(filtrosConsulta))
                 .then((datos) => {
                     if (!vigente) return;
                     setEventos(datos);
@@ -133,7 +137,7 @@ export function useGestionEventos(mensajeInicial = '') {
     };
 
     return {
-        eventos,
+        eventos: eventosVisibles,
         categorias,
         errorCategorias,
         filtros,

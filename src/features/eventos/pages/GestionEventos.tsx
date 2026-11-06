@@ -55,6 +55,7 @@ export function GestionEventos() {
                 categorias={gestion.categorias}
                 filtros={gestion.filtros}
                 onChange={gestion.setFiltros}
+                mostrarEstado
             />
             {gestion.cargando && (
                 <SkeletonEstado etiqueta="Cargando eventos">
@@ -82,7 +83,8 @@ export function GestionEventos() {
                     {gestion.filtros.texto ||
                     gestion.filtros.categoriaId ||
                     gestion.filtros.fechaDesde ||
-                    gestion.filtros.fechaHasta
+                    gestion.filtros.fechaHasta ||
+                    (gestion.filtros.estado && gestion.filtros.estado !== 'PUBLICADO')
                         ? 'No se encontraron eventos con esos filtros.'
                         : 'Aún no tienes eventos publicados.'}
                 </p>

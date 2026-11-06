@@ -130,6 +130,44 @@ describe('GestionEventos (HU-07)', () => {
         expect(listarMisMock).toHaveBeenLastCalledWith({ categoriaId: 2 });
         expect(screen.getByRole('link', { name: 'Editar evento Feria cultural' })).toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Cancelar evento Feria cultural' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Limpiar filtros' })).toBeInTheDocument();
+
+        await usuario.click(screen.getByRole('button', { name: 'Limpiar filtros' }));
+        await vi.waitFor(() => expect(listarMisMock).toHaveBeenCalledTimes(3));
+        expect(listarMisMock).toHaveBeenLastCalledWith({});
+        expect(screen.queryByRole('button', { name: 'Limpiar filtros' })).not.toBeInTheDocument();
+    });
+
+    it('filtra el estado localmente desde el panel móvil', async () => {
+        const usuario = userEvent.setup();
+        listarMisMock.mockResolvedValue([
+            evento(9, 'Feria cultural'),
+            { ...evento(10, 'Concierto cancelado'), estado: 'CANCELADO' },
+        ]);
+        renderizar();
+
+        expect(await screen.findByRole('heading', { name: 'Feria cultural' })).toBeInTheDocument();
+        expect(screen.queryByRole('heading', { name: 'Concierto cancelado' })).not.toBeInTheDocument();
+        await usuario.click(screen.getByRole('button', { name: /Filtros/ }));
+
+        const dialogo = screen.getByRole('dialog', { name: 'Filtros' });
+        await usuario.click(within(dialogo).getByRole('button', { name: 'Cancelados' }));
+        expect(await screen.findByRole('heading', { name: 'Concierto cancelado' })).toBeInTheDocument();
+        expect(screen.queryByRole('heading', { name: 'Feria cultural' })).not.toBeInTheDocument();
+        expect(listarMisMock).toHaveBeenCalledTimes(1);
+
+        await usuario.click(within(dialogo).getByRole('button', { name: 'Hoy' }));
+        const fechaDesde = within(dialogo).getByLabelText('Desde') as HTMLInputElement;
+        const fechaHasta = within(dialogo).getByLabelText('Hasta') as HTMLInputElement;
+        expect(fechaDesde.value).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+        expect(fechaHasta.value).toBe(fechaDesde.value);
+
+        await usuario.click(within(dialogo).getByRole('button', { name: 'Limpiar filtros' }));
+        expect(await screen.findByRole('heading', { name: 'Feria cultural' })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: 'Concierto cancelado' })).toBeInTheDocument();
+        expect((within(dialogo).getByLabelText('Desde') as HTMLInputElement).value).toBe('');
+        await usuario.click(within(dialogo).getByRole('button', { name: 'Listo' }));
+        expect(screen.queryByRole('dialog', { name: 'Filtros' })).not.toBeInTheDocument();
     });
 
     it('cancela el evento solo tras confirmar y lo retira de la lista', async () => {
@@ -225,9 +263,12 @@ describe('GestionEventos (HU-17)', () => {
     });
 
     it('no ofrece reporte para un evento cancelado', async () => {
+        const usuario = userEvent.setup();
         listarMisMock.mockResolvedValue([{ ...evento(9, 'Feria cultural'), estado: 'CANCELADO' }]);
         renderizar();
 
+        await usuario.click(screen.getByRole('button', { name: /Filtros/ }));
+        await usuario.click(within(screen.getByRole('dialog', { name: 'Filtros' })).getByRole('button', { name: 'Cancelados' }));
         await screen.findByRole('heading', { name: 'Feria cultural' });
 
         expect(screen.queryByRole('button', { name: /Descargar reporte/ })).not.toBeInTheDocument();
