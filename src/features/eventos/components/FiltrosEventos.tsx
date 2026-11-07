@@ -3,13 +3,18 @@ import { useState } from 'react';
 import type { Categoria } from '../../../types/categoria';
 import type { FiltrosEvento } from '../../../types/evento';
 import { ModalAccesible } from '../../../components/ui/ModalAccesible';
+import { ResumenEventos, type OrdenEventos } from './ResumenEventos';
 import '../../../styles/event-filters.css';
 
 interface FiltrosEventosProps {
     categorias: Categoria[];
+    cantidadEventos: number;
     filtros: FiltrosEvento;
+    mostrarResumen: boolean;
     onChange: (filtros: FiltrosEvento) => void;
+    onOrdenChange: (orden: OrdenEventos) => void;
     mostrarEstado?: boolean;
+    orden: OrdenEventos;
 }
 
 const estados = [
@@ -64,9 +69,13 @@ const claseCategoria = (nombre: string) => {
 
 export function FiltrosEventos({
     categorias,
+    cantidadEventos,
     filtros,
+    mostrarResumen,
     onChange,
+    onOrdenChange,
     mostrarEstado = false,
+    orden,
 }: FiltrosEventosProps) {
     const [panelMovilAbierto, setPanelMovilAbierto] = useState(false);
     const estadoSeleccionado = filtros.estado ?? (mostrarEstado ? 'PUBLICADO' : 'TODOS');
@@ -77,12 +86,12 @@ export function FiltrosEventos({
         Number(filtros.categoriaId !== undefined) +
         Number(Boolean(filtros.fechaDesde || filtros.fechaHasta)) +
         Number(estadoSeleccionado !== 'TODOS' && mostrarEstado);
-    const hayFiltrosActivos = Boolean(
+    const hayFiltrosAplicados = Boolean(
         filtros.texto?.trim() ||
         filtros.categoriaId !== undefined ||
         filtros.fechaDesde ||
         filtros.fechaHasta ||
-        (mostrarEstado && estadoSeleccionado !== 'TODOS'),
+        (mostrarEstado && estadoSeleccionado === 'CANCELADO'),
     );
 
     const cambiarCategoria = (categoriaId?: number) => onChange({ ...filtros, categoriaId });
@@ -236,12 +245,18 @@ export function FiltrosEventos({
                 </div>
             </div>
 
-            {hayFiltrosActivos && (
+            {mostrarResumen && hayFiltrosAplicados && (
                 <div className="filtros-eventos-pie">
-                    <button type="button" className="filtros-eventos-limpiar" onClick={limpiarFiltros}>
-                        <RotateCcw aria-hidden="true" />
-                        Limpiar filtros
-                    </button>
+                    <ResumenEventos
+                        cantidadEventos={cantidadEventos}
+                        categorias={categorias}
+                        filtros={filtros}
+                        mostrarEstado={mostrarEstado}
+                        orden={orden}
+                        onChange={onChange}
+                        onLimpiar={limpiarFiltros}
+                        onOrdenChange={onOrdenChange}
+                    />
                 </div>
             )}
 

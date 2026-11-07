@@ -1,0 +1,108 @@
+.eventos-resultados {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  width: 100%;
+}
+
+.eventos-resultados-filtros {
+  display: flex;
+  min-width: 0;
+  flex: 1 1 34rem;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.eventos-resultados-cantidad {
+  margin: 0;
+  color: var(--color-eventu-secondary-text);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.eventos-resultados-cantidad strong {
+  color: var(--color-eventu-main-ink);
+  font-weight: 700;
+}
+
+.eventos-resultados-chip {
+  display: inline-flex;
+  min-height: 2rem;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 0.375rem;
+  border: 1px solid var(--color-eventu-border);
+  border-radius: 9999px;
+  background-color: var(--color-eventu-white-surface);
+  padding-inline: 0.625rem;
+  color: var(--color-eventu-main-ink);
+  font-size: 0.75rem;
+  line-height: 1rem;
+  cursor: pointer;
+}
+
+.eventos-resultados-chip > svg {
+  width: 0.875rem;
+  height: 0.875rem;
+  color: var(--color-eventu-secondary-text);
+}
+
+.eventos-resultados-limpiar {
+  display: inline-flex;
+  min-height: 2rem;
+  align-items: center;
+  gap: 0.375rem;
+  border: 0;
+  background: transparent;
+  padding-inline: 0.25rem;
+  color: var(--color-eventu-institutional-red);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.eventos-resultados-limpiar > svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.eventos-resultados-orden {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 0.375rem;
+  color: var(--color-eventu-secondary-text);
+  font-size: 0.875rem;
+}
+
+.eventos-resultados-orden select {
+  max-width: 100%;
+  border: 0;
+  background: transparent;
+  padding-block: 0.375rem;
+  color: var(--color-eventu-main-ink);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.eventos-resultados-chip:focus-visible,
+.eventos-resultados-limpiar:focus-visible,
+.eventos-resultados-orden select:focus-visible {
+  border-radius: 0.25rem;
+  outline: 2px solid var(--color-eventu-institutional-red);
+  outline-offset: 2px;
+}
+
+@media (max-width: 40rem) {
+  .eventos-resultados-filtros {
+    flex-basis: 100%;
+  }
+
+  .eventos-resultados-orden {
+    margin-left: auto;
+  }
+}

@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import { CalendarPlus, Plus } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { IconoAviso } from '../../../components/ui/IconoAviso';
 import { Skeleton, SkeletonEstado } from '../../../components/ui/Skeleton';
 import { FiltrosEventos } from '../components/FiltrosEventos';
+import { ordenarEventos, type OrdenEventos } from '../components/ResumenEventos';
 import { TarjetaEvento } from '../components/TarjetaEvento';
 import { ConfirmarCancelacionEvento } from '../components/ConfirmarCancelacionEvento';
 import { useGestionEventos } from '../../../hooks/eventos/useGestionEventos';
@@ -12,6 +14,8 @@ export function GestionEventos() {
     const location = useLocation();
     const mensajeNavegacion = (location.state as { mensaje?: string } | null)?.mensaje ?? '';
     const gestion = useGestionEventos(mensajeNavegacion);
+    const [orden, setOrden] = useState<OrdenEventos>('fecha-proxima');
+    const eventosOrdenados = ordenarEventos(gestion.eventos, orden);
 
     return (
         <main className="evento-page evento-page--list">
@@ -53,9 +57,13 @@ export function GestionEventos() {
             )}
             <FiltrosEventos
                 categorias={gestion.categorias}
+                cantidadEventos={eventosOrdenados.length}
                 filtros={gestion.filtros}
+                mostrarResumen={!gestion.cargando && !gestion.error && !gestion.rangoFechasInvalido}
                 onChange={gestion.setFiltros}
+                onOrdenChange={setOrden}
                 mostrarEstado
+                orden={orden}
             />
             {gestion.cargando && (
                 <SkeletonEstado etiqueta="Cargando eventos">
@@ -90,9 +98,9 @@ export function GestionEventos() {
                 </p>
             )}
 
-            {!gestion.cargando && !gestion.error && !gestion.rangoFechasInvalido && gestion.eventos.length > 0 && (
+            {!gestion.cargando && !gestion.error && !gestion.rangoFechasInvalido && eventosOrdenados.length > 0 && (
                 <ul className="evento-list">
-                    {gestion.eventos.map((evento) => (
+                    {eventosOrdenados.map((evento) => (
                         <TarjetaEvento
                             key={evento.id}
                             evento={evento}

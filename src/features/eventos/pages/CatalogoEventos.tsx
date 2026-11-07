@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { SkeletonEstado } from '../../../components/ui/Skeleton';
 import { FiltrosEventos } from '../components/FiltrosEventos';
+import { ordenarEventos, type OrdenEventos } from '../components/ResumenEventos';
 import { useCatalogoEventos } from '../../../hooks/eventos/useCatalogoEventos';
 import type { Evento } from '../../../types/evento';
 import '../../../styles/event-catalog.css';
@@ -24,6 +26,8 @@ const cuposOcupadosPorcentaje = (evento: Evento): number => {
 
 export function CatalogoEventos() {
     const catalogo = useCatalogoEventos();
+    const [orden, setOrden] = useState<OrdenEventos>('fecha-proxima');
+    const eventosOrdenados = ordenarEventos(catalogo.eventos, orden);
 
     return (
         <main className="catalogo-eventos">
@@ -38,8 +42,14 @@ export function CatalogoEventos() {
             )}
             <FiltrosEventos
                 categorias={catalogo.categorias}
+                cantidadEventos={eventosOrdenados.length}
                 filtros={catalogo.filtros}
+                mostrarResumen={
+                    !catalogo.cargando && !catalogo.errorEventos && !catalogo.rangoFechasInvalido
+                }
                 onChange={catalogo.setFiltros}
+                onOrdenChange={setOrden}
+                orden={orden}
             />
             {catalogo.errorEventos && (
                 <p className="catalogo-evento-error" role="alert">
@@ -72,9 +82,9 @@ export function CatalogoEventos() {
             {!catalogo.cargando &&
                 !catalogo.errorEventos &&
                 !catalogo.rangoFechasInvalido &&
-                catalogo.eventos.length > 0 && (
+                eventosOrdenados.length > 0 && (
                     <ul className="catalogo-eventos-grid">
-                        {catalogo.eventos.map((evento) => (
+                        {eventosOrdenados.map((evento) => (
                             <li key={evento.id} className="catalogo-evento">
                                 <span
                                     className={`catalogo-evento-categoria ${categoriaEstilo(evento.categoriaNombre)}`}
