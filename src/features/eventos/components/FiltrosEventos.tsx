@@ -59,14 +59,6 @@ const obtenerRangoPeriodo = (periodo: (typeof periodos)[number]['valor'], ahora 
 const mismoRango = (filtros: FiltrosEvento, rango: { fechaDesde: string; fechaHasta: string }) =>
     filtros.fechaDesde === rango.fechaDesde && filtros.fechaHasta === rango.fechaHasta;
 
-const claseCategoria = (nombre: string) => {
-    const nombreNormalizado = nombre.toLocaleLowerCase('es-CO');
-    if (nombreNormalizado.includes('acad')) return 'filtros-eventos-categoria--academico';
-    if (nombreNormalizado.includes('deport')) return 'filtros-eventos-categoria--deportivo';
-    if (nombreNormalizado.includes('cultur')) return 'filtros-eventos-categoria--cultural';
-    return '';
-};
-
 export function FiltrosEventos({
     categorias,
     cantidadEventos,
@@ -231,11 +223,10 @@ export function FiltrosEventos({
                         <button
                             key={categoria.id}
                             type="button"
-                            className={`filtros-eventos-categoria ${claseCategoria(categoria.nombre)}${filtros.categoriaId === categoria.id ? ' filtros-eventos-categoria--activa' : ''}`}
+                            className={`filtros-eventos-categoria${filtros.categoriaId === categoria.id ? ' filtros-eventos-categoria--activa' : ''}`}
                             aria-pressed={filtros.categoriaId === categoria.id}
                             onClick={() => cambiarCategoria(categoria.id)}
                         >
-                            <span className="filtros-eventos-punto" aria-hidden="true" />
                             {categoria.nombre}
                             <span className="filtros-eventos-categoria-cantidad" aria-hidden="true">
                                 {categoria.eventosActivos}

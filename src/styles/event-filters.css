@@ -158,30 +158,6 @@
   outline-offset: 2px;
 }
 
-.filtros-eventos-punto {
-  width: 0.5rem;
-  height: 0.5rem;
-  flex: 0 0 auto;
-  border-radius: 9999px;
-  background-color: var(--color-eventu-secondary-text);
-}
-
-.filtros-eventos-categoria--academico .filtros-eventos-punto {
-  background-color: var(--color-eventu-institutional-red);
-}
-
-.filtros-eventos-categoria--deportivo .filtros-eventos-punto {
-  background-color: #d78a28;
-}
-
-.filtros-eventos-categoria--cultural .filtros-eventos-punto {
-  background-color: #7651c9;
-}
-
-.filtros-eventos-categoria--activa .filtros-eventos-punto {
-  background-color: currentColor;
-}
-
 .filtros-eventos-categoria-cantidad {
   color: inherit;
   opacity: 0.75;

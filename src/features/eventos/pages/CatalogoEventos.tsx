@@ -3,26 +3,9 @@ import { Link } from 'react-router-dom';
 import { SkeletonEstado } from '../../../components/ui/Skeleton';
 import { FiltrosEventos } from '../components/FiltrosEventos';
 import { ordenarEventos, type OrdenEventos } from '../components/ResumenEventos';
+import { TarjetaEvento } from '../components/TarjetaEvento';
 import { useCatalogoEventos } from '../../../hooks/eventos/useCatalogoEventos';
-import type { Evento } from '../../../types/evento';
 import '../../../styles/event-catalog.css';
-
-const formatoFecha = new Intl.DateTimeFormat('es-CO', { dateStyle: 'medium', timeStyle: 'short' });
-
-const categoriaEstilo = (nombre: string): string => {
-    const normalizado = nombre.toLocaleLowerCase('es-CO');
-    if (normalizado.includes('cultur')) return 'catalogo-evento-categoria--cultural';
-    if (normalizado.includes('deport')) return 'catalogo-evento-categoria--deportivo';
-    return '';
-};
-
-const cuposOcupadosPorcentaje = (evento: Evento): number => {
-    if (evento.cuposMaximos <= 0) return 0;
-    return Math.max(
-        0,
-        Math.min(100, ((evento.cuposMaximos - evento.cuposDisponibles) / evento.cuposMaximos) * 100),
-    );
-};
 
 export function CatalogoEventos() {
     const catalogo = useCatalogoEventos();
@@ -58,15 +41,17 @@ export function CatalogoEventos() {
             )}
             {catalogo.cargando && (
                 <SkeletonEstado etiqueta="Cargando eventos">
-                    <div className="catalogo-eventos-grid">
+                    <ul className="eventos-grid">
                         {Array.from({ length: 3 }, (_, indice) => (
-                            <div key={indice} className="catalogo-evento" aria-hidden="true">
-                                <span className="h-4 w-20 animate-pulse rounded bg-eventu-border" />
-                                <span className="h-5 w-3/4 animate-pulse rounded bg-eventu-border" />
-                                <span className="h-4 w-full animate-pulse rounded bg-eventu-border" />
-                            </div>
+                            <li key={indice} className="evento-card" aria-hidden="true">
+                                <div className="evento-card-content">
+                                    <span className="h-4 w-20 animate-pulse rounded bg-eventu-border" />
+                                    <span className="h-5 w-3/4 animate-pulse rounded bg-eventu-border" />
+                                    <span className="h-4 w-full animate-pulse rounded bg-eventu-border" />
+                                </div>
+                            </li>
                         ))}
-                    </div>
+                    </ul>
                 </SkeletonEstado>
             )}
             {!catalogo.cargando &&
@@ -83,45 +68,17 @@ export function CatalogoEventos() {
                 !catalogo.errorEventos &&
                 !catalogo.rangoFechasInvalido &&
                 eventosOrdenados.length > 0 && (
-                    <ul className="catalogo-eventos-grid">
+                    <ul className="eventos-grid">
                         {eventosOrdenados.map((evento) => (
-                            <li key={evento.id} className="catalogo-evento">
-                                <span
-                                    className={`catalogo-evento-categoria ${categoriaEstilo(evento.categoriaNombre)}`}
-                                >
-                                    {evento.categoriaNombre}
-                                </span>
-                                <h2 className="catalogo-evento-titulo">{evento.titulo}</h2>
-                                <div className="catalogo-evento-detalles">
-                                    <time dateTime={evento.fechaInicio}>
-                                        {formatoFecha.format(new Date(evento.fechaInicio))}
-                                    </time>
-                                    <span>{evento.ubicacion}</span>
-                                </div>
-                                <div
-                                    className="catalogo-evento-cupos"
-                                    role="meter"
-                                    aria-label="Cupos ocupados"
-                                    aria-valuemin={0}
-                                    aria-valuemax={evento.cuposMaximos}
-                                    aria-valuenow={evento.cuposMaximos - evento.cuposDisponibles}
-                                >
-                                    <div
-                                        className="catalogo-evento-cupos-ocupados"
-                                        style={{ width: `${cuposOcupadosPorcentaje(evento)}%` }}
-                                    />
-                                </div>
-                                <p className="catalogo-evento-detalles">
-                                    {evento.cuposDisponibles} cupos disponibles de {evento.cuposMaximos}
-                                </p>
+                            <TarjetaEvento key={evento.id} evento={evento}>
                                 <Link
                                     to={`/eventos/${evento.id}`}
-                                    className="catalogo-evento-detalle"
+                                    className="evento-catalogo-row-button"
                                     aria-label={`Ver detalle de ${evento.titulo}`}
                                 >
                                     Ver detalle
                                 </Link>
-                            </li>
+                            </TarjetaEvento>
                         ))}
                     </ul>
                 )}

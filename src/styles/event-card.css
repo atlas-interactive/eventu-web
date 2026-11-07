@@ -1,0 +1,222 @@
+.eventos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  align-items: stretch;
+  gap: 0.875rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.evento-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  border: 1px solid var(--color-eventu-border);
+  border-radius: 0.75rem;
+  background-color: var(--color-eventu-white-surface);
+  padding: 1rem;
+  box-shadow: 0 1px 3px rgb(26 26 24 / 5%);
+}
+
+.evento-card-content {
+  display: flex;
+  min-width: 0;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 0.875rem;
+  overflow-wrap: anywhere;
+}
+
+.evento-card-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.evento-card-category {
+  display: inline-flex;
+  min-height: 1.75rem;
+  flex: 0 1 auto;
+  align-items: center;
+  border-radius: 9999px;
+  background-color: var(--color-eventu-category-background);
+  padding-inline: 0.625rem;
+  color: var(--color-eventu-category-text);
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 600;
+}
+
+.evento-card-status {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 0.375rem;
+  margin-left: auto;
+  color: var(--color-eventu-success);
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 600;
+}
+
+.evento-card-status-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background-color: currentColor;
+}
+
+.evento-card-status--cancelled {
+  color: var(--color-eventu-secondary-text);
+}
+
+.evento-card-title {
+  margin: 0;
+  color: var(--color-eventu-main-ink);
+  font-size: 1.125rem;
+  line-height: 1.5rem;
+  font-weight: 700;
+}
+
+.evento-card-metadata {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.evento-card-meta {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-eventu-secondary-text);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.evento-card-meta > svg {
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
+}
+
+.evento-card-capacity {
+  display: grid;
+  gap: 0.375rem;
+  margin-top: 0.375rem;
+}
+
+.evento-card-capacity-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  color: var(--color-eventu-secondary-text);
+  font-size: 0.8125rem;
+  line-height: 1.125rem;
+}
+
+.evento-card-capacity-label strong {
+  color: var(--color-eventu-main-ink);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.evento-card-capacity-track {
+  height: 0.375rem;
+  overflow: hidden;
+  border-radius: 9999px;
+  background-color: var(--color-eventu-page-background);
+}
+
+.evento-card-capacity-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background-color: var(--color-eventu-institutional-red);
+}
+
+.evento-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  border-top: 1px solid var(--color-eventu-border);
+  padding-top: 0.875rem;
+}
+
+.evento-row-button {
+  display: inline-flex;
+  min-height: 2.5rem;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  border: 1px solid var(--color-eventu-field-border);
+  border-radius: 0.5rem;
+  background-color: var(--color-eventu-white-surface);
+  padding-inline: 0.75rem;
+  color: var(--color-eventu-main-ink);
+  font-size: 0.8rem;
+  line-height: 1.25rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.evento-catalogo-row-button {
+  display: inline-flex;
+  width: 100%;
+  min-height: 2rem;
+  flex: 1 1 100%;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 0.375rem;
+  background-color: var(--color-eventu-main-ink);
+  padding-inline: 0.75rem;
+  color: var(--color-eventu-white-surface);
+  font-size: 0.8rem;
+  line-height: 1.25rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.evento-catalogo-row-button:hover {
+  background-color: var(--color-eventu-main-ink);
+}
+
+.evento-catalogo-row-button:focus-visible {
+  outline: 2px solid var(--color-eventu-institutional-red);
+  outline-offset: 2px;
+}
+
+.evento-row-button:hover {
+  background-color: var(--color-eventu-page-background);
+}
+
+.evento-row-button--danger {
+  border-color: color-mix(in srgb, var(--color-eventu-institutional-red) 35%, white);
+  color: var(--color-eventu-institutional-red);
+}
+
+.evento-card-actions .evento-row-button--danger {
+  margin-left: auto;
+}
+
+.evento-row-button--danger:hover {
+  background-color: var(--color-eventu-soft-red-background);
+}
+
+.evento-row-button:focus-visible {
+  outline: 2px solid var(--color-eventu-institutional-red);
+  outline-offset: 2px;
+}
+
+@media (min-width: 40rem) {
+  .evento-card {
+    padding: 1.125rem;
+  }
+}

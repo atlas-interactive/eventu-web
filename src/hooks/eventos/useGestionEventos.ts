@@ -2,11 +2,9 @@ import { useEffect, useState } from 'react';
 import type { Evento, FiltrosEvento } from '../../types/evento';
 import type { Categoria } from '../../types/categoria';
 import { mensajeDeError } from '../../api/mensajeDeError';
-import { guardarArchivo } from '../../api/descargas';
 import { esAdministrador, obtenerSesion } from '../../features/sesion/sesion';
 import {
     cancelarEvento,
-    descargarReporteEvento,
     listarEventos,
     listarMisEventos,
 } from '../../features/eventos/services/eventoService';
@@ -26,8 +24,6 @@ export function useGestionEventos(mensajeInicial = '') {
     const [aCancelar, setACancelar] = useState<Evento | null>(null);
     const [cancelando, setCancelando] = useState(false);
     const [errorCancelar, setErrorCancelar] = useState('');
-    const [descargandoId, setDescargandoId] = useState<number | null>(null);
-    const [errorReporte, setErrorReporte] = useState('');
     const administrador = esAdministrador(obtenerSesion());
     const rangoFechasInvalido = fechasInvalidas(filtros);
     const eventosVisibles = filtros.estado && filtros.estado !== 'TODOS'
@@ -121,21 +117,6 @@ export function useGestionEventos(mensajeInicial = '') {
         }
     };
 
-    const descargarReporte = async (evento: Evento) => {
-        if (descargandoId !== null) return;
-        setDescargandoId(evento.id);
-        setErrorReporte('');
-        try {
-            const pdf = await descargarReporteEvento(evento.id);
-            guardarArchivo(pdf, `reporte-evento-${evento.id}.pdf`);
-        } catch (err: unknown) {
-            console.error('No se pudo descargar el reporte:', err);
-            setErrorReporte(mensajeDeError(err));
-        } finally {
-            setDescargandoId(null);
-        }
-    };
-
     return {
         eventos: eventosVisibles,
         categorias,
@@ -148,13 +129,10 @@ export function useGestionEventos(mensajeInicial = '') {
         aCancelar,
         cancelando,
         errorCancelar,
-        descargandoId,
-        errorReporte,
         administrador,
         rangoFechasInvalido,
         solicitarCancelacion,
         cerrarModalCancelar,
         confirmarCancelacion,
-        descargarReporte,
     };
 }

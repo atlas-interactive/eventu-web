@@ -6,6 +6,7 @@ import type { FiltroInscripcion } from '../../../hooks/inscripciones/useMisInscr
 import { ConfirmarCancelacionInscripcion } from '../components/ConfirmarCancelacionInscripcion';
 import '../../../styles/inscriptions.css';
 import '../../../styles/events.css';
+import '../../../styles/event-card.css';
 
 const formatoFecha = new Intl.DateTimeFormat('es-CO', {
     day: '2-digit',

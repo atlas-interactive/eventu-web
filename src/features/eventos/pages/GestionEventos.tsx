@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CalendarPlus, Plus } from 'lucide-react';
+import { CalendarPlus, CircleX, Pencil, Plus, Users } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { IconoAviso } from '../../../components/ui/IconoAviso';
 import { Skeleton, SkeletonEstado } from '../../../components/ui/Skeleton';
@@ -44,12 +44,6 @@ export function GestionEventos() {
                     <span>{gestion.error}</span>
                 </p>
             )}
-            {gestion.errorReporte && (
-                <p role="alert" className="evento-list-message flex items-start gap-2">
-                    <IconoAviso tipo="error" className="mt-0.5 h-4 w-4" />
-                    <span>{gestion.errorReporte}</span>
-                </p>
-            )}
             {gestion.errorCategorias && (
                 <p role="alert" className="evento-list-message">
                     {gestion.errorCategorias}
@@ -67,16 +61,16 @@ export function GestionEventos() {
             />
             {gestion.cargando && (
                 <SkeletonEstado etiqueta="Cargando eventos">
-                    <ul className="evento-list">
+                    <ul className="eventos-grid">
                         {Array.from({ length: 3 }, (_, indice) => (
                             <li key={indice} className="evento-card">
-                                <div className="evento-card-content w-full space-y-2">
+                                <div className="evento-card-content w-full">
                                     <Skeleton className="h-6 w-2/3" />
                                     <Skeleton className="h-4 w-full" />
                                     <Skeleton className="h-4 w-3/4" />
                                     <Skeleton className="h-4 w-1/2" />
                                 </div>
-                                <div className="evento-card-actions sm:flex-row">
+                                <div className="evento-card-actions">
                                     <Skeleton className="h-11 w-full rounded-md sm:w-24" />
                                     <Skeleton className="h-11 w-full rounded-md sm:w-24" />
                                 </div>
@@ -99,16 +93,42 @@ export function GestionEventos() {
             )}
 
             {!gestion.cargando && !gestion.error && !gestion.rangoFechasInvalido && eventosOrdenados.length > 0 && (
-                <ul className="evento-list">
+                <ul className="eventos-grid">
                     {eventosOrdenados.map((evento) => (
                         <TarjetaEvento
                             key={evento.id}
                             evento={evento}
-                            descargando={gestion.descargandoId === evento.id}
-                            reporteDeshabilitado={gestion.descargandoId !== null}
-                            onDescargarReporte={gestion.descargarReporte}
-                            onSolicitarCancelacion={gestion.solicitarCancelacion}
-                        />
+                        >
+                            <Link
+                                to={`/organizador/eventos/${evento.id}/inscritos`}
+                                className="evento-row-button"
+                                aria-label={`Ver inscritos y asistencias de ${evento.titulo}`}
+                            >
+                                <Users className="h-4 w-4 shrink-0" aria-hidden="true" />
+                                Inscritos
+                            </Link>
+                            {evento.estado.toUpperCase() !== 'CANCELADO' && (
+                                <>
+                                    <Link
+                                        to={`/organizador/eventos/${evento.id}/editar`}
+                                        className="evento-row-button"
+                                        aria-label={`Editar evento ${evento.titulo}`}
+                                    >
+                                        <Pencil className="h-4 w-4 shrink-0" aria-hidden="true" />
+                                        Editar
+                                    </Link>
+                                    <button
+                                        type="button"
+                                        className="evento-row-button evento-row-button--danger"
+                                        aria-label={`Cancelar evento ${evento.titulo}`}
+                                        onClick={() => gestion.solicitarCancelacion(evento)}
+                                    >
+                                        <CircleX className="h-4 w-4 shrink-0" aria-hidden="true" />
+                                        Cancelar
+                                    </button>
+                                </>
+                            )}
+                        </TarjetaEvento>
                     ))}
                 </ul>
             )}
