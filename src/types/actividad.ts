@@ -9,3 +9,26 @@ export interface RegistroActividadItem {
     resultado: string;
     motivo: string | null;
 }
+
+export interface OpcionesFiltroActividad {
+    acciones: string[];
+    entidades: string[];
+    resultados: string[];
+}
+
+export interface FiltrosActividad {
+    accion: string;
+    entidad: string;
+    resultado: string;
+    usuario: string;
+    fechaDesde: string;
+    fechaHasta: string;
+}
+
+export interface PaginaActividad {
+    contenido: RegistroActividadItem[];
+    pagina: number;
+    tamano: number;
+    totalElementos: number;
+    totalPaginas: number;
+}

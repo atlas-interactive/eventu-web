@@ -14,6 +14,7 @@ const formatoHora = new Intl.DateTimeFormat('es-CO', {
 
 interface TablaActividadProps {
     registros: RegistroActividadItem[];
+    mensajeVacio: string;
 }
 
 function mostrarFecha(fecha: string) {
@@ -26,7 +27,7 @@ function mostrarEntidad(registro: RegistroActividadItem) {
     return registro.entidadId === null ? registro.entidad : `${registro.entidad} #${registro.entidadId}`;
 }
 
-export function TablaActividad({ registros }: TablaActividadProps) {
+export function TablaActividad({ registros, mensajeVacio }: TablaActividadProps) {
     return (
         <section className="actividad-tabla-contenedor" aria-label="Registros de actividad">
             <table className="actividad-tabla">
@@ -83,7 +84,7 @@ export function TablaActividad({ registros }: TablaActividadProps) {
                     {registros.length === 0 && (
                         <tr className="actividad-tabla-fila--vacia">
                             <td className="actividad-vacio" colSpan={6}>
-                                No hay registros para mostrar.
+                                {mensajeVacio}
                             </td>
                         </tr>
                     )}

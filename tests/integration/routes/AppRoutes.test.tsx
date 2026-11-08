@@ -11,6 +11,20 @@ describe('AppRoutes', () => {
     beforeEach(() => localStorage.clear());
 
     it('muestra la vista de actividad a los administradores', async () => {
+        server.use(
+            http.get('*/logs/opciones', () =>
+                HttpResponse.json({ acciones: ['LOGIN'], entidades: ['USUARIO'], resultados: ['EXITO', 'FALLIDO'] }),
+            ),
+            http.get('*/logs', () =>
+                HttpResponse.json({
+                    contenido: [],
+                    pagina: 0,
+                    tamano: 20,
+                    totalElementos: 0,
+                    totalPaginas: 0,
+                }),
+            ),
+        );
         guardarSesion({
             token: 'token-de-prueba',
             usuarioId: 1,
@@ -29,7 +43,8 @@ describe('AppRoutes', () => {
         expect(screen.getByRole('navigation', { name: 'Paginación de actividad' })).toHaveTextContent(
             '20 por página',
         );
-        expect(screen.getByText('Los filtros estarán disponibles al conectar la consulta de actividad.')).toBeInTheDocument();
+        expect(await screen.findByText('No hay registros.')).toBeInTheDocument();
+        expect(await screen.findByRole('option', { name: 'LOGIN' })).toBeInTheDocument();
     });
 
     it('deniega la vista de actividad a quienes no son administradores', async () => {

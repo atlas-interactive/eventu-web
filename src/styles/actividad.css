@@ -158,6 +158,18 @@
   font-size: 0.7rem;
 }
 
+.actividad-periodos button[aria-pressed='true'] {
+  border-color: #efc7c9;
+  background: var(--color-eventu-soft-red-background);
+  color: var(--color-eventu-institutional-red);
+  font-weight: 600;
+}
+
+.actividad-limpiar:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
 .actividad-limpiar {
   display: inline-flex;
   align-items: center;
@@ -174,25 +186,59 @@
   height: 0.9rem;
 }
 
-.actividad-filtros fieldset:disabled {
-  opacity: 0.9;
-}
-
-.actividad-filtros fieldset:disabled button,
-.actividad-filtros fieldset:disabled input,
-.actividad-filtros fieldset:disabled select {
+.actividad-campo select:disabled {
   cursor: not-allowed;
-}
-
-.actividad-filtros-nota {
-  margin: 0.65rem 0 0;
-  color: var(--color-eventu-secondary-text);
-  font-size: 0.7rem;
+  opacity: 0.7;
 }
 
 .actividad-resumen {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
   margin: 1rem 0 0.6rem;
   font-size: 0.75rem;
+}
+
+.actividad-filtros-activos {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  color: var(--color-eventu-secondary-text);
+}
+
+.actividad-filtro-activo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border: 1px solid var(--color-eventu-border);
+  border-radius: 9999px;
+  background: var(--color-eventu-white-surface);
+  padding: 0.15rem 0.4rem;
+  color: var(--color-eventu-main-ink);
+  font-size: 0.68rem;
+  cursor: pointer;
+}
+
+.actividad-filtro-activo svg {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+.actividad-error {
+  margin: 0.75rem 0;
+  border-radius: 0.4rem;
+  background: var(--color-eventu-red-background);
+  padding: 0.65rem 0.8rem;
+  color: var(--color-eventu-error);
+  font-size: 0.8rem;
+}
+
+.actividad-cargando {
+  margin: 1rem 0;
+  color: var(--color-eventu-secondary-text);
+  font-size: 0.8rem;
 }
 
 .actividad-tabla-contenedor {
@@ -357,6 +403,12 @@
 
 .actividad-paginacion-botones button:disabled {
   color: #aaa9a3;
+}
+
+.actividad-paginacion-botones button[aria-current='page'] {
+  border-color: var(--color-eventu-main-ink);
+  background: var(--color-eventu-main-ink);
+  color: var(--color-eventu-white-surface);
 }
 
 .actividad-paginacion-botones svg {
