@@ -127,6 +127,7 @@ export function RegistroActividad() {
             {!cargando && !errorConsulta && (
                 <TablaActividad
                     registros={datos.contenido}
+                    filtrosAplicados={hayFiltros}
                     mensajeVacio={hayFiltros ? 'No hay registros con esos criterios.' : 'No hay registros.'}
                 />
             )}

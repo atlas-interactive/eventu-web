@@ -71,6 +71,7 @@ describe('RegistroActividad', () => {
             expect(consultas.at(-1)?.get('tamano')).toBe('20');
         });
         expect(screen.getByRole('button', { name: 'Quitar filtro: LOGIN' })).toBeInTheDocument();
+        expect(screen.getByRole('row', { name: /Laura Gómez/ })).toHaveClass('actividad-tabla-fila--filtrada');
     });
 
     it('aplica un periodo rápido y consulta la página siguiente con 20 registros por página', async () => {

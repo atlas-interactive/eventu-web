@@ -255,10 +255,17 @@
   font-size: 0.8125rem;
 }
 
-.actividad-tabla th {
-  background: #f7f7f3;
+.actividad-tabla-encabezado {
+  background: var(--color-eventu-white-surface);
   color: var(--color-eventu-secondary-text);
   font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.actividad-tabla th {
+  background: var(--color-eventu-white-surface);
+  color: var(--color-eventu-secondary-text);
+  font-size: 0.825rem;
   font-weight: 600;
 }
 
@@ -271,6 +278,11 @@
 
 .actividad-tabla tbody tr:last-child td {
   border-bottom: 0;
+}
+
+.actividad-tabla-fila--filtrada td:first-child {
+  border-left: 3px solid var(--color-eventu-institutional-red);
+  padding-left: calc(0.7rem - 3px);
 }
 
 .actividad-fecha,
@@ -464,6 +476,11 @@
     border-bottom: 1px solid var(--color-eventu-border);
   }
 
+  .actividad-tabla-fila--filtrada {
+    border-left: 3px solid var(--color-eventu-institutional-red);
+    padding-left: calc(0.75rem - 3px);
+  }
+
   .actividad-tabla-fila--vacia,
   .actividad-tabla-fila:last-child {
     border-bottom: 0;
@@ -476,6 +493,11 @@
     border: 0;
     padding: 0.35rem 0;
     overflow-wrap: anywhere;
+  }
+
+  .actividad-tabla-fila--filtrada td:first-child {
+    border-left: 0;
+    padding-left: 0;
   }
 
   .actividad-tabla td::before {

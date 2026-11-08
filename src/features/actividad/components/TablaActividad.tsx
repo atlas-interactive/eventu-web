@@ -1,37 +1,22 @@
 import { LockKeyhole } from 'lucide-react';
 import type { RegistroActividadItem } from '../../../types/actividad';
-
-const formatoFecha = new Intl.DateTimeFormat('es-CO', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-});
-
-const formatoHora = new Intl.DateTimeFormat('es-CO', {
-    hour: 'numeric',
-    minute: '2-digit',
-});
+import { formatearFechaHoraActividad, formatearTiempoRelativoActividad } from '../services/formatoFechaActividad';
 
 interface TablaActividadProps {
     registros: RegistroActividadItem[];
     mensajeVacio: string;
-}
-
-function mostrarFecha(fecha: string) {
-    const valor = new Date(fecha);
-    if (Number.isNaN(valor.getTime())) return { fecha, hora: '' };
-    return { fecha: formatoFecha.format(valor), hora: formatoHora.format(valor) };
+    filtrosAplicados: boolean;
 }
 
 function mostrarEntidad(registro: RegistroActividadItem) {
     return registro.entidadId === null ? registro.entidad : `${registro.entidad} #${registro.entidadId}`;
 }
 
-export function TablaActividad({ registros, mensajeVacio }: TablaActividadProps) {
+export function TablaActividad({ registros, mensajeVacio, filtrosAplicados }: TablaActividadProps) {
     return (
         <section className="actividad-tabla-contenedor" aria-label="Registros de actividad">
             <table className="actividad-tabla">
-                <thead>
+                <thead className="actividad-tabla-encabezado">
                     <tr>
                         <th scope="col">Fecha y hora</th>
                         <th scope="col">Usuario</th>
@@ -43,12 +28,22 @@ export function TablaActividad({ registros, mensajeVacio }: TablaActividadProps)
                 </thead>
                 <tbody>
                     {registros.map((registro) => {
-                        const fecha = mostrarFecha(registro.fecha);
                         return (
-                            <tr className="actividad-tabla-fila" key={registro.id}>
+                            <tr
+                                className={`actividad-tabla-fila${filtrosAplicados ? ' actividad-tabla-fila--filtrada' : ''}`}
+                                key={registro.id}
+                            >
                                 <td data-label="Fecha y hora">
-                                    <span className="actividad-fecha">{fecha.fecha}</span>
-                                    <span className="actividad-hora">{fecha.hora}</span>
+                                    <time className="actividad-fecha" dateTime={registro.fecha}>
+                                        {formatearTiempoRelativoActividad(registro.fecha)}
+                                    </time>
+                                    <time
+                                        className="actividad-hora"
+                                        dateTime={registro.fecha}
+                                        title={formatearFechaHoraActividad(registro.fecha)}
+                                    >
+                                        {formatearFechaHoraActividad(registro.fecha)}
+                                    </time>
                                 </td>
                                 <td data-label="Usuario">
                                     {registro.usuarioNombre ? (
