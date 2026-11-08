@@ -25,6 +25,7 @@ describe('inscripcionService', () => {
         eventoTitulo: `Evento ${eventoId}`,
         eventoFechaInicio: '2026-04-02T09:00:00',
         eventoUbicacion: 'Campus',
+        eventoEstado: 'PUBLICADO',
     });
 
     beforeEach(() => {
@@ -79,6 +80,22 @@ describe('inscripcionService', () => {
         );
     });
 
+    it('acepta respuestas de inscripciones sin el estado del evento', async () => {
+        const sinEstadoEvento = {
+            id: 8,
+            estado: 'ACTIVA',
+            codigoQr: 'QR-8',
+            fechaInscripcion: '2026-03-01T10:00:00',
+            eventoId: 5,
+            eventoTitulo: 'Evento 5',
+            eventoFechaInicio: '2026-04-02T09:00:00',
+            eventoUbicacion: 'Campus',
+        };
+        getMock.mockResolvedValue({ data: [sinEstadoEvento] });
+
+        await expect(listarMisInscripciones()).resolves.toEqual([sinEstadoEvento]);
+    });
+
     it('lista y valida las inscripciones incluyendo el código QR', async () => {
         const inscripciones = [
             {
@@ -90,6 +107,7 @@ describe('inscripcionService', () => {
                 eventoTitulo: 'Festival universitario',
                 eventoFechaInicio: '2026-04-02T09:00:00',
                 eventoUbicacion: 'Campus',
+                eventoEstado: 'PUBLICADO',
             },
         ];
         getMock.mockResolvedValue({ data: inscripciones });

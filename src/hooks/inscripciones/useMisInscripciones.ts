@@ -5,6 +5,7 @@ import {
     cancelarInscripcion,
     listarMisInscripciones,
 } from '../../features/inscripciones/services/inscripcionService';
+import { listarEventos } from '../../features/eventos/services/eventoService';
 
 export type FiltroInscripcion = 'TODAS' | EstadoInscripcion;
 
@@ -20,9 +21,16 @@ export function useMisInscripciones() {
 
     useEffect(() => {
         let vigente = true;
-        listarMisInscripciones()
-            .then((datos) => {
-                if (vigente) setInscripciones(datos);
+        Promise.all([listarMisInscripciones(), listarEventos()])
+            .then(([datos, eventos]) => {
+                if (!vigente) return;
+                const estadosPorEvento = new Map(eventos.map(({ id, estado }) => [id, estado]));
+                setInscripciones(
+                    datos.map((inscripcion) => ({
+                        ...inscripcion,
+                        eventoEstado: estadosPorEvento.get(inscripcion.eventoId) ?? inscripcion.eventoEstado,
+                    })),
+                );
             })
             .catch((err: unknown) => {
                 console.error('No se pudieron cargar las inscripciones:', err);
@@ -37,7 +45,10 @@ export function useMisInscripciones() {
         };
     }, []);
 
-    const conteos = inscripciones.reduce(
+    const publicadas = inscripciones.filter(
+        (inscripcion) => inscripcion.eventoEstado?.trim().toUpperCase() === 'PUBLICADO',
+    );
+    const conteos = publicadas.reduce(
         (total, inscripcion) => {
             total.TODAS += 1;
             total[inscripcion.estado] += 1;
@@ -46,8 +57,8 @@ export function useMisInscripciones() {
         { TODAS: 0, ACTIVA: 0, CANCELADA: 0 },
     );
     const visibles = filtro === 'TODAS'
-        ? inscripciones
-        : inscripciones.filter((inscripcion) => inscripcion.estado === filtro);
+        ? publicadas
+        : publicadas.filter((inscripcion) => inscripcion.estado === filtro);
 
     const solicitarCancelacion = (inscripcion: Inscripcion) => {
         setErrorCancelacion('');

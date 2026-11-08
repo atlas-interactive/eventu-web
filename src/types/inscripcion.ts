@@ -9,6 +9,7 @@ export interface Inscripcion {
     eventoTitulo: string;
     eventoFechaInicio: string;
     eventoUbicacion: string;
+    eventoEstado?: string;
 }
 
 export interface RespuestaCancelacionInscripcion {

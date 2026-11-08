@@ -70,6 +70,7 @@ export function useInscripcionEvento(eventoId: number, habilitado = true) {
                 eventoTitulo: evento.titulo,
                 eventoFechaInicio: evento.fechaInicio,
                 eventoUbicacion: evento.ubicacion,
+                eventoEstado: evento.estado,
             };
             setInscripcionActiva(nuevaInscripcion);
             setYaInscrito(true);

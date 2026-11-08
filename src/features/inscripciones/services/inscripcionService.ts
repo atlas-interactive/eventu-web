@@ -44,7 +44,6 @@ export const listarMisInscripciones = async (): Promise<Inscripcion[]> => {
     ) {
         throw new Error('La respuesta de /inscripciones/mias no es una lista válida.');
     }
-
     return data;
 };
 

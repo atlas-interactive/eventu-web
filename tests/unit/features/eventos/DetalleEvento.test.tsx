@@ -94,6 +94,7 @@ describe('DetalleEvento', () => {
             eventoTitulo: evento.titulo,
             eventoFechaInicio: evento.fechaInicio,
             eventoUbicacion: evento.ubicacion,
+            eventoEstado: evento.estado,
         });
         renderDetalle();
 
@@ -113,6 +114,7 @@ describe('DetalleEvento', () => {
             eventoTitulo: evento.titulo,
             eventoFechaInicio: evento.fechaInicio,
             eventoUbicacion: evento.ubicacion,
+            eventoEstado: evento.estado,
         });
         renderDetalle();
 
@@ -150,6 +152,7 @@ describe('DetalleEvento', () => {
                 eventoTitulo: evento.titulo,
                 eventoFechaInicio: evento.fechaInicio,
                 eventoUbicacion: evento.ubicacion,
+                eventoEstado: evento.estado,
             });
         const errorConsola = vi.spyOn(console, 'error').mockImplementation(() => undefined);
         renderDetalle();
