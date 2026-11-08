@@ -15,7 +15,7 @@ const obtenerParametros = (filtros: FiltrosEvento) =>
     Object.fromEntries(
         Object.entries(filtros)
             .map(([clave, valor]) => [clave, typeof valor === 'string' ? valor.trim() : valor])
-            .filter(([, valor]) => valor !== undefined && valor !== ''),
+            .filter(([clave, valor]) => clave !== 'estado' && valor !== undefined && valor !== ''),
     );
 
 const consultarEventos = async (url: string, filtros: FiltrosEvento): Promise<Evento[]> => {

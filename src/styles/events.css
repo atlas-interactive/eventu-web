@@ -12,7 +12,7 @@
 }
 
 .evento-page--list {
-  max-width: 70rem;
+  max-width: 77.5rem;
   padding-block: 2rem;
 }
 
@@ -188,153 +188,6 @@
   line-height: 1.25rem;
 }
 
-.evento-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.evento-card {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  border: 1px solid var(--color-eventu-border);
-  border-radius: 0.5rem;
-  background-color: var(--color-eventu-white-surface);
-  padding: 1rem;
-}
-
-.evento-card-content {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  min-width: 0;
-  overflow-wrap: break-word;
-}
-
-.evento-card-titleline {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.evento-card-title {
-  color: var(--color-eventu-main-ink);
-  font-size: 1.1rem;
-  line-height: 1.5rem;
-  font-weight: 600;
-}
-
-.evento-card-status {
-  display: inline-flex;
-  align-items: center;
-  min-height: 1.75rem;
-  border-radius: 0.375rem;
-  padding-inline: 0.5rem;
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-  font-weight: 500;
-}
-
-.evento-card-status--published {
-  background-color: var(--color-eventu-green-background);
-  color: var(--color-eventu-success);
-}
-
-.evento-card-status--cancelled {
-  background-color: #ededeb;
-  color: var(--color-eventu-secondary-text);
-}
-
-.evento-card-metadata {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.25rem 1rem;
-}
-
-.evento-card-meta {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
-  color: var(--color-eventu-secondary-text);
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-}
-
-.evento-card-capacity {
-  margin-top: -0.375rem;
-}
-
-.evento-card-participants {
-  align-self: flex-start;
-  color: var(--color-eventu-institutional-red);
-  text-decoration: none;
-}
-
-.evento-card-participants:hover {
-  text-decoration: underline;
-}
-
-.evento-card-participants:focus-visible {
-  border-radius: 0.125rem;
-  outline: 2px solid var(--color-eventu-institutional-red);
-  outline-offset: 2px;
-}
-
-.evento-card-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.evento-row-button {
-  display: inline-flex;
-  height: 2.75rem;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--color-eventu-field-border);
-  border-radius: 0.4375rem;
-  background-color: var(--color-eventu-white-surface);
-  padding-inline: 1rem;
-  color: var(--color-eventu-main-ink);
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-  font-weight: 600;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.evento-row-button:hover {
-  background-color: var(--color-eventu-page-background);
-}
-
-.evento-row-button:disabled {
-  border-color: var(--color-eventu-border);
-  background-color: var(--color-eventu-disabled-button);
-  color: var(--color-eventu-secondary-text);
-  cursor: progress;
-}
-
-.evento-row-button--danger {
-  border-color: var(--color-eventu-institutional-red);
-  color: var(--color-eventu-institutional-red);
-}
-
-.evento-row-button--danger:hover {
-  background-color: var(--color-eventu-soft-red-background);
-}
-
-.evento-row-button:disabled:hover {
-  background-color: var(--color-eventu-disabled-button);
-}
-
-.evento-row-button:focus-visible {
-  outline: 2px solid var(--color-eventu-institutional-red);
-  outline-offset: 2px;
-}
-
 .evento-dialog-icon {
   display: flex;
   width: 3rem;
@@ -397,16 +250,6 @@
     justify-content: space-between;
   }
 
-  .evento-card {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .evento-card-actions {
-    flex-direction: row;
-    flex-shrink: 0;
-  }
 }
 
 @media (min-width: 48rem) {

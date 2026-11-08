@@ -1,38 +1,28 @@
 import { axiosClient } from '../../../api';
 import type { Inscripcion, RespuestaCancelacionInscripcion } from '../../../types/inscripcion';
 
-interface InscripcionDelUsuario {
-    eventoId: number;
-    estado: string;
-}
-
 export interface RespuestaInscripcion {
     mensaje: string;
     inscripcionId: number;
     codigoQr: string;
 }
 
-export const inscribirEnEvento = async (eventoId: number): Promise<RespuestaInscripcion> =>
-    (await axiosClient.post<RespuestaInscripcion>('/inscripciones', undefined, { params: { eventoId } })).data;
-
-export const tieneInscripcionActiva = async (eventoId: number): Promise<boolean> => {
-    const { data } = await axiosClient.get<InscripcionDelUsuario[]>('/inscripciones/mias');
+export const inscribirEnEvento = async (eventoId: number): Promise<RespuestaInscripcion> => {
+    const { data } = await axiosClient.post<RespuestaInscripcion>(
+        '/inscripciones',
+        undefined,
+        { params: { eventoId } },
+    );
     if (
-        !Array.isArray(data) ||
-        data.some(
-            (inscripcion) =>
-                !inscripcion ||
-                typeof inscripcion.eventoId !== 'number' ||
-                typeof inscripcion.estado !== 'string',
-        )
+        !data ||
+        typeof data.mensaje !== 'string' ||
+        typeof data.inscripcionId !== 'number' ||
+        typeof data.codigoQr !== 'string'
     ) {
-        throw new Error('La respuesta de /inscripciones/mias no es una lista válida.');
+        throw new Error('La respuesta de inscripción no contiene una entrada válida.');
     }
 
-    return data.some(
-        (inscripcion) =>
-            inscripcion.eventoId === eventoId && inscripcion.estado.toUpperCase() === 'ACTIVA',
-    );
+    return data;
 };
 
 export const listarMisInscripciones = async (): Promise<Inscripcion[]> => {
@@ -45,6 +35,8 @@ export const listarMisInscripciones = async (): Promise<Inscripcion[]> => {
                 typeof inscripcion.id !== 'number' ||
                 typeof inscripcion.eventoId !== 'number' ||
                 !['ACTIVA', 'CANCELADA'].includes(inscripcion.estado) ||
+                !(inscripcion.codigoQr === null || typeof inscripcion.codigoQr === 'string') ||
+                typeof inscripcion.fechaInscripcion !== 'string' ||
                 typeof inscripcion.eventoTitulo !== 'string' ||
                 typeof inscripcion.eventoFechaInicio !== 'string' ||
                 typeof inscripcion.eventoUbicacion !== 'string',
@@ -52,8 +44,14 @@ export const listarMisInscripciones = async (): Promise<Inscripcion[]> => {
     ) {
         throw new Error('La respuesta de /inscripciones/mias no es una lista válida.');
     }
-
     return data;
+};
+
+export const obtenerInscripcionActiva = async (eventoId: number): Promise<Inscripcion | null> => {
+    const inscripciones = await listarMisInscripciones();
+    return inscripciones.find(
+        (inscripcion) => inscripcion.eventoId === eventoId && inscripcion.estado === 'ACTIVA',
+    ) ?? null;
 };
 
 export const cancelarInscripcion = async (

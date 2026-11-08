@@ -57,7 +57,10 @@ describe('CatalogoEventos (HU-08)', () => {
         expect(await screen.findByRole('heading', { name: 'Feria de proyectos' })).toBeInTheDocument();
         expect(listarCategoriasMock).toHaveBeenCalledWith(true);
         expect(screen.getByRole('button', { name: 'Académico' })).toBeInTheDocument();
-        expect(screen.getByText('38 cupos disponibles de 120')).toBeInTheDocument();
+        expect(screen.getByRole('meter', { name: 'Cupos ocupados de Feria de proyectos' })).toHaveAttribute(
+            'aria-valuenow',
+            '82',
+        );
         expect(screen.getByRole('link', { name: 'Ver detalle de Feria de proyectos' })).toHaveAttribute(
             'href',
             '/eventos/5',

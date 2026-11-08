@@ -7,10 +7,18 @@ interface ModalAccesibleProps {
     onCerrar: () => void;
     children: ReactNode;
     icono?: ReactNode;
+    variante?: 'centrada' | 'inferior';
 }
 
 // Diálogo modal accesible: role="dialog", foco dentro al abrir, Escape y clic fuera cierran, el foco vuelve al botón que lo abrió
-export function ModalAccesible({ titulo, idTitulo, onCerrar, children, icono }: ModalAccesibleProps) {
+export function ModalAccesible({
+    titulo,
+    idTitulo,
+    onCerrar,
+    children,
+    icono,
+    variante = 'centrada',
+}: ModalAccesibleProps) {
     const contenedor = useRef<HTMLDivElement>(null);
     // Se guarda el último cierre para que el efecto no se vuelva a ejecutar en cada render
     const cerrarRef = useRef(onCerrar);
@@ -57,7 +65,7 @@ export function ModalAccesible({ titulo, idTitulo, onCerrar, children, icono }: 
 
     return (
         <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-eventu-main-ink/50 p-3 sm:p-4"
+            className={`modal-accesible-fondo fixed inset-0 z-50 flex items-center justify-center bg-eventu-main-ink/50 p-3 sm:p-4${variante === 'inferior' ? ' modal-accesible-fondo--inferior' : ''}`}
             onClick={() => cerrarRef.current()}
         >
             <div
@@ -65,7 +73,7 @@ export function ModalAccesible({ titulo, idTitulo, onCerrar, children, icono }: 
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby={idTitulo}
-                className="max-h-[calc(100dvh-1.5rem)] w-full max-w-[26rem] overflow-y-auto rounded-xl border border-eventu-border bg-eventu-white-surface p-5 text-eventu-main-ink shadow-lg sm:max-h-[calc(100dvh-2rem)] sm:p-6"
+                className={`modal-accesible-contenido max-h-[calc(100dvh-1.5rem)] w-full max-w-[26rem] overflow-y-auto rounded-xl border border-eventu-border bg-eventu-white-surface p-5 text-eventu-main-ink shadow-lg sm:max-h-[calc(100dvh-2rem)] sm:p-6${variante === 'inferior' ? ' modal-accesible-contenido--inferior' : ''}`}
                 onClick={(evento) => evento.stopPropagation()}
             >
                 <div className="mb-4 flex items-center gap-3">

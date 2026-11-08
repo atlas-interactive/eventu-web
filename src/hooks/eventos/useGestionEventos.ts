@@ -2,11 +2,9 @@ import { useEffect, useState } from 'react';
 import type { Evento, FiltrosEvento } from '../../types/evento';
 import type { Categoria } from '../../types/categoria';
 import { mensajeDeError } from '../../api/mensajeDeError';
-import { guardarArchivo } from '../../api/descargas';
 import { esAdministrador, obtenerSesion } from '../../features/sesion/sesion';
 import {
     cancelarEvento,
-    descargarReporteEvento,
     listarEventos,
     listarMisEventos,
 } from '../../features/eventos/services/eventoService';
@@ -19,17 +17,21 @@ export function useGestionEventos(mensajeInicial = '') {
     const [eventos, setEventos] = useState<Evento[]>([]);
     const [categorias, setCategorias] = useState<Categoria[]>([]);
     const [errorCategorias, setErrorCategorias] = useState('');
-    const [filtros, setFiltros] = useState<FiltrosEvento>({});
-    const [cargando, setCargando] = useState(true);
-    const [error, setError] = useState('');
+    const [filtros, setFiltros] = useState<FiltrosEvento>({ estado: 'PUBLICADO' });
+    const [resultadoConsulta, setResultadoConsulta] = useState<{ clave: string; error: string } | null>(null);
     const [mensajeExito, setMensajeExito] = useState(mensajeInicial);
     const [aCancelar, setACancelar] = useState<Evento | null>(null);
     const [cancelando, setCancelando] = useState(false);
     const [errorCancelar, setErrorCancelar] = useState('');
-    const [descargandoId, setDescargandoId] = useState<number | null>(null);
-    const [errorReporte, setErrorReporte] = useState('');
     const administrador = esAdministrador(obtenerSesion());
     const rangoFechasInvalido = fechasInvalidas(filtros);
+    const { categoriaId, fechaDesde, fechaHasta, texto } = filtros;
+    const claveConsulta = JSON.stringify([administrador, categoriaId, fechaDesde, fechaHasta, texto]);
+    const cargando = !rangoFechasInvalido && resultadoConsulta?.clave !== claveConsulta;
+    const error = resultadoConsulta?.clave === claveConsulta ? resultadoConsulta.error : '';
+    const eventosVisibles = filtros.estado && filtros.estado !== 'TODOS'
+        ? eventos.filter((evento) => evento.estado.toUpperCase() === filtros.estado)
+        : eventos;
 
     useEffect(() => {
         let vigente = true;
@@ -49,28 +51,30 @@ export function useGestionEventos(mensajeInicial = '') {
     useEffect(() => {
         let vigente = true;
         if (rangoFechasInvalido) {
-            setCargando(false);
             return () => {
                 vigente = false;
             };
         }
 
-        setCargando(true);
-        setError('');
-        const espera = filtros.texto?.trim() ? 300 : 0;
+        const espera = texto?.trim() ? 300 : 0;
+        const filtrosConsulta: FiltrosEvento = { categoriaId, fechaDesde, fechaHasta, texto };
         const temporizador = window.setTimeout(() => {
-            (administrador ? listarEventos(filtros) : listarMisEventos(filtros))
+            (administrador ? listarEventos(filtrosConsulta) : listarMisEventos(filtrosConsulta))
                 .then((datos) => {
                     if (!vigente) return;
                     setEventos(datos);
+                    setResultadoConsulta({ clave: claveConsulta, error: '' });
                 })
                 .catch((err: unknown) => {
                     console.error('No se pudo cargar el listado de eventos:', err);
-                    if (vigente) setError('No se pudieron cargar los eventos. Intenta de nuevo más tarde.');
+                    if (vigente) {
+                        setResultadoConsulta({
+                            clave: claveConsulta,
+                            error: 'No se pudieron cargar los eventos. Intenta de nuevo más tarde.',
+                        });
+                    }
                 })
-                .finally(() => {
-                    if (vigente) setCargando(false);
-                });
+                ;
         }, espera);
 
         return () => {
@@ -79,10 +83,11 @@ export function useGestionEventos(mensajeInicial = '') {
         };
     }, [
         administrador,
-        filtros.categoriaId,
-        filtros.fechaDesde,
-        filtros.fechaHasta,
-        filtros.texto,
+        categoriaId,
+        fechaDesde,
+        fechaHasta,
+        texto,
+        claveConsulta,
         rangoFechasInvalido,
     ]);
 
@@ -117,23 +122,8 @@ export function useGestionEventos(mensajeInicial = '') {
         }
     };
 
-    const descargarReporte = async (evento: Evento) => {
-        if (descargandoId !== null) return;
-        setDescargandoId(evento.id);
-        setErrorReporte('');
-        try {
-            const pdf = await descargarReporteEvento(evento.id);
-            guardarArchivo(pdf, `reporte-evento-${evento.id}.pdf`);
-        } catch (err: unknown) {
-            console.error('No se pudo descargar el reporte:', err);
-            setErrorReporte(mensajeDeError(err));
-        } finally {
-            setDescargandoId(null);
-        }
-    };
-
     return {
-        eventos,
+        eventos: eventosVisibles,
         categorias,
         errorCategorias,
         filtros,
@@ -144,13 +134,10 @@ export function useGestionEventos(mensajeInicial = '') {
         aCancelar,
         cancelando,
         errorCancelar,
-        descargandoId,
-        errorReporte,
         administrador,
         rangoFechasInvalido,
         solicitarCancelacion,
         cerrarModalCancelar,
         confirmarCancelacion,
-        descargarReporte,
     };
 }

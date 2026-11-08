@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import type { ChangeEvent, SubmitEvent } from 'react';
 import { IconoAviso } from '../../components/ui/IconoAviso';
 import '../../styles/auth.css';
 import { mensajeDeError } from '../../api/mensajeDeError';
@@ -32,7 +33,7 @@ export const FormularioRegistro: React.FC = () => {
         formData[campo].length > 0 && campoInvalido[campo];
 
     // Maneja los cambios en los campos del formulario
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
             ...prev,
@@ -41,7 +42,7 @@ export const FormularioRegistro: React.FC = () => {
     };
 
     // Maneja el envío del formulario
-    const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
         setMensajeError(null);
         setMensajeExito(null);
@@ -73,7 +74,7 @@ export const FormularioRegistro: React.FC = () => {
         <section className="register-form w-full max-w-[34rem] border-[0.125rem] px-5 py-6 sm:px-8">
             <header className="mb-3 text-center">
                 <img src={iconoEventU} alt="" aria-hidden="true" className="mx-auto mb-2 h-9 w-9" />
-                <p className="text-2xl font-semibold leading-5">EventU</p>
+                <p className="text-2xl font-semibold leading-5">Event<span className="text-eventu-institutional-red">U</span> </p>
                 <h1 className="mt-2 text-base font-semibold leading-7">Crea tu cuenta</h1>
                 <p className="register-subtitle mt-0.5 text-sm leading-7">Usa tu correo institucional para registrarte</p>
             </header>

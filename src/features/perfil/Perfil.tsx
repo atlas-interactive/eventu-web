@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { FormEvent } from 'react';
+import type { SubmitEvent } from 'react';
 import { CalendarDays, KeyRound, Mail, Pencil, ShieldAlert } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { mensajeDeError } from '../../api/mensajeDeError';
@@ -40,9 +40,10 @@ const fechaRegistro = (fecha: string | null): string => {
 export function Perfil() {
     const navigate = useNavigate();
     const [perfil, setPerfil] = useState<PerfilUsuario | null>(null);
-    const [cargando, setCargando] = useState(true);
-    const [errorCarga, setErrorCarga] = useState('');
     const [recarga, setRecarga] = useState(0);
+    const [resultadoCarga, setResultadoCarga] = useState<{ recarga: number; error: string } | null>(null);
+    const cargando = resultadoCarga?.recarga !== recarga;
+    const errorCarga = resultadoCarga?.recarga === recarga ? resultadoCarga.error : '';
     const [editando, setEditando] = useState(false);
     const [nombreEditado, setNombreEditado] = useState('');
     const [guardando, setGuardando] = useState(false);
@@ -60,18 +61,17 @@ export function Perfil() {
 
     useEffect(() => {
         let vigente = true;
-        setCargando(true);
-        setErrorCarga('');
         obtenerPerfil()
             .then((datos) => {
-                if (vigente) setPerfil(datos);
+                if (!vigente) return;
+                setPerfil(datos);
+                setResultadoCarga({ recarga, error: '' });
             })
             .catch((error: unknown) => {
                 console.error('No se pudo cargar el perfil:', error);
-                if (vigente) setErrorCarga(mensajeDeError(error));
-            })
-            .finally(() => {
-                if (vigente) setCargando(false);
+                if (vigente) {
+                    setResultadoCarga({ recarga, error: mensajeDeError(error) });
+                }
             });
         return () => {
             vigente = false;
@@ -92,7 +92,7 @@ export function Perfil() {
         setEditando(false);
     };
 
-    const guardarCambios = async (evento: FormEvent<HTMLFormElement>) => {
+    const guardarCambios = async (evento: SubmitEvent<HTMLFormElement>) => {
         evento.preventDefault();
         if (!perfil) return;
 
@@ -127,7 +127,7 @@ export function Perfil() {
         }
     };
 
-    const guardarContrasena = async (evento: FormEvent<HTMLFormElement>) => {
+    const guardarContrasena = async (evento: SubmitEvent<HTMLFormElement>) => {
         evento.preventDefault();
         setErrorContrasena('');
         setMensajeExito('');
@@ -170,7 +170,7 @@ export function Perfil() {
         setErrorDesactivacion('');
     };
 
-    const confirmarDesactivacion = async (evento: FormEvent<HTMLFormElement>) => {
+    const confirmarDesactivacion = async (evento: SubmitEvent<HTMLFormElement>) => {
         evento.preventDefault();
         if (desactivandoCuenta || !passwordDesactivacion.trim()) {
             setErrorDesactivacion('Ingresa tu contraseña para confirmar la desactivación.');

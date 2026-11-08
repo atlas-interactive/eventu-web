@@ -29,6 +29,7 @@ export interface FiltrosEvento {
     fechaDesde?: string;
     fechaHasta?: string;
     texto?: string;
+    estado?: 'TODOS' | 'PUBLICADO' | 'CANCELADO';
 }
 
 // Cuerpo de POST /eventos (todos los campos son obligatorios)

@@ -1,21 +1,10 @@
-import { CalendarDays, CircleX } from 'lucide-react';
 import { IconoAviso } from '../../../components/ui/IconoAviso';
 import { Skeleton, SkeletonEstado } from '../../../components/ui/Skeleton';
 import { useMisInscripciones } from '../../../hooks/inscripciones/useMisInscripciones';
 import type { FiltroInscripcion } from '../../../hooks/inscripciones/useMisInscripciones';
+import { CalendarioInscripciones } from '../components/CalendarioInscripciones';
 import { ConfirmarCancelacionInscripcion } from '../components/ConfirmarCancelacionInscripcion';
 import '../../../styles/inscriptions.css';
-import '../../../styles/events.css';
-
-const formatoFecha = new Intl.DateTimeFormat('es-CO', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-});
-const formatoHora = new Intl.DateTimeFormat('es-CO', {
-    hour: '2-digit',
-    minute: '2-digit',
-});
 
 const filtros: { valor: FiltroInscripcion; etiqueta: string }[] = [
     { valor: 'TODAS', etiqueta: 'Todas' },
@@ -75,51 +64,11 @@ export function MisInscripciones() {
                 </SkeletonEstado>
             )}
 
-            {!misInscripciones.cargando && !misInscripciones.error && misInscripciones.inscripciones.length === 0 && (
-                <p className="inscripciones-vacio">
-                    <CalendarDays className="h-4 w-4 shrink-0" aria-hidden="true" />
-                    {misInscripciones.filtro === 'TODAS'
-                        ? 'Aún no tienes inscripciones a eventos.'
-                        : `No tienes inscripciones ${misInscripciones.filtro === 'ACTIVA' ? 'activas' : 'canceladas'}.`}
-                </p>
-            )}
-
-            {!misInscripciones.cargando && !misInscripciones.error && misInscripciones.inscripciones.length > 0 && (
-                <ul className="inscripciones-lista">
-                    {misInscripciones.inscripciones.map((inscripcion) => {
-                        const fecha = new Date(inscripcion.eventoFechaInicio);
-                        const activa = inscripcion.estado === 'ACTIVA';
-
-                        return (
-                            <li key={inscripcion.id} className="inscripcion-fila">
-                                <div className="inscripcion-evento">
-                                    <h2>{inscripcion.eventoTitulo}</h2>
-                                    <time dateTime={inscripcion.eventoFechaInicio}>
-                                        {formatoFecha.format(fecha)}, {formatoHora.format(fecha)}
-                                    </time>
-                                </div>
-                                <div className="inscripcion-acciones">
-                                    <span
-                                        className={`inscripcion-estado${activa ? ' inscripcion-estado--activa' : ' inscripcion-estado--cancelada'}`}
-                                    >
-                                        {activa ? 'Inscripción activa' : 'Cancelada'}
-                                    </span>
-                                    {activa && (
-                                        <button
-                                            type="button"
-                                            className="evento-row-button evento-row-button--danger gap-1.5"
-                                            aria-label={`Cancelar inscripción a ${inscripcion.eventoTitulo}`}
-                                            onClick={() => misInscripciones.solicitarCancelacion(inscripcion)}
-                                        >
-                                            <CircleX className="h-4 w-4 shrink-0" aria-hidden="true" />
-                                            Cancelar
-                                        </button>
-                                    )}
-                                </div>
-                            </li>
-                        );
-                    })}
-                </ul>
+            {!misInscripciones.cargando && !misInscripciones.error && (
+                <CalendarioInscripciones
+                    inscripciones={misInscripciones.inscripciones}
+                    onCancelar={misInscripciones.solicitarCancelacion}
+                />
             )}
             {misInscripciones.aCancelar && (
                 <ConfirmarCancelacionInscripcion

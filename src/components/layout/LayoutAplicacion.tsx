@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { CalendarCog, CalendarDays, ChartPie, ChevronDown, ClipboardList, LogOut, Tags, UserCog, UserRound, PersonStanding } from 'lucide-react';
+import { CalendarCog, CalendarDays, ChartPie, ChevronDown, ClipboardList, LogOut, Menu, Tags, UserCog, UserRound, PersonStanding, X } from 'lucide-react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import {
     cerrarSesion,
@@ -9,6 +9,7 @@ import {
     obtenerSesion,
     puedeGestionarEventos,
 } from '../../features/sesion/sesion';
+import iconoEventU from '../../assets/icons/iconoEventU.png';
 
 const ETIQUETA_ROL: Record<string, string> = {
     ADMIN: 'Administrador',
@@ -33,9 +34,12 @@ const inicialesNombre = (nombre: string): string =>
 // Pantallas internas: barra superior a todo el ancho (como el mockup) y contenido centrado debajo
 export function LayoutAplicacion() {
     const [menuAbierto, setMenuAbierto] = useState(false);
+    const [navegacionAbierta, setNavegacionAbierta] = useState(false);
     const [sesion, setSesion] = useState(obtenerSesion);
     const menuRef = useRef<HTMLDivElement>(null);
     const botonMenuRef = useRef<HTMLButtonElement>(null);
+    const navegacionRef = useRef<HTMLElement>(null);
+    const botonNavegacionRef = useRef<HTMLButtonElement>(null);
     const navigate = useNavigate();
     const nombreUsuario = sesion ? nombreVisible(sesion.nombre) : '';
 
@@ -46,17 +50,25 @@ export function LayoutAplicacion() {
     }, []);
 
     useEffect(() => {
-        if (!menuAbierto) return;
+        if (!menuAbierto && !navegacionAbierta) return;
 
         const cerrarAlHacerClicFuera = (evento: MouseEvent) => {
-            if (evento.target instanceof Node && !menuRef.current?.contains(evento.target)) {
+            if (
+                evento.target instanceof Node &&
+                !menuRef.current?.contains(evento.target) &&
+                !navegacionRef.current?.contains(evento.target) &&
+                !botonNavegacionRef.current?.contains(evento.target)
+            ) {
                 setMenuAbierto(false);
+                setNavegacionAbierta(false);
             }
         };
         const cerrarConEscape = (evento: KeyboardEvent) => {
             if (evento.key === 'Escape') {
                 setMenuAbierto(false);
-                botonMenuRef.current?.focus();
+                setNavegacionAbierta(false);
+                if (menuAbierto) botonMenuRef.current?.focus();
+                else botonNavegacionRef.current?.focus();
             }
         };
 
@@ -66,7 +78,7 @@ export function LayoutAplicacion() {
             document.removeEventListener('mousedown', cerrarAlHacerClicFuera);
             document.removeEventListener('keydown', cerrarConEscape);
         };
-    }, [menuAbierto]);
+    }, [menuAbierto, navegacionAbierta]);
 
     const salir = () => {
         cerrarSesion();
@@ -78,18 +90,49 @@ export function LayoutAplicacion() {
             isActive
                 ? "relative font-semibold text-eventu-institutional-red after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:bg-eventu-institutional-red after:content-['']"
                 : 'text-eventu-main-ink hover:underline'
-        }`;
+        } max-[639px]:h-10 max-[639px]:w-full max-[639px]:justify-start max-[639px]:rounded-md max-[639px]:px-3`;
 
     return (
         <div className="min-h-screen bg-eventu-page-background">
             <header className="border-b border-eventu-border bg-eventu-white-surface">
-                <div className="mx-auto flex w-full flex-col gap-2 px-8 py-2 sm:min-h-[58px] sm:flex-row sm:items-center sm:gap-x-4 sm:gap-y-2 sm:px-10 sm:py-0">
-                    <div className="flex min-w-0 items-center justify-between gap-4 sm:flex-none sm:justify-start sm:gap-x-8">
-                        <p className="self-center text-[1.0625rem] font-semibold text-eventu-main-ink">EventU</p>
+                <div className="relative mx-auto flex w-full flex-col gap-2 px-8 py-2 sm:min-h-[58px] sm:flex-row sm:items-center sm:gap-x-4 sm:gap-y-2 sm:px-10 sm:py-0 max-[639px]:flex-row max-[639px]:items-center max-[639px]:justify-between max-[639px]:gap-2 max-[639px]:px-3 max-[639px]:py-2">
+                    <div className="flex min-w-0 items-center justify-between gap-4 sm:flex-none sm:justify-start sm:gap-x-8 max-[639px]:flex-1 max-[639px]:justify-start max-[639px]:gap-2">
+                        {sesion && (
+                            <button
+                                ref={botonNavegacionRef}
+                                type="button"
+                                aria-label={navegacionAbierta ? 'Cerrar navegación' : 'Abrir navegación'}
+                                aria-expanded={navegacionAbierta}
+                                aria-controls="navegacion-principal"
+                                onClick={() => {
+                                    setNavegacionAbierta((abierta) => !abierta);
+                                    setMenuAbierto(false);
+                                }}
+                                className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-lg text-eventu-main-ink hover:bg-eventu-page-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red max-[639px]:inline-flex"
+                            >
+                                {navegacionAbierta ? (
+                                    <X className="h-5 w-5" aria-hidden="true" />
+                                ) : (
+                                    <Menu className="h-5 w-5" aria-hidden="true" />
+                                )}
+                            </button>
+                        )}
+                        <div className="flex min-w-0 items-center gap-2 sm:gap-3 max-[639px]:absolute max-[639px]:left-1/2 max-[639px]:-translate-x-1/2 max-[639px]:gap-1.5">
+                            <img
+                                src={iconoEventU}
+                                alt="EventU"
+                                className="h-8 w-8.5 flex-none max-[639px]:h-7 max-[639px]:w-7"
+                            />
+                            <p className="self-center whitespace-nowrap text-[1.075rem] font-semibold text-eventu-main-ink max-[639px]:text-base">Event<span className="text-eventu-institutional-red">U</span></p>
+                        </div>
+                        
                         {sesion && (
                             <nav
+                                ref={navegacionRef}
+                                id="navegacion-principal"
                                 aria-label="Principal"
-                                className="flex min-w-0 flex-wrap items-center justify-end gap-x-3 gap-y-1 sm:flex-nowrap sm:justify-start sm:gap-x-4 sm:self-stretch"
+                                onClick={() => setNavegacionAbierta(false)}
+                                className={`flex min-w-0 flex-wrap items-center justify-end gap-x-3 gap-y-1 sm:flex-nowrap sm:justify-start sm:gap-x-4 sm:self-stretch max-[639px]:absolute max-[639px]:left-3 max-[639px]:right-3 max-[639px]:top-full max-[639px]:z-50 max-[639px]:flex-col max-[639px]:items-stretch max-[639px]:gap-1 max-[639px]:rounded-lg max-[639px]:border max-[639px]:border-eventu-border max-[639px]:bg-eventu-white-surface max-[639px]:p-2 max-[639px]:shadow-lg${navegacionAbierta ? '' : ' max-[639px]:hidden'}`}
                             >
                                 {esAdministrador(sesion) && (
                                     <>
@@ -160,7 +203,7 @@ export function LayoutAplicacion() {
                         )}
                     </div>
                     {sesion && (
-                        <div ref={menuRef} className="relative sm:ml-auto sm:flex-none">
+                        <div ref={menuRef} className="relative sm:ml-auto sm:flex-none max-[639px]:shrink-0">
                             <button
                                 ref={botonMenuRef}
                                 type="button"
@@ -170,16 +213,16 @@ export function LayoutAplicacion() {
                                 aria-controls="menu-perfil"
                                 onClick={() => setMenuAbierto((abierto) => !abierto)}
                                 title="Menú de perfil"
-                                className="flex min-w-0 items-center border-1 border-eventu-border justify-center sm:gap-0 rounded-2xl text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red hover:bg-eventu-page-background sm:gap-3 sm:px-2.25 sm:py-1.25 shadow"
+                                className="flex min-w-0 items-center border-1 border-eventu-border justify-center sm:gap-0 rounded-2xl text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red hover:bg-eventu-page-background sm:gap-3 sm:px-2.25 sm:py-1.25 shadow max-[639px]:h-10 max-[639px]:w-16 max-[639px]:gap-1 max-[639px]:rounded-full max-[639px]:px-1"
                             >
                                 <span
                                     role="img"
                                     aria-label={`Avatar de ${nombreUsuario}`}
-                                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-eventu-soft-red-background text-lg font-medium text-eventu-institutional-red"
+                                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-eventu-soft-red-background text-lg font-medium text-eventu-institutional-red max-[639px]:h-8 max-[639px]:w-8 max-[639px]:text-base"
                                 >
                                     {inicialesNombre(nombreUsuario)}
                                 </span>
-                                <span className="flex min-w-0 flex-col items-start gap-1">
+                                <span className="flex min-w-0 flex-col items-start gap-1 max-[639px]:hidden">
                                     <span
                                         className="block truncate text-[0.875rem] leading-4 text-eventu-main-ink sm:max-w-[11rem] lg:max-w-[16rem]"
                                         title={nombreUsuario}
@@ -193,7 +236,7 @@ export function LayoutAplicacion() {
                                     )}
                                 </span>
                                 <ChevronDown
-                                    className="h-5 w-4 shrink-0 text-eventu-secondary-text opacity-100 transition-opacity group-hover:opacity- group-focus-visible:opacity-100"
+                                    className="h-4 w-4 shrink-0 text-eventu-secondary-text opacity-100 transition-opacity group-hover:opacity- group-focus-visible:opacity-100 max-[639px]:h-4 max-[639px]:w-4"
                                     aria-hidden="true"
                                 />
                             </button>

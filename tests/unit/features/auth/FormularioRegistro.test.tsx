@@ -49,7 +49,7 @@ describe('FormularioRegistro', () => {
         renderFormulario();
 
         expect(screen.getByRole('heading', { name: 'Crea tu cuenta' })).toBeInTheDocument();
-        expect(screen.getByText('EventU')).toBeInTheDocument();
+        expect(screen.getByText((_, elemento) => elemento?.textContent?.trim() === 'EventU')).toBeInTheDocument();
         expect(screen.getByLabelText('Nombre completo')).toBeInTheDocument();
         expect(screen.getByLabelText('Correo institucional')).toBeInTheDocument();
         expect(screen.getByLabelText('Contraseña')).toBeInTheDocument();

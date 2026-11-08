@@ -1,7 +1,7 @@
 import { isAxiosError } from 'axios';
 import { Pencil, Plus, Power, PowerOff, Tags } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import type { FormEvent } from 'react';
+import type { SubmitEvent } from 'react';
 import type { Categoria } from '../../types/categoria';
 import { IconoAviso } from '../../components/ui/IconoAviso';
 import { ModalAccesible } from '../../components/ui/ModalAccesible';
@@ -239,7 +239,7 @@ function FormularioCategoria({ categoria, onCerrar, onGuardado }: FormularioCate
     const [error, setError] = useState('');
     const [guardando, setGuardando] = useState(false);
 
-    const alEnviar = async (evento: FormEvent<HTMLFormElement>) => {
+    const alEnviar = async (evento: SubmitEvent<HTMLFormElement>) => {
         evento.preventDefault();
         const nombreLimpio = nombre.trim();
         if (!nombreLimpio) {

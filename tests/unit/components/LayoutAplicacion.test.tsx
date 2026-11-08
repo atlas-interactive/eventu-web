@@ -90,6 +90,35 @@ describe('LayoutAplicacion', () => {
         expect(screen.queryByRole('link', { name: 'Mis eventos' })).not.toBeInTheDocument();
     });
 
+    it('permite abrir y cerrar el menú de navegación desde el control móvil', async () => {
+        guardarSesion({
+            token: 't',
+            usuarioId: 2,
+            nombre: 'Ana Gómez',
+            correo: 'ana@unillanos.edu.co',
+            rol: 'ORGANIZADOR',
+        });
+        const user = userEvent.setup();
+        renderizar();
+
+        const boton = screen.getByRole('button', { name: 'Abrir navegación' });
+        await user.click(boton);
+        expect(screen.getByRole('button', { name: 'Cerrar navegación' })).toHaveAttribute(
+            'aria-expanded',
+            'true',
+        );
+        expect(screen.getByRole('navigation', { name: 'Principal' })).toHaveClass(
+            'max-[639px]:absolute',
+        );
+
+        await user.keyboard('{Escape}');
+        expect(screen.getByRole('button', { name: 'Abrir navegación' })).toHaveAttribute(
+            'aria-expanded',
+            'false',
+        );
+        expect(screen.getByRole('button', { name: 'Abrir navegación' })).toHaveFocus();
+    });
+
     it('muestra una sola inicial para nombres de una palabra', () => {
         guardarSesion({
             token: 'jwt-de-prueba',
