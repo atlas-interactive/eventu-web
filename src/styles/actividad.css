@@ -34,6 +34,7 @@
   padding: 0.4rem 0.75rem;
   color: var(--color-eventu-secondary-text);
   font-size: 0.8125rem;
+  font-weight: 600;
 }
 
 .actividad-filtros {
@@ -276,13 +277,18 @@
   vertical-align: middle;
 }
 
+.actividad-tabla th:first-child,
+.actividad-tabla td:first-child {
+  padding-left: 1rem;
+}
+
 .actividad-tabla tbody tr:last-child td {
   border-bottom: 0;
 }
 
 .actividad-tabla-fila--filtrada td:first-child {
   border-left: 3px solid var(--color-eventu-institutional-red);
-  padding-left: calc(0.7rem - 3px);
+  padding-left: calc(1rem - 3px);
 }
 
 .actividad-fecha,

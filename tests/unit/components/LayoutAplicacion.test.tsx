@@ -37,9 +37,11 @@ describe('LayoutAplicacion', () => {
         expect(navegacion).toHaveAccessibleName('Principal');
         expect(screen.getByRole('link', { name: 'Categorías' })).toHaveAttribute('href', '/admin/categorias');
         expect(screen.getByRole('link', { name: 'Organizadores' })).toHaveAttribute('href', '/admin/usuarios');
-        expect(screen.getByRole('link', { name: 'Actividad' })).toHaveAttribute('href', '/admin/actividad');
         expect(screen.getByRole('link', { name: 'Eventos' })).toHaveAttribute('href', '/organizador/eventos');
         expect(screen.getByRole('link', { name: 'Estadísticas' })).toHaveAttribute('href', '/admin/estadisticas');
+        expect(screen.getByRole('link', { name: 'Actividad' })).toHaveAttribute('href', '/admin/actividad');
+        const enlacesAdmin = Array.from(navegacion.querySelectorAll('a')).map((enlace) => enlace.textContent?.trim());
+        expect(enlacesAdmin.at(-1)).toContain('Actividad');
         expect(screen.getByText('Juan Pineda')).toHaveAttribute('title', 'Juan Pineda');
         expect(screen.getByText('Administrador')).toBeInTheDocument();
         expect(screen.getByRole('img', { name: 'Avatar de Juan Pineda' })).toHaveTextContent('JP');

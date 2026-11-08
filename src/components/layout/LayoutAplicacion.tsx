@@ -144,10 +144,6 @@ export function LayoutAplicacion() {
                                             <UserCog className="h-4 w-4 shrink-0" aria-hidden="true" />
                                             Organizadores
                                         </NavLink>
-                                        <NavLink to="/admin/actividad" className={({ isActive }) => `${claseEnlace({ isActive })} gap-1.5`}>
-                                            <Activity className="h-4 w-4 shrink-0" aria-hidden="true" />
-                                            Actividad
-                                        </NavLink>
                                     </>
                                 )}
                                 {puedeGestionarEventos(sesion) && (
@@ -183,6 +179,12 @@ export function LayoutAplicacion() {
                                             Estadísticas
                                         </NavLink>
                                     </>
+                                )}
+                                {esAdministrador(sesion) && (
+                                    <NavLink to="/admin/actividad" className={({ isActive }) => `${claseEnlace({ isActive })} gap-1.5`}>
+                                        <Activity className="h-4 w-4 shrink-0" aria-hidden="true" />
+                                        Actividad
+                                    </NavLink>
                                 )}
                                 {esUsuario(sesion) && (
                                     <>
