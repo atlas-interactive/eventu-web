@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
@@ -100,6 +100,31 @@ describe('DetalleEvento', () => {
         expect(await screen.findByText('EVENTU-QR-ACTIVO')).toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Cancelar mi inscripción' })).toBeInTheDocument();
         expect(inscribirEnEventoMock).not.toHaveBeenCalled();
+    });
+
+    it('abre un modal con el QR, su descarga y el calendario desde el acceso móvil', async () => {
+        const usuario = userEvent.setup();
+        obtenerInscripcionActivaMock.mockResolvedValue({
+            id: 12,
+            estado: 'ACTIVA',
+            codigoQr: 'EVENTU-QR-ACTIVO',
+            fechaInscripcion: '2026-09-10T14:20:00',
+            eventoId: 5,
+            eventoTitulo: evento.titulo,
+            eventoFechaInicio: evento.fechaInicio,
+            eventoUbicacion: evento.ubicacion,
+        });
+        renderDetalle();
+
+        await usuario.click(await screen.findByRole('button', { name: 'Ver mi entrada' }));
+
+        const modal = screen.getByRole('dialog', { name: 'Tu entrada' });
+        expect(within(modal).getByText('EVENTU-QR-ACTIVO')).toBeInTheDocument();
+        expect(within(modal).getByRole('button', { name: 'Descargar entrada' })).toBeInTheDocument();
+        expect(within(modal).getByRole('button', { name: 'Añadir al calendario' })).toBeInTheDocument();
+        await usuario.click(within(modal).getByRole('button', { name: 'Cerrar' }));
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Ver mi entrada' })).toHaveFocus();
     });
 
     it('no considera una inscripción cancelada como activa', async () => {

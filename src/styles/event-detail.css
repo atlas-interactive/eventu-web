@@ -523,19 +523,38 @@
     height: 1rem;
   }
 
-  .detalle-evento-entrada-movil a {
+  .detalle-evento-entrada-movil button {
     display: inline-flex;
     min-height: 2.5rem;
     align-items: center;
     justify-content: center;
+    border: 0;
     border-radius: 0.5rem;
     background-color: var(--color-eventu-main-ink);
     padding-inline: 1rem;
     color: var(--color-eventu-white-surface);
     font-size: 0.8125rem;
     font-weight: 700;
-    text-decoration: none;
+    cursor: pointer;
   }
+
+  .detalle-evento-panel--entrada > .detalle-evento-panel-contenido {
+    display: none;
+  }
+}
+
+.detalle-evento-modal-cerrar {
+  display: block;
+  width: 100%;
+  min-height: 2.5rem;
+  margin-top: 0.75rem;
+  border: 1px solid var(--color-eventu-border);
+  border-radius: 0.5rem;
+  background-color: var(--color-eventu-white-surface);
+  color: var(--color-eventu-main-ink);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 @media (min-width: 48rem) {

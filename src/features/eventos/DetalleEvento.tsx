@@ -11,6 +11,7 @@ import {
 import { Link, useParams } from 'react-router-dom';
 import { guardarArchivo } from '../../api/descargas';
 import { mensajeDeError } from '../../api/mensajeDeError';
+import { ModalAccesible } from '../../components/ui/ModalAccesible';
 import { Skeleton, SkeletonEstado } from '../../components/ui/Skeleton';
 import { ConfirmarCancelacionInscripcion } from '../inscripciones/components/ConfirmarCancelacionInscripcion';
 import { EntradaQr } from '../inscripciones/components/EntradaQr';
@@ -75,6 +76,7 @@ export function DetalleEvento() {
     const [noEncontrado, setNoEncontrado] = useState(false);
     const [aCancelar, setACancelar] = useState<Inscripcion | null>(null);
     const [errorCalendario, setErrorCalendario] = useState('');
+    const [entradaAbierta, setEntradaAbierta] = useState(false);
 
     useEffect(() => {
         let vigente = true;
@@ -358,8 +360,47 @@ export function DetalleEvento() {
             {inscripcion.yaInscrito && (
                 <div className="detalle-evento-entrada-movil">
                     <span><Check aria-hidden="true" /> Estás inscrito</span>
-                    <a href="#entrada-evento">Ver mi entrada</a>
+                    <button type="button" onClick={() => setEntradaAbierta(true)}>
+                        Ver mi entrada
+                    </button>
                 </div>
+            )}
+
+            {entradaAbierta && inscripcion.yaInscrito && (
+                <ModalAccesible
+                    titulo="Tu entrada"
+                    idTitulo="titulo-entrada-evento"
+                    onCerrar={() => setEntradaAbierta(false)}
+                >
+                    {codigoQr ? (
+                        <EntradaQr codigo={codigoQr} nombreArchivo={`entrada-evento-${evento.id}.svg`} />
+                    ) : (
+                        <p className="detalle-evento-qr-no-disponible" role="status">
+                            No hay un código QR disponible para esta inscripción.
+                        </p>
+                    )}
+                    <button
+                        type="button"
+                        className="detalle-evento-calendario"
+                        onClick={crearArchivoCalendario}
+                    >
+                        <CalendarPlus aria-hidden="true" />
+                        Añadir al calendario
+                    </button>
+                    {errorCalendario && (
+                        <p className="detalle-evento-error" role="alert">{errorCalendario}</p>
+                    )}
+                    <p className="detalle-evento-qr-ayuda">
+                        La validación de la entrada se realiza desde la aplicación móvil.
+                    </p>
+                    <button
+                        type="button"
+                        className="detalle-evento-modal-cerrar"
+                        onClick={() => setEntradaAbierta(false)}
+                    >
+                        Cerrar
+                    </button>
+                </ModalAccesible>
             )}
 
             {aCancelar && (
