@@ -179,8 +179,8 @@ describe('AppRoutes', () => {
             </MemoryRouter>,
         );
 
-        expect(await screen.findByRole('heading', { name: 'Participantes inscritos' })).toBeInTheDocument();
-        expect(screen.getByText('Laura Gómez')).toBeInTheDocument();
+        expect(await screen.findByRole('heading', { name: 'Feria de proyectos' })).toBeInTheDocument();
+        expect(screen.getAllByText('Laura Gómez').length).toBeGreaterThan(0);
     });
 
     it('deniega la consulta de inscritos a usuarios', async () => {

@@ -1,4 +1,5 @@
-import React, { useState, ChangeEvent, SubmitEvent } from 'react';
+import React, { useState } from 'react';
+import type { ChangeEvent, SubmitEvent } from 'react';
 import { IconoAviso } from '../../components/ui/IconoAviso';
 import '../../styles/auth.css';
 import { mensajeDeError } from '../../api/mensajeDeError';

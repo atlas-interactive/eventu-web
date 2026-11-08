@@ -5,18 +5,15 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { GestionEventos } from '../../../../src/features/eventos/pages/GestionEventos';
 import {
     cancelarEvento,
-    descargarReporteEvento,
     listarEventos,
     listarMisEventos,
 } from '../../../../src/features/eventos/services/eventoService';
-import { guardarArchivo } from '../../../../src/api/descargas';
 import { guardarSesion } from '../../../../src/features/sesion/sesion';
 import type { Evento } from '../../../../src/types/evento';
 import { listarCategorias } from '../../../../src/features/categorias/services/categoriaService';
 
 vi.mock('../../../../src/features/eventos/services/eventoService', () => ({
     cancelarEvento: vi.fn(),
-    descargarReporteEvento: vi.fn(),
     listarEventos: vi.fn(),
     listarMisEventos: vi.fn(),
 }));
@@ -25,13 +22,7 @@ vi.mock('../../../../src/features/categorias/services/categoriaService', () => (
     listarCategorias: vi.fn(),
 }));
 
-vi.mock('../../../../src/api/descargas', () => ({
-    guardarArchivo: vi.fn(),
-}));
-
 const cancelarMock = vi.mocked(cancelarEvento);
-const descargarMock = vi.mocked(descargarReporteEvento);
-const guardarMock = vi.mocked(guardarArchivo);
 const listarTodosMock = vi.mocked(listarEventos);
 const listarMisMock = vi.mocked(listarMisEventos);
 const listarCategoriasMock = vi.mocked(listarCategorias);
@@ -74,8 +65,6 @@ describe('GestionEventos (HU-07)', () => {
             { id: 2, nombre: 'Cultural', activo: true, creadoEn: '', eventosActivos: 1 },
         ]);
         cancelarMock.mockReset();
-        descargarMock.mockReset();
-        guardarMock.mockReset();
     });
 
     afterEach(() => {
@@ -207,70 +196,5 @@ describe('GestionEventos (HU-07)', () => {
         expect(screen.getByRole('dialog')).toBeInTheDocument();
         expect(within(screen.getByRole('list')).getByRole('heading', { name: 'Feria cultural' })).toBeInTheDocument();
         errorConsola.mockRestore();
-    });
-});
-
-describe('GestionEventos (HU-17)', () => {
-    beforeEach(() => {
-        localStorage.clear();
-        guardarSesion({
-            token: 'token-prueba',
-            usuarioId: 3,
-            nombre: 'Laura',
-            correo: 'laura@unillanos.edu.co',
-            rol: 'ORGANIZADOR',
-        });
-        listarTodosMock.mockReset().mockResolvedValue([]);
-        listarMisMock.mockReset().mockResolvedValue([evento(9, 'Feria cultural')]);
-        listarCategoriasMock.mockReset().mockResolvedValue([
-            { id: 2, nombre: 'Cultural', activo: true, creadoEn: '', eventosActivos: 1 },
-        ]);
-        descargarMock.mockReset();
-        guardarMock.mockReset();
-    });
-
-    afterEach(() => {
-        cleanup();
-        vi.restoreAllMocks();
-    });
-
-    it('descarga el reporte PDF del evento con su nombre de archivo', async () => {
-        const user = userEvent.setup();
-        const pdf = new Blob(['%PDF-1.7'], { type: 'application/pdf' });
-        descargarMock.mockResolvedValue(pdf);
-        renderizar();
-
-        await screen.findByRole('heading', { name: 'Feria cultural' });
-        await user.click(screen.getByRole('button', { name: 'Descargar reporte de inscritos de Feria cultural' }));
-
-        expect(descargarMock).toHaveBeenCalledWith(9);
-        expect(guardarMock).toHaveBeenCalledWith(pdf, 'reporte-evento-9.pdf');
-        expect(screen.getByRole('button', { name: 'Descargar reporte de inscritos de Feria cultural' })).toBeEnabled();
-    });
-
-    it('muestra el mensaje del backend si no se puede generar el reporte', async () => {
-        const user = userEvent.setup();
-        descargarMock.mockRejectedValue({ isAxiosError: true, response: { status: 409, data: { error: 'El evento no existe.' } } });
-        const errorConsola = vi.spyOn(console, 'error').mockImplementation(() => undefined);
-        renderizar();
-
-        await screen.findByRole('heading', { name: 'Feria cultural' });
-        await user.click(screen.getByRole('button', { name: 'Descargar reporte de inscritos de Feria cultural' }));
-
-        expect(await screen.findByRole('alert')).toHaveTextContent('El evento no existe.');
-        expect(guardarMock).not.toHaveBeenCalled();
-        errorConsola.mockRestore();
-    });
-
-    it('no ofrece reporte para un evento cancelado', async () => {
-        const usuario = userEvent.setup();
-        listarMisMock.mockResolvedValue([{ ...evento(9, 'Feria cultural'), estado: 'CANCELADO' }]);
-        renderizar();
-
-        await usuario.click(screen.getByRole('button', { name: /Filtros/ }));
-        await usuario.click(within(screen.getByRole('dialog', { name: 'Filtros' })).getByRole('button', { name: 'Cancelados' }));
-        await screen.findByRole('heading', { name: 'Feria cultural' });
-
-        expect(screen.queryByRole('button', { name: /Descargar reporte/ })).not.toBeInTheDocument();
     });
 });

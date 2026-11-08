@@ -3,12 +3,21 @@ import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { ParticipantesEvento } from '../../../../src/features/eventos/pages/ParticipantesEvento';
-import { listarInscritosEvento, obtenerEvento } from '../../../../src/features/eventos/services/eventoService';
+import {
+    descargarReporteEvento,
+    listarInscritosEvento,
+    obtenerEvento,
+} from '../../../../src/features/eventos/services/eventoService';
+import { guardarArchivo } from '../../../../src/api/descargas';
 import type { Evento, InscritoEvento } from '../../../../src/types/evento';
 
 vi.mock('../../../../src/features/eventos/services/eventoService', () => ({
+    descargarReporteEvento: vi.fn(),
     listarInscritosEvento: vi.fn(),
     obtenerEvento: vi.fn(),
+}));
+vi.mock('../../../../src/api/descargas', () => ({
+    guardarArchivo: vi.fn(),
 }));
 
 const evento: Evento = {
@@ -47,6 +56,8 @@ const inscritos: InscritoEvento[] = [
 
 const obtenerEventoMock = vi.mocked(obtenerEvento);
 const listarInscritosMock = vi.mocked(listarInscritosEvento);
+const descargarReporteMock = vi.mocked(descargarReporteEvento);
+const guardarArchivoMock = vi.mocked(guardarArchivo);
 
 const renderizar = (ruta = '/organizador/eventos/5/inscritos') =>
     render(
@@ -61,6 +72,8 @@ describe('ParticipantesEvento', () => {
     beforeEach(() => {
         obtenerEventoMock.mockReset().mockResolvedValue(evento);
         listarInscritosMock.mockReset().mockResolvedValue(inscritos);
+        descargarReporteMock.mockReset();
+        guardarArchivoMock.mockReset();
     });
 
     afterEach(cleanup);
@@ -138,5 +151,35 @@ describe('ParticipantesEvento', () => {
 
         const volver = await screen.findByRole('link', { name: /Mis eventos/ });
         expect(volver).toHaveAttribute('href', '/organizador/eventos');
+    });
+
+    it('descarga el reporte PDF desde la vista de inscritos', async () => {
+        const user = userEvent.setup();
+        const pdf = new Blob(['%PDF-1.7'], { type: 'application/pdf' });
+        descargarReporteMock.mockResolvedValue(pdf);
+        renderizar();
+
+        await screen.findByRole('heading', { name: 'Feria de proyectos' });
+        await user.click(screen.getByRole('button', { name: 'Reporte PDF' }));
+
+        expect(descargarReporteMock).toHaveBeenCalledWith(5);
+        expect(guardarArchivoMock).toHaveBeenCalledWith(pdf, 'reporte-evento-5.pdf');
+    });
+
+    it('muestra el error del backend si no se puede generar el reporte PDF', async () => {
+        const user = userEvent.setup();
+        descargarReporteMock.mockRejectedValue({
+            isAxiosError: true,
+            response: { status: 409, data: { error: 'El evento no existe.' } },
+        });
+        const errorConsola = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+        renderizar();
+
+        await screen.findByRole('heading', { name: 'Feria de proyectos' });
+        await user.click(screen.getByRole('button', { name: 'Reporte PDF' }));
+
+        expect(await screen.findByRole('alert')).toHaveTextContent('El evento no existe.');
+        expect(guardarArchivoMock).not.toHaveBeenCalled();
+        errorConsola.mockRestore();
     });
 });
