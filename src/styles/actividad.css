@@ -15,15 +15,15 @@
 
 .actividad-encabezado h1 {
   margin: 0;
-  font-size: 1.5rem;
-  line-height: 1.9rem;
+  font-size: 1.6rem;
+  line-height: 2rem;
   font-weight: 700;
 }
 
 .actividad-encabezado p {
   margin: 0.25rem 0 0;
   color: var(--color-eventu-secondary-text);
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
 }
 
 .actividad-insignia-solo-lectura {
@@ -33,7 +33,7 @@
   background: var(--color-eventu-white-surface);
   padding: 0.4rem 0.75rem;
   color: var(--color-eventu-secondary-text);
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
 }
 
 .actividad-filtros {
@@ -61,7 +61,7 @@
   min-width: 0;
   flex-direction: column;
   gap: 0.35rem;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 600;
 }
 
@@ -136,7 +136,7 @@
 
 .actividad-rango-fechas input {
   padding-left: 1.8rem;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
 }
 
 .actividad-periodos {
@@ -155,7 +155,7 @@
   padding-inline: 0.65rem;
   color: var(--color-eventu-secondary-text);
   font: inherit;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
 }
 
 .actividad-periodos button[aria-pressed='true'] {
@@ -177,7 +177,7 @@
   margin-left: auto;
   border-color: transparent;
   color: var(--color-eventu-institutional-red);
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 600;
 }
 
@@ -197,7 +197,7 @@
   flex-wrap: wrap;
   gap: 0.5rem;
   margin: 1rem 0 0.6rem;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
 }
 
 .actividad-filtros-activos {
@@ -217,7 +217,7 @@
   background: var(--color-eventu-white-surface);
   padding: 0.15rem 0.4rem;
   color: var(--color-eventu-main-ink);
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   cursor: pointer;
 }
 
@@ -232,13 +232,13 @@
   background: var(--color-eventu-red-background);
   padding: 0.65rem 0.8rem;
   color: var(--color-eventu-error);
-  font-size: 0.8rem;
+  font-size: 0.875rem;
 }
 
 .actividad-cargando {
   margin: 1rem 0;
   color: var(--color-eventu-secondary-text);
-  font-size: 0.8rem;
+  font-size: 0.875rem;
 }
 
 .actividad-tabla-contenedor {
@@ -252,13 +252,13 @@
   width: 100%;
   border-collapse: collapse;
   text-align: left;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
 }
 
 .actividad-tabla th {
   background: #f7f7f3;
   color: var(--color-eventu-secondary-text);
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   font-weight: 600;
 }
 
@@ -291,7 +291,7 @@
 .actividad-usuario small {
   margin-top: 0.1rem;
   color: var(--color-eventu-secondary-text);
-  font-size: 0.67rem;
+  font-size: 0.75rem;
 }
 
 .actividad-usuario {
@@ -309,7 +309,7 @@
   border-radius: 50%;
   background: var(--color-eventu-soft-red-background);
   color: var(--color-eventu-institutional-red);
-  font-size: 0.65rem;
+  font-size: 0.7rem;
 }
 
 .actividad-sin-usuario {
@@ -322,7 +322,7 @@
   align-items: center;
   border-radius: 9999px;
   padding: 0.2rem 0.45rem;
-  font-size: 0.67rem;
+  font-size: 0.75rem;
   font-weight: 600;
 }
 
@@ -350,7 +350,7 @@
   border-top: 1px solid #eeede9;
   padding: 0.65rem 0.75rem;
   color: var(--color-eventu-secondary-text);
-  font-size: 0.7rem;
+  font-size: 0.75rem;
 }
 
 .actividad-solo-lectura svg {
@@ -370,7 +370,7 @@
   background: var(--color-eventu-white-surface);
   padding: 0.55rem 0.75rem;
   color: var(--color-eventu-secondary-text);
-  font-size: 0.7rem;
+  font-size: 0.75rem;
 }
 
 .actividad-tamano-pagina {
@@ -481,7 +481,7 @@
   .actividad-tabla td::before {
     content: attr(data-label);
     color: var(--color-eventu-secondary-text);
-    font-size: 0.68rem;
+    font-size: 0.75rem;
     font-weight: 600;
   }
 

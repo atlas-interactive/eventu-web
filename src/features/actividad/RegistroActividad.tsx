@@ -5,6 +5,7 @@ import { FiltrosActividad } from './components/FiltrosActividad';
 import { FiltrosActivosActividad } from './components/FiltrosActivosActividad';
 import { PaginacionActividad } from './components/PaginacionActividad';
 import { TablaActividad } from './components/TablaActividad';
+import { TablaActividadSkeleton } from './components/TablaActividadSkeleton';
 import { obtenerActividad, obtenerOpcionesActividad } from './services/actividadService';
 import '../../styles/actividad.css';
 
@@ -122,7 +123,7 @@ export function RegistroActividad() {
 
             {errorOpciones && <p className="actividad-error" role="alert">{errorOpciones}</p>}
             {errorConsulta && <p className="actividad-error" role="alert">{errorConsulta}</p>}
-            {cargando && <p className="actividad-cargando" role="status">Cargando registros de actividad…</p>}
+            {cargando && <TablaActividadSkeleton />}
             {!cargando && !errorConsulta && (
                 <TablaActividad
                     registros={datos.contenido}
