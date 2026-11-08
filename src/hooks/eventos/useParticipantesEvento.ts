@@ -4,44 +4,55 @@ import type { Evento, InscritoEvento } from '../../types/evento';
 import { listarInscritosEvento, obtenerEvento } from '../../features/eventos/services/eventoService';
 
 export function useParticipantesEvento(eventoId: number) {
-    const [evento, setEvento] = useState<Evento | null>(null);
-    const [inscritos, setInscritos] = useState<InscritoEvento[]>([]);
-    const [cargando, setCargando] = useState(true);
-    const [error, setError] = useState('');
+    const [resultado, setResultado] = useState<{
+        eventoId: number;
+        evento: Evento | null;
+        inscritos: InscritoEvento[];
+        error: string;
+    } | null>(null);
+    const identificadorValido = Number.isSafeInteger(eventoId) && eventoId > 0;
+    const resultadoActual = resultado?.eventoId === eventoId ? resultado : null;
+    const cargando = identificadorValido && !resultadoActual;
+    const evento = resultadoActual?.evento ?? null;
+    const inscritos = resultadoActual?.inscritos ?? [];
+    const error = !identificadorValido
+        ? 'El identificador del evento no es válido.'
+        : resultadoActual?.error ?? '';
 
     useEffect(() => {
         let vigente = true;
-        setEvento(null);
-        setInscritos([]);
-        setError('');
-
-        if (!Number.isSafeInteger(eventoId) || eventoId <= 0) {
-            setError('El identificador del evento no es válido.');
-            setCargando(false);
+        if (!identificadorValido) {
             return () => {
                 vigente = false;
             };
         }
 
-        setCargando(true);
         Promise.all([obtenerEvento(eventoId), listarInscritosEvento(eventoId)])
             .then(([datosEvento, participantes]) => {
                 if (!vigente) return;
-                setEvento(datosEvento);
-                setInscritos(participantes);
+                setResultado({
+                    eventoId,
+                    evento: datosEvento,
+                    inscritos: participantes,
+                    error: '',
+                });
             })
             .catch((err: unknown) => {
                 console.error('No se pudieron cargar los participantes del evento:', err);
-                if (vigente) setError(mensajeDeError(err));
-            })
-            .finally(() => {
-                if (vigente) setCargando(false);
+                if (vigente) {
+                    setResultado({
+                        eventoId,
+                        evento: null,
+                        inscritos: [],
+                        error: mensajeDeError(err),
+                    });
+                }
             });
 
         return () => {
             vigente = false;
         };
-    }, [eventoId]);
+    }, [eventoId, identificadorValido]);
 
     return { evento, inscritos, cargando, error };
 }

@@ -70,50 +70,55 @@ export function DetalleEvento() {
         idEvento,
         puedeConsultarInscripcion && Number.isSafeInteger(idEvento) && idEvento > 0,
     );
-    const [evento, setEvento] = useState<Evento | null>(null);
-    const [cargando, setCargando] = useState(true);
-    const [error, setError] = useState('');
-    const [noEncontrado, setNoEncontrado] = useState(false);
+    const [resultadoEvento, setResultadoEvento] = useState<{
+        id: number;
+        evento: Evento | null;
+        error: string;
+        noEncontrado: boolean;
+    } | null>(null);
+    const identificadorValido = Number.isSafeInteger(idEvento) && idEvento > 0;
+    const resultadoActual = resultadoEvento?.id === idEvento ? resultadoEvento : null;
+    const evento = resultadoActual?.evento ?? null;
+    const error = resultadoActual?.error ?? '';
+    const noEncontrado = !identificadorValido || Boolean(resultadoActual?.noEncontrado);
+    const cargando = identificadorValido && !resultadoActual;
     const [aCancelar, setACancelar] = useState<Inscripcion | null>(null);
     const [errorCalendario, setErrorCalendario] = useState('');
     const [entradaAbierta, setEntradaAbierta] = useState(false);
 
     useEffect(() => {
         let vigente = true;
-        setEvento(null);
-        setError('');
-        setNoEncontrado(false);
-
-        if (!Number.isSafeInteger(idEvento) || idEvento <= 0) {
-            setNoEncontrado(true);
-            setCargando(false);
+        if (!identificadorValido) {
             return () => {
                 vigente = false;
             };
         }
 
-        setCargando(true);
         obtenerEvento(idEvento)
             .then((datos) => {
-                if (vigente) setEvento(datos);
+                if (vigente) {
+                    setResultadoEvento({ id: idEvento, evento: datos, error: '', noEncontrado: false });
+                }
             })
             .catch((err: unknown) => {
                 console.error('No se pudo cargar el detalle del evento:', err);
                 if (!vigente) return;
                 if (isAxiosError(err) && err.response?.status === 404) {
-                    setNoEncontrado(true);
+                    setResultadoEvento({ id: idEvento, evento: null, error: '', noEncontrado: true });
                 } else {
-                    setError(mensajeDeError(err));
+                    setResultadoEvento({
+                        id: idEvento,
+                        evento: null,
+                        error: mensajeDeError(err),
+                        noEncontrado: false,
+                    });
                 }
-            })
-            .finally(() => {
-                if (vigente) setCargando(false);
             });
 
         return () => {
             vigente = false;
         };
-    }, [idEvento]);
+    }, [idEvento, identificadorValido]);
 
     if (cargando) {
         return (
@@ -155,9 +160,15 @@ export function DetalleEvento() {
     const inscribirse = async () => {
         const realizada = await inscripcion.inscribir(evento);
         if (realizada) {
-            setEvento((actual) =>
-                actual
-                    ? { ...actual, cuposDisponibles: Math.max(0, actual.cuposDisponibles - 1) }
+            setResultadoEvento((actual) =>
+                actual?.id === idEvento && actual.evento
+                    ? {
+                        ...actual,
+                        evento: {
+                            ...actual.evento,
+                            cuposDisponibles: Math.max(0, actual.evento.cuposDisponibles - 1),
+                        },
+                    }
                     : actual,
             );
         }
@@ -167,9 +178,18 @@ export function DetalleEvento() {
         const cancelada = await inscripcion.cancelarInscripcionActiva();
         if (cancelada) {
             setACancelar(null);
-            setEvento((actual) =>
-                actual
-                    ? { ...actual, cuposDisponibles: Math.min(actual.cuposMaximos, actual.cuposDisponibles + 1) }
+            setResultadoEvento((actual) =>
+                actual?.id === idEvento && actual.evento
+                    ? {
+                        ...actual,
+                        evento: {
+                            ...actual.evento,
+                            cuposDisponibles: Math.min(
+                                actual.evento.cuposMaximos,
+                                actual.evento.cuposDisponibles + 1,
+                            ),
+                        },
+                    }
                     : actual,
             );
         }

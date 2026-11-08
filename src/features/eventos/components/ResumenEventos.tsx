@@ -1,9 +1,9 @@
 import { RotateCcw, X } from 'lucide-react';
 import type { Categoria } from '../../../types/categoria';
-import type { Evento, FiltrosEvento } from '../../../types/evento';
+import type { FiltrosEvento } from '../../../types/evento';
 import '../../../styles/event-results.css';
-
-export type OrdenEventos = 'fecha-proxima' | 'fecha-lejana' | 'titulo';
+import type { OrdenEventos } from '../eventoOrdenamiento';
+export type { OrdenEventos } from '../eventoOrdenamiento';
 
 interface ResumenEventosProps {
     cantidadEventos: number;
@@ -51,13 +51,6 @@ const formatoRangoFechas = (desde?: string, hasta?: string): string => {
     if (hasta) return `Hasta ${formatoFecha.format(aFechaLocal(hasta))}`;
     return '';
 };
-
-export const ordenarEventos = (eventos: Evento[], orden: OrdenEventos): Evento[] =>
-    [...eventos].sort((a, b) => {
-        if (orden === 'titulo') return a.titulo.localeCompare(b.titulo, 'es-CO');
-        const diferencia = new Date(a.fechaInicio).getTime() - new Date(b.fechaInicio).getTime();
-        return orden === 'fecha-proxima' ? diferencia : -diferencia;
-    });
 
 export function ResumenEventos({
     cantidadEventos,

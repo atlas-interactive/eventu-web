@@ -4,7 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { IconoAviso } from '../../../components/ui/IconoAviso';
 import { Skeleton, SkeletonEstado } from '../../../components/ui/Skeleton';
 import { FiltrosEventos } from '../components/FiltrosEventos';
-import { ordenarEventos, type OrdenEventos } from '../components/ResumenEventos';
+import { ordenarEventos, type OrdenEventos } from '../eventoOrdenamiento';
 import { TarjetaEvento } from '../components/TarjetaEvento';
 import { ConfirmarCancelacionEvento } from '../components/ConfirmarCancelacionEvento';
 import { useGestionEventos } from '../../../hooks/eventos/useGestionEventos';

@@ -9,11 +9,21 @@ import {
 } from '../../features/inscripciones/services/inscripcionService';
 
 export function useInscripcionEvento(eventoId: number, habilitado = true) {
-    const [verificando, setVerificando] = useState(habilitado);
-    const [yaInscrito, setYaInscrito] = useState(false);
-    const [inscripcionActiva, setInscripcionActiva] = useState<Inscripcion | null>(null);
-    const [errorVerificacion, setErrorVerificacion] = useState('');
     const [intentoVerificacion, setIntentoVerificacion] = useState(0);
+    const claveVerificacion = `${eventoId}:${habilitado}:${intentoVerificacion}`;
+    const identificadorValido = habilitado && Number.isSafeInteger(eventoId) && eventoId > 0;
+    const [resultadoVerificacion, setResultadoVerificacion] = useState<{
+        clave: string;
+        inscripcion: Inscripcion | null;
+        error: string;
+    } | null>(null);
+    const resultadoActual = resultadoVerificacion?.clave === claveVerificacion
+        ? resultadoVerificacion
+        : null;
+    const verificando = identificadorValido && !resultadoActual;
+    const inscripcionActiva = resultadoActual?.inscripcion ?? null;
+    const yaInscrito = inscripcionActiva !== null;
+    const errorVerificacion = resultadoActual?.error ?? '';
     const [inscribiendo, setInscribiendo] = useState(false);
     const [error, setError] = useState('');
     const [inscripcionRealizada, setInscripcionRealizada] = useState(false);
@@ -22,36 +32,36 @@ export function useInscripcionEvento(eventoId: number, habilitado = true) {
 
     useEffect(() => {
         let vigente = true;
-        if (!habilitado || !Number.isSafeInteger(eventoId) || eventoId <= 0) {
-            setVerificando(false);
-            setYaInscrito(false);
-            setInscripcionActiva(null);
-            setErrorVerificacion('');
+        if (!identificadorValido) {
             return () => {
                 vigente = false;
             };
         }
 
-        setVerificando(true);
-        setErrorVerificacion('');
         obtenerInscripcionActiva(eventoId)
             .then((activa) => {
                 if (!vigente) return;
-                setInscripcionActiva(activa);
-                setYaInscrito(activa !== null);
+                setResultadoVerificacion({
+                    clave: claveVerificacion,
+                    inscripcion: activa,
+                    error: '',
+                });
             })
             .catch((err: unknown) => {
                 console.error('No se pudo verificar la inscripción al evento:', err);
-                if (vigente) setErrorVerificacion(mensajeDeError(err));
-            })
-            .finally(() => {
-                if (vigente) setVerificando(false);
+                if (vigente) {
+                    setResultadoVerificacion({
+                        clave: claveVerificacion,
+                        inscripcion: null,
+                        error: mensajeDeError(err),
+                    });
+                }
             });
 
         return () => {
             vigente = false;
         };
-    }, [eventoId, habilitado, intentoVerificacion]);
+    }, [eventoId, habilitado, intentoVerificacion, claveVerificacion, identificadorValido]);
 
     const reintentarVerificacion = () => setIntentoVerificacion((intento) => intento + 1);
 
@@ -72,8 +82,11 @@ export function useInscripcionEvento(eventoId: number, habilitado = true) {
                 eventoUbicacion: evento.ubicacion,
                 eventoEstado: evento.estado,
             };
-            setInscripcionActiva(nuevaInscripcion);
-            setYaInscrito(true);
+            setResultadoVerificacion({
+                clave: claveVerificacion,
+                inscripcion: nuevaInscripcion,
+                error: '',
+            });
             setInscripcionRealizada(true);
             return true;
         } catch (err: unknown) {
@@ -91,8 +104,11 @@ export function useInscripcionEvento(eventoId: number, habilitado = true) {
         setErrorCancelacion('');
         try {
             await cancelarInscripcion(inscripcionActiva.id);
-            setInscripcionActiva(null);
-            setYaInscrito(false);
+            setResultadoVerificacion({
+                clave: claveVerificacion,
+                inscripcion: null,
+                error: '',
+            });
             setInscripcionRealizada(false);
             return true;
         } catch (err: unknown) {

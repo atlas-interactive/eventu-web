@@ -40,9 +40,10 @@ const fechaRegistro = (fecha: string | null): string => {
 export function Perfil() {
     const navigate = useNavigate();
     const [perfil, setPerfil] = useState<PerfilUsuario | null>(null);
-    const [cargando, setCargando] = useState(true);
-    const [errorCarga, setErrorCarga] = useState('');
     const [recarga, setRecarga] = useState(0);
+    const [resultadoCarga, setResultadoCarga] = useState<{ recarga: number; error: string } | null>(null);
+    const cargando = resultadoCarga?.recarga !== recarga;
+    const errorCarga = resultadoCarga?.recarga === recarga ? resultadoCarga.error : '';
     const [editando, setEditando] = useState(false);
     const [nombreEditado, setNombreEditado] = useState('');
     const [guardando, setGuardando] = useState(false);
@@ -60,18 +61,17 @@ export function Perfil() {
 
     useEffect(() => {
         let vigente = true;
-        setCargando(true);
-        setErrorCarga('');
         obtenerPerfil()
             .then((datos) => {
-                if (vigente) setPerfil(datos);
+                if (!vigente) return;
+                setPerfil(datos);
+                setResultadoCarga({ recarga, error: '' });
             })
             .catch((error: unknown) => {
                 console.error('No se pudo cargar el perfil:', error);
-                if (vigente) setErrorCarga(mensajeDeError(error));
-            })
-            .finally(() => {
-                if (vigente) setCargando(false);
+                if (vigente) {
+                    setResultadoCarga({ recarga, error: mensajeDeError(error) });
+                }
             });
         return () => {
             vigente = false;

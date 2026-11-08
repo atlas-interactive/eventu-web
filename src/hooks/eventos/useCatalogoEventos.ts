@@ -12,10 +12,17 @@ export function useCatalogoEventos() {
     const [eventos, setEventos] = useState<Evento[]>([]);
     const [categorias, setCategorias] = useState<Categoria[]>([]);
     const [filtros, setFiltros] = useState<FiltrosEvento>({});
-    const [cargando, setCargando] = useState(true);
-    const [errorEventos, setErrorEventos] = useState('');
+    const [resultadoConsulta, setResultadoConsulta] = useState<{ clave: string; error: string } | null>(null);
     const [errorCategorias, setErrorCategorias] = useState('');
     const rangoFechasInvalido = fechasInvalidas(filtros);
+    const claveConsulta = JSON.stringify([
+        filtros.categoriaId,
+        filtros.fechaDesde,
+        filtros.fechaHasta,
+        filtros.texto,
+    ]);
+    const cargando = !rangoFechasInvalido && resultadoConsulta?.clave !== claveConsulta;
+    const errorEventos = resultadoConsulta?.clave === claveConsulta ? resultadoConsulta.error : '';
     const hayFiltrosActivos = Boolean(
         filtros.texto?.trim() || filtros.categoriaId || filtros.fechaDesde || filtros.fechaHasta,
     );
@@ -38,34 +45,38 @@ export function useCatalogoEventos() {
     useEffect(() => {
         let vigente = true;
         if (rangoFechasInvalido) {
-            setCargando(false);
             return () => {
                 vigente = false;
             };
         }
 
-        setCargando(true);
-        setErrorEventos('');
         const espera = filtros.texto?.trim() ? 300 : 0;
         const temporizador = window.setTimeout(() => {
-            listarEventos(filtros)
+            listarEventos({
+                categoriaId: filtros.categoriaId,
+                fechaDesde: filtros.fechaDesde,
+                fechaHasta: filtros.fechaHasta,
+                texto: filtros.texto,
+            })
                 .then((datos) => {
-                    if (vigente) setEventos(datos);
+                    if (!vigente) return;
+                    setEventos(datos);
+                    setResultadoConsulta({ clave: claveConsulta, error: '' });
                 })
                 .catch((err: unknown) => {
                     console.error('No se pudo cargar el catálogo de eventos:', err);
-                    if (vigente) setErrorEventos(mensajeDeError(err));
+                    if (vigente) {
+                        setResultadoConsulta({ clave: claveConsulta, error: mensajeDeError(err) });
+                    }
                 })
-                .finally(() => {
-                    if (vigente) setCargando(false);
-                });
+                ;
         }, espera);
 
         return () => {
             vigente = false;
             window.clearTimeout(temporizador);
         };
-    }, [filtros.categoriaId, filtros.fechaDesde, filtros.fechaHasta, filtros.texto, rangoFechasInvalido]);
+    }, [filtros, claveConsulta, rangoFechasInvalido]);
 
     return {
         eventos,

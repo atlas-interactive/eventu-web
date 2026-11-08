@@ -3,7 +3,8 @@ import { useState } from 'react';
 import type { Categoria } from '../../../types/categoria';
 import type { FiltrosEvento } from '../../../types/evento';
 import { ModalAccesible } from '../../../components/ui/ModalAccesible';
-import { ResumenEventos, type OrdenEventos } from './ResumenEventos';
+import { ResumenEventos } from './ResumenEventos';
+import type { OrdenEventos } from '../eventoOrdenamiento';
 import '../../../styles/event-filters.css';
 
 interface FiltrosEventosProps {
