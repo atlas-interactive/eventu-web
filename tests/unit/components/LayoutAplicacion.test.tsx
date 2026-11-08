@@ -37,6 +37,7 @@ describe('LayoutAplicacion', () => {
         expect(navegacion).toHaveAccessibleName('Principal');
         expect(screen.getByRole('link', { name: 'Categorías' })).toHaveAttribute('href', '/admin/categorias');
         expect(screen.getByRole('link', { name: 'Organizadores' })).toHaveAttribute('href', '/admin/usuarios');
+        expect(screen.getByRole('link', { name: 'Actividad' })).toHaveAttribute('href', '/admin/actividad');
         expect(screen.getByRole('link', { name: 'Eventos' })).toHaveAttribute('href', '/organizador/eventos');
         expect(screen.getByRole('link', { name: 'Estadísticas' })).toHaveAttribute('href', '/admin/estadisticas');
         expect(screen.getByText('Juan Pineda')).toHaveAttribute('title', 'Juan Pineda');
@@ -64,6 +65,7 @@ describe('LayoutAplicacion', () => {
         expect(screen.getByRole('link', { name: 'Estadísticas' })).toHaveAttribute('href', '/organizador/estadisticas');
         expect(screen.queryByRole('link', { name: 'Categorías' })).not.toBeInTheDocument();
         expect(screen.queryByRole('link', { name: 'Organizadores' })).not.toBeInTheDocument();
+        expect(screen.queryByRole('link', { name: 'Actividad' })).not.toBeInTheDocument();
         expect(screen.getByText('Ana Gómez')).toBeInTheDocument();
         expect(screen.getByRole('img', { name: 'Avatar de Ana Gómez' })).toHaveTextContent('AG');
     });
