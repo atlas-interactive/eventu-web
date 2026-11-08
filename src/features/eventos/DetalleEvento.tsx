@@ -1,20 +1,64 @@
 import { useEffect, useState } from 'react';
 import { isAxiosError } from 'axios';
-import { CalendarDays, Clock3, MapPin, Users } from 'lucide-react';
+import {
+    CalendarDays,
+    CalendarPlus,
+    Check,
+    Clock3,
+    MapPin,
+    Users,
+} from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
+import { guardarArchivo } from '../../api/descargas';
 import { mensajeDeError } from '../../api/mensajeDeError';
 import { Skeleton, SkeletonEstado } from '../../components/ui/Skeleton';
-import { esAdministrador, esOrganizador, esUsuario, obtenerSesion } from '../sesion/sesion';
+import { ConfirmarCancelacionInscripcion } from '../inscripciones/components/ConfirmarCancelacionInscripcion';
+import { EntradaQr } from '../inscripciones/components/EntradaQr';
 import type { Evento } from '../../types/evento';
+import type { Inscripcion } from '../../types/inscripcion';
+import { esAdministrador, esOrganizador, esUsuario, obtenerSesion } from '../sesion/sesion';
+import { useInscripcionEvento } from '../../hooks/eventos/useInscripcionEvento';
 import { ConfirmacionInscripcion } from './components/ConfirmacionInscripcion';
 import { obtenerEvento } from './services/eventoService';
-import { useInscripcionEvento } from '../../hooks/eventos/useInscripcionEvento';
 import '../../styles/event-detail.css';
 
 const formatoFecha = new Intl.DateTimeFormat('es-CO', { dateStyle: 'long' });
 const formatoHora = new Intl.DateTimeFormat('es-CO', { hour: '2-digit', minute: '2-digit' });
+const formatoDia = new Intl.DateTimeFormat('es-CO', { weekday: 'short' });
+const formatoMes = new Intl.DateTimeFormat('es-CO', { month: 'short' });
 
 const estaCancelado = (evento: Evento) => evento.estado.toUpperCase() === 'CANCELADO';
+
+const escaparTextoIcs = (texto: string) =>
+    texto.replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\\;');
+
+const descargarCalendario = (evento: Evento) => {
+    const fechaInicio = new Date(evento.fechaInicio);
+    if (Number.isNaN(fechaInicio.getTime())) {
+        throw new Error('La fecha del evento no es válida para crear el calendario.');
+    }
+
+    const inicioUtc = fechaInicio.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}Z$/, 'Z');
+    const contenido = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//EventU//Eventos//ES',
+        'BEGIN:VEVENT',
+        `UID:eventu-event-${evento.id}@eventu`,
+        `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}Z$/, 'Z')}`,
+        `DTSTART:${inicioUtc}`,
+        `SUMMARY:${escaparTextoIcs(evento.titulo)}`,
+        `LOCATION:${escaparTextoIcs(evento.ubicacion)}`,
+        `DESCRIPTION:${escaparTextoIcs(evento.descripcion)}`,
+        'END:VEVENT',
+        'END:VCALENDAR',
+    ].join('\r\n');
+
+    guardarArchivo(
+        new Blob([contenido], { type: 'text/calendar;charset=utf-8' }),
+        `evento-${evento.id}.ics`,
+    );
+};
 
 export function DetalleEvento() {
     const { id } = useParams();
@@ -29,6 +73,8 @@ export function DetalleEvento() {
     const [cargando, setCargando] = useState(true);
     const [error, setError] = useState('');
     const [noEncontrado, setNoEncontrado] = useState(false);
+    const [aCancelar, setACancelar] = useState<Inscripcion | null>(null);
+    const [errorCalendario, setErrorCalendario] = useState('');
 
     useEffect(() => {
         let vigente = true;
@@ -72,10 +118,9 @@ export function DetalleEvento() {
             <main className="detalle-evento-page">
                 <SkeletonEstado etiqueta="Cargando detalle del evento" className="detalle-evento-skeleton">
                     <Skeleton className="h-4 w-28" />
-                    <Skeleton className="mt-6 h-5 w-24" />
-                    <Skeleton className="mt-3 h-8 w-2/3" />
-                    <Skeleton className="mt-3 h-4 w-full" />
-                    <Skeleton className="mt-2 h-4 w-3/4" />
+                    <Skeleton className="mt-6 h-32 w-full rounded-xl" />
+                    <Skeleton className="mt-5 h-8 w-2/3" />
+                    <Skeleton className="mt-5 h-20 w-full" />
                 </SkeletonEstado>
             </main>
         );
@@ -100,138 +145,232 @@ export function DetalleEvento() {
     const porcentajeOcupado =
         evento.cuposMaximos > 0 ? Math.min(100, (inscritos / evento.cuposMaximos) * 100) : 0;
     const fechaInicio = new Date(evento.fechaInicio);
-    const estadoVisible = cancelado ? 'Evento cancelado' : agotado ? 'Cupos agotados' : '';
     const esPropio = evento.organizadorId === sesion?.usuarioId;
     const puedeInscribirse = esUsuario(sesion) || esOrganizador(sesion);
     const noPublicado = evento.estado.toUpperCase() !== 'PUBLICADO';
+    const codigoQr = inscripcion.inscripcionActiva?.codigoQr;
 
-    if (inscripcion.inscripcionRealizada) {
-        return <ConfirmacionInscripcion evento={evento} />;
-    }
+    const inscribirse = async () => {
+        const realizada = await inscripcion.inscribir(evento);
+        if (realizada) {
+            setEvento((actual) =>
+                actual
+                    ? { ...actual, cuposDisponibles: Math.max(0, actual.cuposDisponibles - 1) }
+                    : actual,
+            );
+        }
+    };
+
+    const confirmarCancelacion = async () => {
+        const cancelada = await inscripcion.cancelarInscripcionActiva();
+        if (cancelada) {
+            setACancelar(null);
+            setEvento((actual) =>
+                actual
+                    ? { ...actual, cuposDisponibles: Math.min(actual.cuposMaximos, actual.cuposDisponibles + 1) }
+                    : actual,
+            );
+        }
+    };
+
+    const crearArchivoCalendario = () => {
+        try {
+            descargarCalendario(evento);
+            setErrorCalendario('');
+        } catch (err: unknown) {
+            console.error('No se pudo crear el archivo de calendario:', err);
+            setErrorCalendario('No se pudo preparar el archivo de calendario.');
+        }
+    };
 
     return (
-        <main className="detalle-evento-page">
+        <main className={`detalle-evento-page${inscripcion.yaInscrito ? ' detalle-evento-page--inscrito' : ''}`}>
             <Link to="/eventos" className="detalle-evento-volver">
                 ← Volver a eventos
             </Link>
+            {inscripcion.inscripcionRealizada && <ConfirmacionInscripcion evento={evento} />}
+
             <div className="detalle-evento-layout">
                 <article className="detalle-evento-contenido">
+                    <div className="detalle-evento-hero" aria-hidden="true">
+                        <div className="detalle-evento-fecha">
+                            <span>{formatoDia.format(fechaInicio).replace('.', '').toUpperCase()}</span>
+                            <strong>{fechaInicio.getDate()}</strong>
+                            <span>{formatoMes.format(fechaInicio).replace('.', '').toUpperCase()}</span>
+                        </div>
+                    </div>
+
                     <div className="detalle-evento-etiquetas">
                         <span className="detalle-evento-categoria">{evento.categoriaNombre}</span>
-                        {estadoVisible && (
-                            <span
-                                className={`detalle-evento-estado ${
-                                    cancelado ? 'detalle-evento-estado--cancelado' : 'detalle-evento-estado--agotado'
-                                }`}
-                            >
-                                {estadoVisible}
+                        {cancelado && (
+                            <span className="detalle-evento-estado detalle-evento-estado--cancelado">
+                                Evento cancelado
+                            </span>
+                        )}
+                        {agotado && !cancelado && (
+                            <span className="detalle-evento-estado detalle-evento-estado--agotado">
+                                Cupos agotados
                             </span>
                         )}
                     </div>
                     <h1 className="detalle-evento-titulo">{evento.titulo}</h1>
-                    <p className="detalle-evento-descripcion">{evento.descripcion}</p>
 
-                    <div className="detalle-evento-informacion">
-                        <p>
-                            <CalendarDays aria-hidden="true" />
-                            <time dateTime={evento.fechaInicio}>{formatoFecha.format(fechaInicio)}</time>
-                        </p>
-                        <p>
-                            <Clock3 aria-hidden="true" />
-                            {formatoHora.format(fechaInicio)}
-                        </p>
-                        <p>
-                            <MapPin aria-hidden="true" />
-                            {evento.ubicacion}
-                        </p>
-                        <p>
-                            <Users aria-hidden="true" />
-                            {inscritos} inscritos de {evento.cuposMaximos} cupos
-                        </p>
-                    </div>
+                    <section className="detalle-evento-informacion" aria-label="Información del evento">
+                        <div className="detalle-evento-info-card">
+                            <span className="detalle-evento-info-icono"><CalendarDays aria-hidden="true" /></span>
+                            <span><small>Fecha</small><strong>{formatoFecha.format(fechaInicio)}</strong></span>
+                        </div>
+                        <div className="detalle-evento-info-card">
+                            <span className="detalle-evento-info-icono"><Clock3 aria-hidden="true" /></span>
+                            <span><small>Hora</small><strong>{formatoHora.format(fechaInicio)}</strong></span>
+                        </div>
+                        <div className="detalle-evento-info-card">
+                            <span className="detalle-evento-info-icono"><MapPin aria-hidden="true" /></span>
+                            <span><small>Lugar</small><strong>{evento.ubicacion}</strong></span>
+                        </div>
+                        <div className="detalle-evento-info-card">
+                            <span className="detalle-evento-info-icono"><Users aria-hidden="true" /></span>
+                            <span>
+                                <small>Cupos</small>
+                                <strong>{evento.cuposDisponibles} de {evento.cuposMaximos} disponibles</strong>
+                            </span>
+                        </div>
+                    </section>
 
-                    <div
-                        className="detalle-evento-cupos"
-                        role="meter"
-                        aria-label="Cupos ocupados"
-                        aria-valuemin={0}
-                        aria-valuemax={evento.cuposMaximos}
-                        aria-valuenow={inscritos}
-                    >
-                        <span style={{ width: `${porcentajeOcupado}%` }} />
-                    </div>
-                    <p className="detalle-evento-cupos-texto">
-                        {evento.cuposDisponibles > 0 ? `${evento.cuposDisponibles} cupos disponibles` : '0 cupos disponibles'}
-                    </p>
+                    <section className="detalle-evento-sobre">
+                        <h2>Sobre el evento</h2>
+                        <p>{evento.descripcion}</p>
+                    </section>
 
                     <div className="detalle-evento-organiza">
-                        <span>Organiza</span>
-                        <p>{evento.organizadorNombre}</p>
+                        <span className="detalle-evento-organiza-avatar" aria-hidden="true">
+                            {evento.organizadorNombre.split(/\s+/).slice(0, 2).map((parte) => parte[0]).join('').toUpperCase()}
+                        </span>
+                        <div><small>Organiza</small><strong>{evento.organizadorNombre}</strong></div>
                     </div>
                 </article>
 
-                <aside className="detalle-evento-panel" aria-label="Inscripción y categoría">
-                    {cancelado ? (
-                        <p className="detalle-evento-panel-estado">Evento cancelado</p>
-                    ) : agotado ? (
-                        <p className="detalle-evento-panel-estado">Cupos agotados</p>
-                    ) : noPublicado ? (
-                        <p className="detalle-evento-panel-estado">
-                            No se permiten inscripciones en eventos que no estén publicados.
-                        </p>
-                    ) : esPropio ? (
-                        <p className="detalle-evento-panel-estado">
-                            No puedes inscribirte en un evento que tú organizas.
-                        </p>
-                    ) : !puedeInscribirse ? (
-                        <p className="detalle-evento-panel-estado">
-                            {esAdministrador(sesion)
-                                ? 'Los administradores no pueden inscribirse en eventos.'
-                                : 'Debes iniciar sesión para inscribirte.'}
-                        </p>
-                    ) : inscripcion.verificando ? (
-                        <button type="button" className="detalle-evento-inscripcion" disabled aria-busy="true">
-                            Verificando inscripción…
-                        </button>
-                    ) : inscripcion.errorVerificacion ? (
-                        <button
-                            type="button"
-                            className="detalle-evento-inscripcion"
-                            onClick={inscripcion.reintentarVerificacion}
-                        >
-                            Reintentar verificación
-                        </button>
-                    ) : inscripcion.yaInscrito ? (
-                        <button type="button" className="detalle-evento-inscripcion" disabled>
-                            Ya estás inscrito
-                        </button>
+                <aside
+                    className={`detalle-evento-panel${inscripcion.yaInscrito ? ' detalle-evento-panel--entrada' : ''}`}
+                    id="entrada-evento"
+                    aria-label={inscripcion.yaInscrito ? 'Tu entrada al evento' : 'Inscripción al evento'}
+                >
+                    {inscripcion.yaInscrito ? (
+                        <>
+                            <div className="detalle-evento-inscrito">
+                                <Check aria-hidden="true" />
+                                Estás inscrito
+                            </div>
+                            <div className="detalle-evento-panel-contenido">
+                                <h2>Tu entrada</h2>
+                                {codigoQr ? (
+                                    <EntradaQr codigo={codigoQr} nombreArchivo={`entrada-evento-${evento.id}.svg`} />
+                                ) : (
+                                    <p className="detalle-evento-qr-no-disponible" role="status">
+                                        No hay un código QR disponible para esta inscripción.
+                                    </p>
+                                )}
+                                <button
+                                    type="button"
+                                    className="detalle-evento-calendario"
+                                    onClick={crearArchivoCalendario}
+                                >
+                                    <CalendarPlus aria-hidden="true" />
+                                    Añadir al calendario
+                                </button>
+                                {errorCalendario && <p className="detalle-evento-error" role="alert">{errorCalendario}</p>}
+                                <p className="detalle-evento-qr-ayuda">
+                                    La validación de la entrada se realiza desde la aplicación móvil.
+                                </p>
+                            </div>
+                            <div className="detalle-evento-panel-ocupacion">
+                                <div><span>Cupos ocupados</span><strong>{inscritos} / {evento.cuposMaximos}</strong></div>
+                                <div className="detalle-evento-cupos" role="meter" aria-label="Cupos ocupados" aria-valuemin={0} aria-valuemax={evento.cuposMaximos} aria-valuenow={inscritos}>
+                                    <span style={{ width: `${porcentajeOcupado}%` }} />
+                                </div>
+                            </div>
+                            <button
+                                type="button"
+                                className="detalle-evento-cancelar-inscripcion"
+                                onClick={() => setACancelar(inscripcion.inscripcionActiva)}
+                            >
+                                Cancelar mi inscripción
+                            </button>
+                        </>
                     ) : (
-                        <button
-                            type="button"
-                            className="detalle-evento-inscripcion"
-                            disabled={inscripcion.inscribiendo || inscripcion.verificando}
-                            aria-busy={inscripcion.inscribiendo}
-                            onClick={inscripcion.inscribir}
-                        >
-                            {inscripcion.inscribiendo ? 'Inscribiendo…' : 'Inscribirme al evento'}
-                        </button>
+                        <div className="detalle-evento-panel-contenido">
+                            {cancelado ? (
+                                <p className="detalle-evento-panel-estado">Evento cancelado</p>
+                            ) : agotado ? (
+                                <p className="detalle-evento-panel-estado">Cupos agotados</p>
+                            ) : noPublicado ? (
+                                <p className="detalle-evento-panel-estado">
+                                    No se permiten inscripciones en eventos que no estén publicados.
+                                </p>
+                            ) : esPropio ? (
+                                <p className="detalle-evento-panel-estado">
+                                    No puedes inscribirte en un evento que tú organizas.
+                                </p>
+                            ) : !puedeInscribirse ? (
+                                <p className="detalle-evento-panel-estado">
+                                    {esAdministrador(sesion)
+                                        ? 'Los administradores no pueden inscribirse en eventos.'
+                                        : 'Debes iniciar sesión para inscribirte.'}
+                                </p>
+                            ) : inscripcion.verificando ? (
+                                <button type="button" className="detalle-evento-inscripcion" disabled aria-busy="true">
+                                    Verificando inscripción…
+                                </button>
+                            ) : inscripcion.errorVerificacion ? (
+                                <button
+                                    type="button"
+                                    className="detalle-evento-inscripcion"
+                                    onClick={inscripcion.reintentarVerificacion}
+                                >
+                                    Reintentar verificación
+                                </button>
+                            ) : (
+                                <button
+                                    type="button"
+                                    className="detalle-evento-inscripcion"
+                                    disabled={inscripcion.inscribiendo || inscripcion.verificando}
+                                    aria-busy={inscripcion.inscribiendo}
+                                    onClick={inscribirse}
+                                >
+                                    {inscripcion.inscribiendo ? 'Inscribiendo…' : 'Inscribirme al evento'}
+                                </button>
+                            )}
+                            {inscripcion.errorVerificacion && (
+                                <p role="alert" className="detalle-evento-error">
+                                    No se pudo verificar si ya estás inscrito: {inscripcion.errorVerificacion}
+                                </p>
+                            )}
+                            {inscripcion.error && <p role="alert" className="detalle-evento-error">{inscripcion.error}</p>}
+                            <div className="detalle-evento-panel-categoria">
+                                <span>Categoría</span>
+                                <span className="detalle-evento-categoria">{evento.categoriaNombre}</span>
+                            </div>
+                        </div>
                     )}
-                    {inscripcion.errorVerificacion && (
-                        <p role="alert" className="detalle-evento-error">
-                            No se pudo verificar si ya estás inscrito: {inscripcion.errorVerificacion}
-                        </p>
-                    )}
-                    {inscripcion.error && (
-                        <p role="alert" className="detalle-evento-error">
-                            {inscripcion.error}
-                        </p>
-                    )}
-                    <div className="detalle-evento-panel-categoria">
-                        <span>Categoría</span>
-                        <span className="detalle-evento-categoria">{evento.categoriaNombre}</span>
-                    </div>
                 </aside>
             </div>
+
+            {inscripcion.yaInscrito && (
+                <div className="detalle-evento-entrada-movil">
+                    <span><Check aria-hidden="true" /> Estás inscrito</span>
+                    <a href="#entrada-evento">Ver mi entrada</a>
+                </div>
+            )}
+
+            {aCancelar && (
+                <ConfirmarCancelacionInscripcion
+                    inscripcion={aCancelar}
+                    cancelando={inscripcion.cancelando}
+                    error={inscripcion.errorCancelacion}
+                    onCerrar={() => setACancelar(null)}
+                    onConfirmar={confirmarCancelacion}
+                />
+            )}
         </main>
     );
 }

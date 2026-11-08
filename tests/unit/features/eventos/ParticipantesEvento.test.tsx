@@ -65,18 +65,19 @@ describe('ParticipantesEvento', () => {
 
     afterEach(cleanup);
 
-    it('muestra los datos de evento, resumen, inscritos y asistencias', async () => {
+    it('muestra los datos del evento, métricas e inscritos con su asistencia', async () => {
         renderizar();
 
-        expect(await screen.findByRole('heading', { name: 'Participantes inscritos' })).toBeInTheDocument();
+        expect(await screen.findByRole('heading', { name: 'Feria de proyectos' })).toBeInTheDocument();
         expect(screen.getByText('Feria de proyectos')).toBeInTheDocument();
         expect(screen.getByText('2', { selector: 'strong' })).toBeInTheDocument();
-        expect(screen.getByText('120', { selector: 'strong' })).toBeInTheDocument();
+        expect(screen.getByText('/ 120', { selector: 'small' })).toBeInTheDocument();
+        expect(screen.getByText('de 120', { selector: 'small' })).toBeInTheDocument();
         expect(screen.getByText('38', { selector: 'strong' })).toBeInTheDocument();
-        expect(screen.getByText('Laura Gómez')).toBeInTheDocument();
-        expect(screen.getByText('laura.gomez@unillanos.edu.co')).toBeInTheDocument();
-        expect(screen.getByText('Asistió')).toBeInTheDocument();
-        expect(screen.getByText('Pendiente')).toBeInTheDocument();
+        expect(screen.getAllByText('Laura Gómez')).toHaveLength(2);
+        expect(screen.getAllByText('laura.gomez@unillanos.edu.co')).toHaveLength(2);
+        expect(screen.getAllByText('Asistió')).toHaveLength(2);
+        expect(screen.getAllByText('Pendiente')).toHaveLength(2);
         expect(obtenerEventoMock).toHaveBeenCalledWith(5);
         expect(listarInscritosMock).toHaveBeenCalledWith(5);
     });
@@ -88,12 +89,12 @@ describe('ParticipantesEvento', () => {
         const campo = await screen.findByRole('searchbox', { name: 'Buscar por nombre o correo' });
         await user.type(campo, 'ramirez');
 
-        expect(screen.getByText('Carlos Ramírez')).toBeInTheDocument();
-        expect(screen.queryByText('Laura Gómez')).not.toBeInTheDocument();
+        expect(screen.getAllByText('Carlos Ramírez')).toHaveLength(2);
+        expect(screen.queryAllByText('Laura Gómez')).toHaveLength(0);
         await user.clear(campo);
         await user.type(campo, 'LAURA.GOMEZ@');
-        expect(screen.getByText('Laura Gómez')).toBeInTheDocument();
-        expect(screen.queryByText('Carlos Ramírez')).not.toBeInTheDocument();
+        expect(screen.getAllByText('Laura Gómez')).toHaveLength(2);
+        expect(screen.queryAllByText('Carlos Ramírez')).toHaveLength(0);
     });
 
     it('muestra el estado vacío si el evento no tiene inscritos activos', async () => {
@@ -114,7 +115,7 @@ describe('ParticipantesEvento', () => {
         );
 
         expect(screen.getByRole('status')).toHaveTextContent(
-            'No se encontraron participantes con ese nombre o correo.',
+            'No se encontraron participantes con esos criterios.',
         );
     });
 
@@ -135,7 +136,7 @@ describe('ParticipantesEvento', () => {
     it('ofrece volver a la gestión de eventos', async () => {
         renderizar();
 
-        const volver = await screen.findByRole('link', { name: /Volver a eventos/ });
+        const volver = await screen.findByRole('link', { name: /Mis eventos/ });
         expect(volver).toHaveAttribute('href', '/organizador/eventos');
     });
 });

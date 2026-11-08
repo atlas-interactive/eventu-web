@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { axiosClient } from '../../../../src/api';
 import {
     inscribirEnEvento,
-    tieneInscripcionActiva,
+    obtenerInscripcionActiva,
     listarMisInscripciones,
     cancelarInscripcion,
 } from '../../../../src/features/inscripciones/services/inscripcionService';
@@ -16,6 +16,17 @@ const getMock = vi.mocked(axiosClient.get);
 const deleteMock = vi.mocked(axiosClient.delete);
 
 describe('inscripcionService', () => {
+    const crearInscripcion = (id: number, eventoId: number, estado: 'ACTIVA' | 'CANCELADA') => ({
+        id,
+        estado,
+        codigoQr: estado === 'ACTIVA' ? `QR-${id}` : null,
+        fechaInscripcion: '2026-03-01T10:00:00',
+        eventoId,
+        eventoTitulo: `Evento ${eventoId}`,
+        eventoFechaInicio: '2026-04-02T09:00:00',
+        eventoUbicacion: 'Campus',
+    });
+
     beforeEach(() => {
         postMock.mockReset();
         getMock.mockReset();
@@ -35,15 +46,16 @@ describe('inscripcionService', () => {
         expect(postMock).toHaveBeenCalledWith('/inscripciones', undefined, { params: { eventoId: 5 } });
     });
 
-    it('detecta una inscripción activa del evento sin usar otros datos de la respuesta', async () => {
+    it('obtiene el detalle de la inscripción activa para mostrar su entrada', async () => {
+        const inscripcion = crearInscripcion(12, 5, 'ACTIVA');
         getMock.mockResolvedValue({
             data: [
-                { eventoId: 4, estado: 'ACTIVA', codigoQr: 'NO-USAR-QR' },
-                { eventoId: 5, estado: 'ACTIVA', codigoQr: 'NO-USAR-QR' },
+                crearInscripcion(10, 4, 'ACTIVA'),
+                inscripcion,
             ],
         });
 
-        await expect(tieneInscripcionActiva(5)).resolves.toBe(true);
+        await expect(obtenerInscripcionActiva(5)).resolves.toEqual(inscripcion);
 
         expect(getMock).toHaveBeenCalledWith('/inscripciones/mias');
     });
@@ -51,23 +63,23 @@ describe('inscripcionService', () => {
     it('ignora inscripciones canceladas y eventos distintos', async () => {
         getMock.mockResolvedValue({
             data: [
-                { eventoId: 5, estado: 'CANCELADA' },
-                { eventoId: 7, estado: 'ACTIVA' },
+                crearInscripcion(10, 5, 'CANCELADA'),
+                crearInscripcion(11, 7, 'ACTIVA'),
             ],
         });
 
-        await expect(tieneInscripcionActiva(5)).resolves.toBe(false);
+        await expect(obtenerInscripcionActiva(5)).resolves.toBeNull();
     });
 
     it('rechaza una respuesta inválida del endpoint de inscripciones', async () => {
         getMock.mockResolvedValue({ data: { eventoId: 5, estado: 'ACTIVA' } });
 
-        await expect(tieneInscripcionActiva(5)).rejects.toThrow(
+        await expect(obtenerInscripcionActiva(5)).rejects.toThrow(
             'La respuesta de /inscripciones/mias no es una lista válida.',
         );
     });
 
-    it('lista y valida las inscripciones sin exponer códigos QR en la pantalla', async () => {
+    it('lista y valida las inscripciones incluyendo el código QR', async () => {
         const inscripciones = [
             {
                 id: 8,
