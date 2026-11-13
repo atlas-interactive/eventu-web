@@ -10,6 +10,62 @@ import { server } from '../../mocks/server';
 describe('AppRoutes', () => {
     beforeEach(() => localStorage.clear());
 
+    it('muestra la vista de actividad a los administradores', async () => {
+        server.use(
+            http.get('*/logs/opciones', () =>
+                HttpResponse.json({ acciones: ['LOGIN'], entidades: ['USUARIO'], resultados: ['EXITO', 'FALLIDO'] }),
+            ),
+            http.get('*/logs', () =>
+                HttpResponse.json({
+                    contenido: [],
+                    pagina: 0,
+                    tamano: 20,
+                    totalElementos: 0,
+                    totalPaginas: 0,
+                }),
+            ),
+        );
+        guardarSesion({
+            token: 'token-de-prueba',
+            usuarioId: 1,
+            nombre: 'Admin',
+            correo: 'admin@unillanos.edu.co',
+            rol: 'ADMIN',
+        });
+
+        render(
+            <MemoryRouter initialEntries={['/admin/actividad']}>
+                <AppRoutes />
+            </MemoryRouter>,
+        );
+
+        expect(await screen.findByRole('heading', { name: 'Registro de actividad' })).toBeInTheDocument();
+        expect(screen.getByRole('navigation', { name: 'Paginación de actividad' })).toHaveTextContent(
+            '20 por página',
+        );
+        expect(await screen.findByText('No hay registros.')).toBeInTheDocument();
+        expect(await screen.findByRole('option', { name: 'LOGIN' })).toBeInTheDocument();
+    });
+
+    it('deniega la vista de actividad a quienes no son administradores', async () => {
+        guardarSesion({
+            token: 'token-de-prueba',
+            usuarioId: 2,
+            nombre: 'Ana',
+            correo: 'ana@unillanos.edu.co',
+            rol: 'USUARIO',
+        });
+
+        render(
+            <MemoryRouter initialEntries={['/admin/actividad']}>
+                <AppRoutes />
+            </MemoryRouter>,
+        );
+
+        expect(await screen.findByRole('heading', { name: 'Sin permiso' })).toBeInTheDocument();
+        expect(screen.queryByRole('heading', { name: 'Registro de actividad' })).not.toBeInTheDocument();
+    });
+
     it.each(['ADMIN', 'ORGANIZADOR', 'USUARIO'])('permite a %s consultar su perfil', async (rol) => {
         server.use(
             http.get('*/perfil', () =>

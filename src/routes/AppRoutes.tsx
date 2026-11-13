@@ -53,6 +53,9 @@ const DetalleEvento = lazy(() =>
 const DashboardEstadisticas = lazy(() =>
     import('../features/estadisticas/DashboardEstadisticas').then((modulo) => ({ default: modulo.DashboardEstadisticas })),
 );
+const RegistroActividad = lazy(() =>
+    import('../features/actividad/RegistroActividad').then((modulo) => ({ default: modulo.RegistroActividad })),
+);
 const MisInscripciones = lazy(() =>
     import('../features/inscripciones/pages/MisInscripciones').then((modulo) => ({ default: modulo.MisInscripciones })),
 );
@@ -94,6 +97,7 @@ export function AppRoutes() {
                     <Route path="/admin/categorias" element={pantallaDiferida(<GestionCategorias />)} />
                     <Route path="/admin/usuarios" element={pantallaDiferida(<GestionOrganizadores />)} />
                     <Route path="/admin/estadisticas" element={pantallaDiferida(<DashboardEstadisticas />)} />
+                    <Route path="/admin/actividad" element={pantallaDiferida(<RegistroActividad />)} />
                 </Route>
             </Route>
 
