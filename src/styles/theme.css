@@ -67,6 +67,8 @@
   --color-eventu-shadow-card: transparent;
   --color-eventu-shadow-medium: transparent;
   --color-eventu-avatar-ring: #a00000;
+  --color-eventu-interaction-highlight: #ffeb3b;
+  --color-eventu-interaction-highlight-ink: #000000;
   --color-eventu-hero-background: #000000;
   --color-eventu-hero-decoration: rgb(255 255 255 / 40%);
   --color-eventu-overlay: rgb(0 0 0 / 75%);
@@ -135,6 +137,8 @@
   --color-eventu-shadow-card: transparent;
   --color-eventu-shadow-medium: transparent;
   --color-eventu-avatar-ring: #ffffff;
+  --color-eventu-interaction-highlight: #ffeb3b;
+  --color-eventu-interaction-highlight-ink: #000000;
   --color-eventu-hero-background: #000000;
   --color-eventu-hero-decoration: rgb(255 255 255 / 40%);
   --color-eventu-overlay: rgb(0 0 0 / 85%);

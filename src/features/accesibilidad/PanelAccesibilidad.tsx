@@ -1,3 +1,4 @@
+import { ChevronDown } from 'lucide-react';
 import { ModalAccesible } from '../../components/ui/ModalAccesible';
 import { useAccesibilidad } from './useAccesibilidad';
 import {
@@ -12,7 +13,7 @@ interface PanelAccesibilidadProps {
 }
 
 const opcionesCampo =
-    'mt-1 block w-full rounded-md border border-eventu-field-border bg-eventu-white-surface px-3 py-2 text-eventu-main-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red';
+    'block w-full appearance-none rounded-md border border-eventu-field-border bg-eventu-white-surface px-3 py-2 pr-10 text-eventu-main-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red';
 
 export function PanelAccesibilidad({
     onCerrar,
@@ -90,18 +91,24 @@ export function PanelAccesibilidad({
                     <label htmlFor="accesibilidad-contraste" className="block text-sm font-medium">
                         Nivel de contraste
                     </label>
-                    <select
-                        id="accesibilidad-contraste"
-                        className={opcionesCampo}
-                        value={preferencias.contraste}
-                        onChange={(evento) => {
-                            const contraste = evento.target.value;
-                            if (esModoContraste(contraste)) actualizarPreferencia('contraste', contraste);
-                        }}
-                    >
-                        <option value="normal">Normal</option>
-                        <option value="alto">Alto contraste</option>
-                    </select>
+                    <div className="relative mt-1">
+                        <select
+                            id="accesibilidad-contraste"
+                            className={opcionesCampo}
+                            value={preferencias.contraste}
+                            onChange={(evento) => {
+                                const contraste = evento.target.value;
+                                if (esModoContraste(contraste)) actualizarPreferencia('contraste', contraste);
+                            }}
+                        >
+                            <option value="normal">Normal</option>
+                            <option value="alto">Alto contraste</option>
+                        </select>
+                        <ChevronDown
+                            className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-eventu-main-ink"
+                            aria-hidden="true"
+                        />
+                    </div>
                     <p className="mt-1 text-sm text-eventu-secondary-text">
                         El tema no aplica filtros a imágenes ni códigos QR.
                     </p>
@@ -111,18 +118,24 @@ export function PanelAccesibilidad({
                     <label htmlFor="accesibilidad-fuente" className="block text-sm font-medium">
                         Tipografía
                     </label>
-                    <select
-                        id="accesibilidad-fuente"
-                        className={opcionesCampo}
-                        value={preferencias.fuente}
-                        onChange={(evento) => {
-                            const fuente = evento.target.value;
-                            if (esModoFuente(fuente)) actualizarPreferencia('fuente', fuente);
-                        }}
-                    >
-                        <option value="atkinson">Atkinson Hyperlegible</option>
-                        <option value="sistema">Fuente del sistema (Arial)</option>
-                    </select>
+                    <div className="relative mt-1">
+                        <select
+                            id="accesibilidad-fuente"
+                            className={opcionesCampo}
+                            value={preferencias.fuente}
+                            onChange={(evento) => {
+                                const fuente = evento.target.value;
+                                if (esModoFuente(fuente)) actualizarPreferencia('fuente', fuente);
+                            }}
+                        >
+                            <option value="atkinson">Atkinson Hyperlegible</option>
+                            <option value="sistema">Fuente del sistema (Arial)</option>
+                        </select>
+                        <ChevronDown
+                            className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-eventu-main-ink"
+                            aria-hidden="true"
+                        />
+                    </div>
                 </div>
 
                 {(errorAlGuardar || advertenciaInicial) && (

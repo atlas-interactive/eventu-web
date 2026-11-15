@@ -27,6 +27,7 @@ describe('PanelAccesibilidad', () => {
         const user = userEvent.setup();
         renderizar();
 
+        expect(document.querySelectorAll('[role="dialog"] svg[aria-hidden="true"]')).toHaveLength(2);
         await user.click(screen.getByRole('button', { name: 'Aumentar tamaño de fuente' }));
         await user.click(screen.getByRole('button', { name: 'Aumentar tamaño de fuente' }));
         await user.selectOptions(screen.getByLabelText('Nivel de contraste'), 'alto');

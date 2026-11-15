@@ -56,3 +56,23 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }
+
+:root[data-accesibilidad-contraste='alto']
+  :is(
+    button:not(:disabled):not([aria-disabled='true']),
+    a[href]:not([aria-disabled='true']),
+    select:not(:disabled),
+    [role='button']:not([aria-disabled='true']),
+    [role='menuitem']:not([aria-disabled='true']),
+    [role='menuitemcheckbox']:not([aria-disabled='true']),
+    [role='option'],
+    [role='tab'],
+    [role='switch'],
+    input[type='checkbox']:not(:disabled),
+    input[type='radio']:not(:disabled)
+  ):is(:hover, :focus-visible) {
+  border-color: var(--color-eventu-interaction-highlight-ink);
+  background-color: var(--color-eventu-interaction-highlight);
+  color: var(--color-eventu-interaction-highlight-ink);
+  outline-color: var(--color-eventu-interaction-highlight-ink);
+}
