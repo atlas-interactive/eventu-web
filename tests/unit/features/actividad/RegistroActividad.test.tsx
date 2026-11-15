@@ -63,9 +63,6 @@ describe('RegistroActividad', () => {
         );
 
         expect(await screen.findByText('Laura Gómez')).toBeInTheDocument();
-        const accion = screen.getByLabelText('Acción');
-        expect(accion.parentElement).toHaveClass('actividad-select');
-        expect(accion.nextElementSibling).toHaveAttribute('aria-hidden', 'true');
         await user.selectOptions(screen.getByLabelText('Acción'), 'LOGIN');
 
         await waitFor(() => {

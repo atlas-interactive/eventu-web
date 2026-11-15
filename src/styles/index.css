@@ -57,11 +57,6 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-:root[data-accesibilidad-tema='oscuro'] input[type='date'],
-:root[data-accesibilidad-tema='oscuro'] input[type='datetime-local'] {
-  color-scheme: dark;
-}
-
 :root[data-accesibilidad-contraste='alto']
   :is(
     button:not(:disabled):not([aria-disabled='true']),
@@ -80,9 +75,4 @@ body {
   background-color: var(--color-eventu-interaction-highlight);
   color: var(--color-eventu-interaction-highlight-ink);
   outline-color: var(--color-eventu-interaction-highlight-ink);
-}
-
-:root[data-accesibilidad-contraste='alto']
-  select:is(:hover, :focus-visible) + svg {
-  color: var(--color-eventu-interaction-highlight-ink);
 }

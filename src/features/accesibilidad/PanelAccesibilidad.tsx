@@ -105,7 +105,7 @@ export function PanelAccesibilidad({
                             <option value="alto">Alto contraste</option>
                         </select>
                         <ChevronDown
-                            className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2"
+                            className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-eventu-main-ink"
                             aria-hidden="true"
                         />
                     </div>
@@ -128,11 +128,11 @@ export function PanelAccesibilidad({
                                 if (esModoFuente(fuente)) actualizarPreferencia('fuente', fuente);
                             }}
                         >
-                            <option value="atkinson">Atkinson Hyperlegible</option>
-                            <option value="sistema">Fuente del sistema (Arial)</option>
+                            <option value="sistema">Predeterminada (Arial)</option>
+                            <option value="atkinson">Fuente hiperlegible (Atkinson Hyperlegible)</option>
                         </select>
                         <ChevronDown
-                            className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2"
+                            className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-eventu-main-ink"
                             aria-hidden="true"
                         />
                     </div>
