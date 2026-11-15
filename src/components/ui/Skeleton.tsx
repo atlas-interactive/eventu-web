@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface SkeletonProps {
     className?: string;
@@ -24,8 +25,9 @@ export function SkeletonEstado({ children, etiqueta, className = '' }: SkeletonE
 }
 
 export function SkeletonPagina() {
+    const { t } = useTranslation();
     return (
-        <SkeletonEstado etiqueta="Cargando pantalla" className="mx-auto w-full max-w-[70rem] px-4 py-8 sm:px-8">
+        <SkeletonEstado etiqueta={t('comun.cargandoPantalla')} className="mx-auto w-full max-w-[70rem] px-4 py-8 sm:px-8">
             <Skeleton className="h-7 w-48" />
             <Skeleton className="mt-2 h-4 w-72 max-w-full" />
             <div className="mt-6 grid gap-4 md:grid-cols-2">
@@ -38,9 +40,10 @@ export function SkeletonPagina() {
 }
 
 export function SkeletonAutenticacion() {
+    const { t } = useTranslation();
     return (
         <SkeletonEstado
-            etiqueta="Cargando formulario"
+            etiqueta={t('comun.cargandoFormulario')}
             className="w-full max-w-md rounded-xl border border-eventu-border bg-eventu-white-surface p-6 shadow-sm"
         >
             <Skeleton className="mx-auto h-7 w-40" />
