@@ -86,6 +86,18 @@ describe('GestionEventos (HU-07)', () => {
         expect(listarTodosMock).not.toHaveBeenCalled();
     });
 
+    it('mantiene Inscritos, pero oculta edición y cancelación de eventos iniciados', async () => {
+        listarMisMock.mockResolvedValue([
+            { ...evento(9, 'Feria cultural'), fechaInicio: '2020-01-01T14:30:00' },
+        ]);
+        renderizar();
+
+        expect(await screen.findByText('Finalizado')).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: 'Ver inscritos y asistencias de Feria cultural' })).toBeInTheDocument();
+        expect(screen.queryByRole('link', { name: 'Editar evento Feria cultural' })).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Cancelar evento Feria cultural' })).not.toBeInTheDocument();
+    });
+
     it('muestra todos los eventos y un título adecuado al administrador', async () => {
         guardarSesion({
             token: 'token-prueba',

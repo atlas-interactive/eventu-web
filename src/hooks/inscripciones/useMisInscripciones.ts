@@ -6,6 +6,7 @@ import {
     listarMisInscripciones,
 } from '../../features/inscripciones/services/inscripcionService';
 import { listarEventos } from '../../features/eventos/services/eventoService';
+import { eventoYaIniciado } from '../../features/eventos/estadoTemporalEvento';
 
 export type FiltroInscripcion = 'TODAS' | EstadoInscripcion;
 
@@ -26,10 +27,16 @@ export function useMisInscripciones() {
                 if (!vigente) return;
                 const estadosPorEvento = new Map(eventos.map(({ id, estado }) => [id, estado]));
                 setInscripciones(
-                    datos.map((inscripcion) => ({
-                        ...inscripcion,
-                        eventoEstado: estadosPorEvento.get(inscripcion.eventoId) ?? inscripcion.eventoEstado,
-                    })),
+                    datos.map((inscripcion) => {
+                        const estadoEvento = estadosPorEvento.get(inscripcion.eventoId) ??
+                            inscripcion.eventoEstado ??
+                            (inscripcion.estado === 'ACTIVA' &&
+                                eventoYaIniciado(inscripcion.eventoFechaInicio)
+                                ? 'PUBLICADO'
+                                : undefined);
+
+                        return { ...inscripcion, eventoEstado: estadoEvento };
+                    }),
                 );
             })
             .catch((err: unknown) => {
@@ -63,6 +70,11 @@ export function useMisInscripciones() {
     const solicitarCancelacion = (inscripcion: Inscripcion) => {
         setErrorCancelacion('');
         setMensajeExito('');
+        if (eventoYaIniciado(inscripcion.eventoFechaInicio)) {
+            setErrorCancelacion('No se puede cancelar la inscripción después de que inicia el evento.');
+            setACancelar(inscripcion);
+            return;
+        }
         setACancelar(inscripcion);
     };
 
@@ -75,6 +87,10 @@ export function useMisInscripciones() {
     const confirmarCancelacion = async () => {
         const inscripcion = aCancelar;
         if (!inscripcion || cancelando) return;
+        if (eventoYaIniciado(inscripcion.eventoFechaInicio)) {
+            setErrorCancelacion('No se puede cancelar la inscripción después de que inicia el evento.');
+            return;
+        }
 
         setCancelando(true);
         setErrorCancelacion('');

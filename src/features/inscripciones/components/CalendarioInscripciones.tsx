@@ -2,7 +2,9 @@ import { useMemo, useState } from 'react';
 import { CalendarDays, ChevronLeft, ChevronRight, CircleX, Clock3, MapPin, QrCode } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { ModalAccesible } from '../../../components/ui/ModalAccesible';
+import { useAhoraBogota } from '../../../hooks/eventos/useAhoraBogota';
 import type { Inscripcion } from '../../../types/inscripcion';
+import { eventoYaIniciado, terminoDiaEvento } from '../../eventos/estadoTemporalEvento';
 import { EntradaQr } from './EntradaQr';
 import '../../../styles/event-detail.css';
 
@@ -36,6 +38,7 @@ const claveFecha = (fecha: Date) =>
 const fechaDeInscripcion = (inscripcion: Inscripcion) => new Date(inscripcion.eventoFechaInicio);
 
 export function CalendarioInscripciones({ inscripciones, onCancelar }: CalendarioInscripcionesProps) {
+    const ahora = useAhoraBogota();
     const [mesVisible, setMesVisible] = useState(() => {
         const hoy = new Date();
         return new Date(hoy.getFullYear(), hoy.getMonth(), 1);
@@ -141,6 +144,8 @@ export function CalendarioInscripciones({ inscripciones, onCancelar }: Calendari
                                     {eventos.map((inscripcion) => {
                                         const fechaEvento = fechaDeInscripcion(inscripcion);
                                         const activa = inscripcion.estado === 'ACTIVA';
+                                        const eventoIniciado = eventoYaIniciado(inscripcion.eventoFechaInicio, ahora);
+                                        const diaEventoTerminado = terminoDiaEvento(inscripcion.eventoFechaInicio, ahora);
                                         return (
                                             <article
                                                 className={`inscripciones-evento-tarjeta${!activa ? ' inscripciones-evento-tarjeta--cancelada' : ''}`}
@@ -168,9 +173,13 @@ export function CalendarioInscripciones({ inscripciones, onCancelar }: Calendari
                                                     <span
                                                         className={`inscripcion-estado${activa ? ' inscripcion-estado--activa' : ' inscripcion-estado--cancelada'}`}
                                                     >
-                                                        {activa ? 'Inscripción activa' : 'Inscripción cancelada'}
+                                                        {activa
+                                                            ? diaEventoTerminado
+                                                                ? 'Estás inscrito'
+                                                                : 'Inscripción activa'
+                                                            : 'Inscripción cancelada'}
                                                     </span>
-                                                    {activa && (
+                                                    {activa && !diaEventoTerminado && (
                                                         <>
                                                             {inscripcion.codigoQr && (
                                                                 <button
@@ -183,15 +192,17 @@ export function CalendarioInscripciones({ inscripciones, onCancelar }: Calendari
                                                                     Ver QR
                                                                 </button>
                                                             )}
-                                                            <button
-                                                                type="button"
-                                                                className="inscripciones-evento-accion inscripciones-evento-accion--cancelar"
-                                                                aria-label={`Cancelar inscripción a ${inscripcion.eventoTitulo}`}
-                                                                onClick={() => onCancelar(inscripcion)}
-                                                            >
-                                                                <CircleX aria-hidden="true" />
-                                                                Cancelar
-                                                            </button>
+                                                            {!eventoIniciado && (
+                                                                <button
+                                                                    type="button"
+                                                                    className="inscripciones-evento-accion inscripciones-evento-accion--cancelar"
+                                                                    aria-label={`Cancelar inscripción a ${inscripcion.eventoTitulo}`}
+                                                                    onClick={() => onCancelar(inscripcion)}
+                                                                >
+                                                                    <CircleX aria-hidden="true" />
+                                                                    Cancelar
+                                                                </button>
+                                                            )}
                                                         </>
                                                     )}
                                                 </div>
@@ -279,7 +290,7 @@ export function CalendarioInscripciones({ inscripciones, onCancelar }: Calendari
                 </footer>
             </aside>
 
-            {inscripcionQr?.codigoQr && (
+            {inscripcionQr?.codigoQr && !terminoDiaEvento(inscripcionQr.eventoFechaInicio, ahora) && (
                 <ModalAccesible
                     titulo="Tu entrada"
                     idTitulo="titulo-qr-inscripcion"

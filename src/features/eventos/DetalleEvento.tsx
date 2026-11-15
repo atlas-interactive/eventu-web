@@ -19,7 +19,9 @@ import type { Evento } from '../../types/evento';
 import type { Inscripcion } from '../../types/inscripcion';
 import { esAdministrador, esOrganizador, esUsuario, obtenerSesion } from '../sesion/sesion';
 import { useInscripcionEvento } from '../../hooks/eventos/useInscripcionEvento';
+import { useAhoraBogota } from '../../hooks/eventos/useAhoraBogota';
 import { ConfirmacionInscripcion } from './components/ConfirmacionInscripcion';
+import { obtenerEstadoTemporalEvento } from './estadoTemporalEvento';
 import { obtenerEvento } from './services/eventoService';
 import '../../styles/event-detail.css';
 
@@ -64,6 +66,7 @@ const descargarCalendario = (evento: Evento) => {
 export function DetalleEvento() {
     const { id } = useParams();
     const idEvento = Number(id);
+    const ahora = useAhoraBogota();
     const sesion = obtenerSesion();
     const puedeConsultarInscripcion = esUsuario(sesion) || esOrganizador(sesion);
     const inscripcion = useInscripcionEvento(
@@ -147,6 +150,11 @@ export function DetalleEvento() {
     }
 
     const cancelado = estaCancelado(evento);
+    const estadoTemporal = evento.estado.toUpperCase() === 'PUBLICADO'
+        ? obtenerEstadoTemporalEvento(evento.fechaInicio, ahora)
+        : null;
+    const eventoIniciado = estadoTemporal === 'EN_CURSO' || estadoTemporal === 'FINALIZADO';
+    const qrDisponible = estadoTemporal === 'FUTURO' || estadoTemporal === 'EN_CURSO';
     const agotado = evento.cuposDisponibles <= 0;
     const inscritos = Math.min(evento.cuposMaximos, Math.max(0, evento.cuposMaximos - evento.cuposDisponibles));
     const porcentajeOcupado =
@@ -229,7 +237,17 @@ export function DetalleEvento() {
                                 Evento cancelado
                             </span>
                         )}
-                        {agotado && !cancelado && (
+                        {estadoTemporal === 'EN_CURSO' && !cancelado && (
+                            <span className="detalle-evento-estado detalle-evento-estado--en-curso">
+                                En curso
+                            </span>
+                        )}
+                        {estadoTemporal === 'FINALIZADO' && !cancelado && (
+                            <span className="detalle-evento-estado detalle-evento-estado--finalizado">
+                                Finalizado
+                            </span>
+                        )}
+                        {agotado && !cancelado && !eventoIniciado && (
                             <span className="detalle-evento-estado detalle-evento-estado--agotado">
                                 Cupos agotados
                             </span>
@@ -283,46 +301,56 @@ export function DetalleEvento() {
                                 <Check aria-hidden="true" />
                                 Estás inscrito
                             </div>
-                            <div className="detalle-evento-panel-contenido">
-                                <h2>Tu entrada</h2>
-                                {codigoQr ? (
-                                    <EntradaQr codigo={codigoQr} nombreArchivo={`entrada-evento-${evento.id}.svg`} />
-                                ) : (
-                                    <p className="detalle-evento-qr-no-disponible" role="status">
-                                        No hay un código QR disponible para esta inscripción.
-                                    </p>
-                                )}
-                                <button
-                                    type="button"
-                                    className="detalle-evento-calendario"
-                                    onClick={crearArchivoCalendario}
-                                >
-                                    <CalendarPlus aria-hidden="true" />
-                                    Añadir al calendario
-                                </button>
-                                {errorCalendario && <p className="detalle-evento-error" role="alert">{errorCalendario}</p>}
-                                <p className="detalle-evento-qr-ayuda">
-                                    La validación de la entrada se realiza desde la aplicación móvil.
-                                </p>
-                            </div>
-                            <div className="detalle-evento-panel-ocupacion">
-                                <div><span>Cupos ocupados</span><strong>{inscritos} / {evento.cuposMaximos}</strong></div>
-                                <div className="detalle-evento-cupos" role="meter" aria-label="Cupos ocupados" aria-valuemin={0} aria-valuemax={evento.cuposMaximos} aria-valuenow={inscritos}>
-                                    <span style={{ width: `${porcentajeOcupado}%` }} />
-                                </div>
-                            </div>
-                            <button
-                                type="button"
-                                className="detalle-evento-cancelar-inscripcion"
-                                onClick={() => setACancelar(inscripcion.inscripcionActiva)}
-                            >
-                                Cancelar mi inscripción
-                            </button>
+                            {qrDisponible && (
+                                <>
+                                    <div className="detalle-evento-panel-contenido">
+                                        <h2>Tu entrada</h2>
+                                        {codigoQr ? (
+                                            <EntradaQr codigo={codigoQr} nombreArchivo={`entrada-evento-${evento.id}.svg`} />
+                                        ) : (
+                                            <p className="detalle-evento-qr-no-disponible" role="status">
+                                                No hay un código QR disponible para esta inscripción.
+                                            </p>
+                                        )}
+                                        <button
+                                            type="button"
+                                            className="detalle-evento-calendario"
+                                            onClick={crearArchivoCalendario}
+                                        >
+                                            <CalendarPlus aria-hidden="true" />
+                                            Añadir al calendario
+                                        </button>
+                                        {errorCalendario && <p className="detalle-evento-error" role="alert">{errorCalendario}</p>}
+                                        <p className="detalle-evento-qr-ayuda">
+                                            La validación de la entrada se realiza desde la aplicación móvil.
+                                        </p>
+                                    </div>
+                                    <div className="detalle-evento-panel-ocupacion">
+                                        <div><span>Cupos ocupados</span><strong>{inscritos} / {evento.cuposMaximos}</strong></div>
+                                        <div className="detalle-evento-cupos" role="meter" aria-label="Cupos ocupados" aria-valuemin={0} aria-valuemax={evento.cuposMaximos} aria-valuenow={inscritos}>
+                                            <span style={{ width: `${porcentajeOcupado}%` }} />
+                                        </div>
+                                    </div>
+                                    {!eventoIniciado && (
+                                        <button
+                                            type="button"
+                                            className="detalle-evento-cancelar-inscripcion"
+                                            onClick={() => setACancelar(inscripcion.inscripcionActiva)}
+                                        >
+                                            Cancelar mi inscripción
+                                        </button>
+                                    )}
+                                </>
+                            )}
                         </>
                     ) : (
                         <div className="detalle-evento-panel-contenido">
                             {cancelado ? (
                                 <p className="detalle-evento-panel-estado">Evento cancelado</p>
+                            ) : eventoIniciado ? (
+                                <p className="detalle-evento-panel-estado">
+                                    El evento ya inició. No se permiten nuevas inscripciones.
+                                </p>
                             ) : agotado ? (
                                 <p className="detalle-evento-panel-estado">Cupos agotados</p>
                             ) : noPublicado ? (
@@ -380,13 +408,15 @@ export function DetalleEvento() {
             {inscripcion.yaInscrito && (
                 <div className="detalle-evento-entrada-movil">
                     <span><Check aria-hidden="true" /> Estás inscrito</span>
-                    <button type="button" onClick={() => setEntradaAbierta(true)}>
-                        Ver mi entrada
-                    </button>
+                    {qrDisponible && (
+                        <button type="button" onClick={() => setEntradaAbierta(true)}>
+                            Ver mi entrada
+                        </button>
+                    )}
                 </div>
             )}
 
-            {entradaAbierta && inscripcion.yaInscrito && (
+            {entradaAbierta && inscripcion.yaInscrito && qrDisponible && (
                 <ModalAccesible
                     titulo="Tu entrada"
                     idTitulo="titulo-entrada-evento"

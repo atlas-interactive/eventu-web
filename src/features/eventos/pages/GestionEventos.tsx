@@ -7,10 +7,13 @@ import { FiltrosEventos } from '../components/FiltrosEventos';
 import { ordenarEventos, type OrdenEventos } from '../eventoOrdenamiento';
 import { TarjetaEvento } from '../components/TarjetaEvento';
 import { ConfirmarCancelacionEvento } from '../components/ConfirmarCancelacionEvento';
+import { eventoYaIniciado } from '../estadoTemporalEvento';
 import { useGestionEventos } from '../../../hooks/eventos/useGestionEventos';
+import { useAhoraBogota } from '../../../hooks/eventos/useAhoraBogota';
 import '../../../styles/events.css';
 
 export function GestionEventos() {
+    const ahora = useAhoraBogota();
     const location = useLocation();
     const mensajeNavegacion = (location.state as { mensaje?: string } | null)?.mensaje ?? '';
     const gestion = useGestionEventos(mensajeNavegacion);
@@ -107,7 +110,9 @@ export function GestionEventos() {
                                 <Users className="h-4 w-4 shrink-0" aria-hidden="true" />
                                 Inscritos
                             </Link>
-                            {evento.estado.toUpperCase() !== 'CANCELADO' && (
+                            {evento.estado.toUpperCase() !== 'CANCELADO' &&
+                                !(evento.estado.toUpperCase() === 'PUBLICADO' &&
+                                    eventoYaIniciado(evento.fechaInicio, ahora)) && (
                                 <>
                                     <Link
                                         to={`/organizador/eventos/${evento.id}/editar`}

@@ -111,6 +111,16 @@
   color: var(--color-eventu-secondary-text);
 }
 
+.detalle-evento-estado--en-curso {
+  background-color: #fff4e5;
+  color: #92400e;
+}
+
+.detalle-evento-estado--finalizado {
+  background-color: var(--color-eventu-disabled-button);
+  color: var(--color-eventu-secondary-text);
+}
+
 .detalle-evento-titulo {
   margin-top: 0.5rem;
   color: var(--color-eventu-main-ink);

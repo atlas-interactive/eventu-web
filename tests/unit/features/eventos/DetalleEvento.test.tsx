@@ -24,6 +24,22 @@ const obtenerEventoMock = vi.mocked(obtenerEvento);
 const inscribirEnEventoMock = vi.mocked(inscribirEnEvento);
 const obtenerInscripcionActivaMock = vi.mocked(obtenerInscripcionActiva);
 
+const fechaEnBogota = (diasDesdeHoy: number, hora: string) => {
+    const partes = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'America/Bogota',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+    }).formatToParts(new Date());
+    const valores = Object.fromEntries(partes.map(({ type, value }) => [type, value]));
+    const fecha = new Date(Date.UTC(
+        Number(valores.year),
+        Number(valores.month) - 1,
+        Number(valores.day) + diasDesdeHoy,
+    ));
+    return `${fecha.toISOString().slice(0, 10)}T${hora}`;
+};
+
 const evento: Evento = {
     id: 5,
     titulo: 'Feria de proyectos',
@@ -101,6 +117,64 @@ describe('DetalleEvento', () => {
         expect(await screen.findByText('EVENTU-QR-ACTIVO')).toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Cancelar mi inscripción' })).toBeInTheDocument();
         expect(inscribirEnEventoMock).not.toHaveBeenCalled();
+    });
+
+    it('muestra En curso y bloquea nuevas inscripciones cuando el evento ya inició hoy', async () => {
+        obtenerEventoMock.mockResolvedValue({
+            ...evento,
+            fechaInicio: fechaEnBogota(0, '00:00:00'),
+        });
+        renderDetalle();
+
+        expect(await screen.findByText('En curso')).toBeInTheDocument();
+        expect(screen.getByText('El evento ya inició. No se permiten nuevas inscripciones.')).toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Inscribirme al evento' })).not.toBeInTheDocument();
+        expect(inscribirEnEventoMock).not.toHaveBeenCalled();
+    });
+
+    it('conserva la inscripción durante el día de inicio, pero oculta la cancelación', async () => {
+        const fechaInicio = fechaEnBogota(0, '00:00:00');
+        obtenerEventoMock.mockResolvedValue({ ...evento, fechaInicio });
+        obtenerInscripcionActivaMock.mockResolvedValue({
+            id: 12,
+            estado: 'ACTIVA',
+            codigoQr: 'EVENTU-QR-ACTIVO',
+            fechaInscripcion: '2026-09-10T14:20:00',
+            eventoId: 5,
+            eventoTitulo: evento.titulo,
+            eventoFechaInicio: fechaInicio,
+            eventoUbicacion: evento.ubicacion,
+            eventoEstado: evento.estado,
+        });
+        renderDetalle();
+
+        expect(await screen.findByText('EVENTU-QR-ACTIVO')).toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Cancelar mi inscripción' })).not.toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Ver mi entrada' })).toBeInTheDocument();
+    });
+
+    it('oculta el QR después del día del evento y mantiene el estado de inscripción', async () => {
+        const fechaInicio = fechaEnBogota(-1, '09:00:00');
+        obtenerEventoMock.mockResolvedValue({ ...evento, fechaInicio });
+        obtenerInscripcionActivaMock.mockResolvedValue({
+            id: 12,
+            estado: 'ACTIVA',
+            codigoQr: 'QR-EXPIRADO',
+            fechaInscripcion: '2026-09-10T14:20:00',
+            eventoId: 5,
+            eventoTitulo: evento.titulo,
+            eventoFechaInicio: fechaInicio,
+            eventoUbicacion: evento.ubicacion,
+            eventoEstado: evento.estado,
+        });
+        renderDetalle();
+
+        expect(await screen.findByText('Finalizado')).toBeInTheDocument();
+        expect(screen.getAllByText('Estás inscrito').length).toBeGreaterThan(0);
+        expect(screen.queryByText('QR-EXPIRADO')).not.toBeInTheDocument();
+        expect(screen.queryByRole('heading', { name: 'Tu entrada' })).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Cancelar mi inscripción' })).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Ver mi entrada' })).not.toBeInTheDocument();
     });
 
     it('abre un modal con el QR, su descarga y el calendario desde el acceso móvil', async () => {

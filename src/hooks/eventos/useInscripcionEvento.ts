@@ -7,6 +7,7 @@ import {
     inscribirEnEvento,
     obtenerInscripcionActiva,
 } from '../../features/inscripciones/services/inscripcionService';
+import { eventoYaIniciado } from '../../features/eventos/estadoTemporalEvento';
 
 export function useInscripcionEvento(eventoId: number, habilitado = true) {
     const [intentoVerificacion, setIntentoVerificacion] = useState(0);
@@ -67,6 +68,10 @@ export function useInscripcionEvento(eventoId: number, habilitado = true) {
 
     const inscribir = async (evento: Evento): Promise<boolean> => {
         if (verificando || errorVerificacion || yaInscrito || inscribiendo || inscripcionRealizada) return false;
+        if (eventoYaIniciado(evento.fechaInicio)) {
+            setError('El evento ya inició. No se permiten nuevas inscripciones.');
+            return false;
+        }
         setInscribiendo(true);
         setError('');
         try {
@@ -100,6 +105,10 @@ export function useInscripcionEvento(eventoId: number, habilitado = true) {
 
     const cancelarInscripcionActiva = async (): Promise<boolean> => {
         if (!inscripcionActiva || cancelando) return false;
+        if (eventoYaIniciado(inscripcionActiva.eventoFechaInicio)) {
+            setErrorCancelacion('No se puede cancelar la inscripción después de que inicia el evento.');
+            return false;
+        }
         setCancelando(true);
         setErrorCancelacion('');
         try {
