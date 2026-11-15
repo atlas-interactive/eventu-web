@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import type { SubmitEvent } from 'react';
 import { CalendarDays, KeyRound, Mail, Pencil, ShieldAlert } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import i18n from '../../i18n';
 import { useNavigate } from 'react-router-dom';
 import { mensajeDeError } from '../../api/mensajeDeError';
 import { ModalAccesible } from '../../components/ui/ModalAccesible';
@@ -15,10 +17,10 @@ import {
 import type { PerfilUsuario } from '../../types/perfil';
 import '../../styles/perfil.css';
 
-const ETIQUETA_ROL: Record<string, string> = {
-    ADMIN: 'Administrador',
-    ORGANIZADOR: 'Organizador',
-    USUARIO: 'Usuario',
+const CLAVE_ROL: Record<string, string> = {
+    ADMIN: 'comun.roles.admin',
+    ORGANIZADOR: 'comun.roles.organizador',
+    USUARIO: 'comun.roles.usuario',
 };
 
 const inicialesNombre = (nombre: string): string =>
@@ -31,13 +33,14 @@ const inicialesNombre = (nombre: string): string =>
         .join('');
 
 const fechaRegistro = (fecha: string | null): string => {
-    if (!fecha) return 'No disponible';
+    if (!fecha) return i18n.t('perfil.noDisponible');
     const valor = new Date(fecha);
-    if (Number.isNaN(valor.getTime())) return 'No disponible';
+    if (Number.isNaN(valor.getTime())) return i18n.t('perfil.noDisponible');
     return new Intl.DateTimeFormat('es-CO', { dateStyle: 'long' }).format(valor);
 };
 
 export function Perfil() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const [perfil, setPerfil] = useState<PerfilUsuario | null>(null);
     const [recarga, setRecarga] = useState(0);
@@ -98,11 +101,11 @@ export function Perfil() {
 
         const nombre = nombreEditado.trim();
         if (!nombre) {
-            setErrorGuardado('El nombre es obligatorio.');
+            setErrorGuardado(t('perfil.errorNombreObligatorio'));
             return;
         }
         if (nombre.length > 100) {
-            setErrorGuardado('El nombre no puede superar los 100 caracteres.');
+            setErrorGuardado(t('perfil.errorNombreMaximo'));
             return;
         }
 
@@ -118,7 +121,7 @@ export function Perfil() {
             setNombreEditado(actualizado.nombre);
             actualizarNombreSesion(actualizado.nombre);
             setEditando(false);
-            setMensajeExito('Tu información se actualizó correctamente.');
+            setMensajeExito(t('perfil.exitoActualizacion'));
         } catch (error: unknown) {
             console.error('No se pudo actualizar el perfil:', error);
             setErrorGuardado(mensajeDeError(error));
@@ -133,11 +136,11 @@ export function Perfil() {
         setMensajeExito('');
 
         if (passwordNueva.length < 8 || passwordNueva.length > 72) {
-            setErrorContrasena('La contraseña debe tener entre 8 y 72 caracteres.');
+            setErrorContrasena(t('perfil.errorContrasenaLongitud'));
             return;
         }
         if (passwordNueva !== confirmacionContrasena) {
-            setErrorContrasena('La confirmación no coincide con la nueva contraseña.');
+            setErrorContrasena(t('perfil.errorContrasenaCoincidencia'));
             return;
         }
 
@@ -148,7 +151,7 @@ export function Perfil() {
             setPasswordActual('');
             setPasswordNueva('');
             setConfirmacionContrasena('');
-            setMensajeExito(respuesta.mensaje || 'Tu contraseña se actualizó correctamente.');
+            setMensajeExito(respuesta.mensaje || t('perfil.exitoContrasena'));
         } catch (error: unknown) {
             console.error('No se pudo cambiar la contraseña:', error);
             setErrorContrasena(mensajeDeError(error));
@@ -173,7 +176,7 @@ export function Perfil() {
     const confirmarDesactivacion = async (evento: SubmitEvent<HTMLFormElement>) => {
         evento.preventDefault();
         if (desactivandoCuenta || !passwordDesactivacion.trim()) {
-            setErrorDesactivacion('Ingresa tu contraseña para confirmar la desactivación.');
+            setErrorDesactivacion(t('perfil.errorPasswordDesactivacion'));
             return;
         }
 
@@ -198,7 +201,7 @@ export function Perfil() {
     return (
         <main className="perfil-page">
             <header className="perfil-page-header">
-                <h1 className="perfil-title">Mi perfil</h1>
+                <h1 className="perfil-title">{t('perfil.titulo')}</h1>
             </header>
 
             {mensajeExito && (
@@ -208,7 +211,7 @@ export function Perfil() {
             )}
 
             {cargando && (
-                <SkeletonEstado etiqueta="Cargando perfil" className="perfil-loading-grid">
+                <SkeletonEstado etiqueta={t('perfil.cargando')} className="perfil-loading-grid">
                     <div className="perfil-loading-column">
                         <Skeleton className="perfil-skeleton perfil-skeleton--profile" />
                         <Skeleton className="perfil-skeleton perfil-skeleton--password" />
@@ -225,7 +228,7 @@ export function Perfil() {
                         onClick={() => setRecarga((valor) => valor + 1)}
                         className="perfil-button perfil-button--secondary perfil-retry-button"
                     >
-                        Reintentar
+                        {t('perfil.reintentar')}
                     </button>
                 </div>
             )}
@@ -239,7 +242,7 @@ export function Perfil() {
                                 <header className="perfil-card-header">
                                     <div
                                         role="img"
-                                        aria-label={`Avatar de ${perfil.nombre}`}
+                                        aria-label={t('perfil.avatar', { nombre: perfil.nombre })}
                                         className="perfil-avatar"
                                     >
                                         {inicialesNombre(perfil.nombre)}
@@ -251,7 +254,9 @@ export function Perfil() {
                                             </h2>
                                         )}
                                         <span className="perfil-role">
-                                            {ETIQUETA_ROL[perfil.rol.toUpperCase()] ?? perfil.rol}
+                                            {CLAVE_ROL[perfil.rol.toUpperCase()]
+                                                ? t(CLAVE_ROL[perfil.rol.toUpperCase()])
+                                                : perfil.rol}
                                         </span>
                                     </div>
                                 </header>
@@ -259,7 +264,7 @@ export function Perfil() {
                                 {editando ? (
                                     <form className="perfil-edit-form" onSubmit={guardarCambios}>
                                         <label htmlFor="perfil-nombre" className="perfil-label">
-                                            Nombre completo
+                                            {t('perfil.nombreCompleto')}
                                         </label>
                                         <input
                                             id="perfil-nombre"
@@ -283,7 +288,7 @@ export function Perfil() {
                                                 disabled={guardando}
                                                 className="perfil-button perfil-button--primary"
                                             >
-                                                {guardando ? 'Guardando…' : 'Guardar cambios'}
+                                                {guardando ? t('perfil.guardando') : t('perfil.guardarCambios')}
                                             </button>
                                             <button
                                                 type="button"
@@ -291,7 +296,7 @@ export function Perfil() {
                                                 disabled={guardando}
                                                 className="perfil-button perfil-button--secondary"
                                             >
-                                                Cancelar
+                                                {t('perfil.cancelar')}
                                             </button>
                                         </div>
                                     </form>
@@ -301,14 +306,14 @@ export function Perfil() {
                                             <div className="perfil-detail">
                                                 <p className="perfil-detail-label">
                                                     <Mail className="perfil-detail-icon" aria-hidden="true" />
-                                                    Correo institucional
+                                                    {t('perfil.correo')}
                                                 </p>
                                                 <p className="perfil-detail-value perfil-detail-value--email">{perfil.correo}</p>
                                             </div>
                                             <div className="perfil-detail">
                                                 <p className="perfil-detail-label">
                                                     <CalendarDays className="perfil-detail-icon" aria-hidden="true" />
-                                                    Miembro desde
+                                                    {t('perfil.miembroDesde')}
                                                 </p>
                                                 <p className="perfil-detail-value">
                                                     {fechaRegistro(perfil.creadoEn)}
@@ -321,7 +326,7 @@ export function Perfil() {
                                             className="perfil-button perfil-button--edit"
                                         >
                                             <Pencil className="perfil-button-icon" aria-hidden="true" />
-                                            Editar información
+                                            {t('perfil.editarInformacion')}
                                         </button>
                                     </>
                                 )}
@@ -332,22 +337,20 @@ export function Perfil() {
                             <div className="perfil-card-content">
                                 <h2 className="perfil-section-title">
                                     <ShieldAlert className="perfil-section-icon perfil-section-icon--warning" aria-hidden="true" />
-                                    Desactivar cuenta
+                                    {t('perfil.desactivarCuenta')}
                                 </h2>
                                 <p className="perfil-section-description">
-                                    Tu cuenta se conservará y podrás reactivarla iniciando sesión de nuevo.
-                                    Antes de continuar, ten en cuenta estas restricciones:
+                                    {t('perfil.desactivarDescripcion')}
                                 </p>
                                 <ul className="perfil-restricciones-desactivacion">
                                     <li>
-                                        Si eres el único administrador activo, no podrás desactivar tu cuenta.
+                                        {t('perfil.restriccionAdmin')}
                                     </li>
                                     <li>
-                                        Si eres organizador, primero debes cancelar o esperar a que finalicen tus eventos publicados.
+                                        {t('perfil.restriccionOrganizador')}
                                     </li>
                                     <li>
-                                        Tus inscripciones activas a eventos que aún no inician se cancelarán y sus cupos se liberarán.
-                                        Las asistencias ya registradas se conservarán.
+                                        {t('perfil.restriccionInscripciones')}
                                     </li>
                                 </ul>
                                 <button
@@ -355,7 +358,7 @@ export function Perfil() {
                                     onClick={abrirModalDesactivacion}
                                     className="perfil-button perfil-button--danger"
                                 >
-                                    Desactivar mi cuenta
+                                    {t('perfil.desactivarMiCuenta')}
                                 </button>
                             </div>
                         </section>
@@ -366,15 +369,15 @@ export function Perfil() {
                         <div className="perfil-card-content">
                             <h2 className="perfil-section-title">
                                 <KeyRound className="perfil-section-icon" aria-hidden="true" />
-                                Cambiar contraseña
+                                {t('perfil.cambiarContrasena')}
                             </h2>
                             <p className="perfil-section-description">
-                                Usa tu contraseña actual para confirmar el cambio.
+                                {t('perfil.cambiarDescripcion')}
                             </p>
                             <form className="perfil-password-form" onSubmit={guardarContrasena}>
                                 <div className="perfil-password-field">
                                     <label htmlFor="password-actual" className="perfil-label">
-                                        Contraseña actual
+                                        {t('perfil.contrasenaActual')}
                                     </label>
                                     <input
                                         id="password-actual"
@@ -385,12 +388,12 @@ export function Perfil() {
                                         onChange={(evento) => setPasswordActual(evento.target.value)}
                                         required
                                         className="perfil-input"
-                                        placeholder="Ingresa tu contraseña actual"
+                                        placeholder={t('perfil.placeholderContrasenaActual')}
                                     />
                                 </div>
                                 <div className="perfil-password-field">
                                     <label htmlFor="password-nueva" className="perfil-label">
-                                        Nueva contraseña
+                                        {t('perfil.nuevaContrasena')}
                                     </label>
                                     <input
                                         id="password-nueva"
@@ -403,12 +406,12 @@ export function Perfil() {
                                         maxLength={72}
                                         required
                                         className="perfil-input"
-                                        placeholder="Entre 8 y 72 caracteres"
+                                        placeholder={t('perfil.placeholderNuevaContrasena')}
                                     />
                                 </div>
                                 <div className="perfil-password-field">
                                     <label htmlFor="password-confirmacion" className="perfil-label">
-                                        Confirmar nueva contraseña
+                                        {t('perfil.confirmarNuevaContrasena')}
                                     </label>
                                     <input
                                         id="password-confirmacion"
@@ -421,7 +424,7 @@ export function Perfil() {
                                         maxLength={72}
                                         required
                                         className="perfil-input"
-                                        placeholder="Repite tu nueva contraseña"
+                                        placeholder={t('perfil.placeholderConfirmarContrasena')}
                                     />
                                 </div>
                                 {errorContrasena && (
@@ -434,7 +437,7 @@ export function Perfil() {
                                     disabled={cambiandoContrasena}
                                     className="perfil-button perfil-button--primary perfil-password-submit"
                                 >
-                                    {cambiandoContrasena ? 'Actualizando…' : 'Actualizar contraseña'}
+                                    {cambiandoContrasena ? t('perfil.actualizando') : t('perfil.actualizarContrasena')}
                                 </button>
                             </form>
                         </div>
@@ -443,17 +446,17 @@ export function Perfil() {
             )}
             {modalDesactivacionAbierto && (
                 <ModalAccesible
-                    titulo="Confirmar desactivación de cuenta"
+                    titulo={t('perfil.confirmarDesactivacionTitulo')}
                     idTitulo="titulo-desactivar-cuenta"
                     onCerrar={cerrarModalDesactivacion}
                     icono={<ShieldAlert className="perfil-section-icon perfil-section-icon--warning" aria-hidden="true" />}
                 >
                     <p className="workflow-dialog-copy">
-                        Ingresa tu contraseña para confirmar. Se cerrará tu sesión y podrás reactivar tu cuenta al iniciar sesión de nuevo.
+                        {t('perfil.confirmarDesactivacionMensaje')}
                     </p>
                     <form className="perfil-desactivacion-form" onSubmit={confirmarDesactivacion}>
                         <label htmlFor="password-desactivacion" className="perfil-label">
-                            Contraseña actual
+                            {t('perfil.contrasenaActual')}
                         </label>
                         <input
                             id="password-desactivacion"
@@ -479,14 +482,14 @@ export function Perfil() {
                                 onClick={cerrarModalDesactivacion}
                                 disabled={desactivandoCuenta}
                             >
-                                Volver
+                                {t('perfil.volver')}
                             </button>
                             <button
                                 type="submit"
                                 className="workflow-button workflow-button--primary"
                                 disabled={desactivandoCuenta || !passwordDesactivacion.trim()}
                             >
-                                {desactivandoCuenta ? 'Desactivando…' : 'Confirmar desactivación'}
+                                {desactivandoCuenta ? t('perfil.desactivando') : t('perfil.confirmarDesactivacion')}
                             </button>
                         </div>
                     </form>

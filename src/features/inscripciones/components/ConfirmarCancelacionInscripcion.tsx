@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { IconoAviso } from '../../../components/ui/IconoAviso';
 import { ModalAccesible } from '../../../components/ui/ModalAccesible';
 import type { Inscripcion } from '../../../types/inscripcion';
@@ -17,16 +18,17 @@ export function ConfirmarCancelacionInscripcion({
     onCerrar,
     onConfirmar,
 }: ConfirmarCancelacionInscripcionProps) {
+    const { t } = useTranslation();
     return (
         <ModalAccesible
-            titulo="¿Cancelar inscripción?"
+            titulo={t('cancelarInscripcion.titulo')}
             idTitulo="titulo-cancelar-inscripcion"
             onCerrar={onCerrar}
             icono={<span className="evento-dialog-icon">!</span>}
         >
             <h3 className="evento-dialog-title">{inscripcion.eventoTitulo}</h3>
             <p className="evento-dialog-copy">
-                Se cancelará tu inscripción y el cupo quedará disponible para otra persona.
+                {t('cancelarInscripcion.mensaje')}
             </p>
             {error && (
                 <p role="alert" className="workflow-inline-error evento-dialog-error flex items-start gap-2">
@@ -41,7 +43,7 @@ export function ConfirmarCancelacionInscripcion({
                     onClick={onCerrar}
                     disabled={cancelando}
                 >
-                    Volver
+                    {t('cancelarInscripcion.volver')}
                 </button>
                 <button
                     type="button"
@@ -49,7 +51,7 @@ export function ConfirmarCancelacionInscripcion({
                     onClick={onConfirmar}
                     disabled={cancelando}
                 >
-                    {cancelando ? 'Cancelando…' : 'Confirmar cancelación'}
+                    {cancelando ? t('cancelarInscripcion.cancelando') : t('cancelarInscripcion.confirmar')}
                 </button>
             </div>
         </ModalAccesible>

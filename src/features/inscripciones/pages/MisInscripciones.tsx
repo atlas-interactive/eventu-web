@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { IconoAviso } from '../../../components/ui/IconoAviso';
 import { Skeleton, SkeletonEstado } from '../../../components/ui/Skeleton';
 import { useMisInscripciones } from '../../../hooks/inscripciones/useMisInscripciones';
@@ -6,19 +7,20 @@ import { CalendarioInscripciones } from '../components/CalendarioInscripciones';
 import { ConfirmarCancelacionInscripcion } from '../components/ConfirmarCancelacionInscripcion';
 import '../../../styles/inscriptions.css';
 
-const filtros: { valor: FiltroInscripcion; etiqueta: string }[] = [
-    { valor: 'TODAS', etiqueta: 'Todas' },
-    { valor: 'ACTIVA', etiqueta: 'Activas' },
-    { valor: 'CANCELADA', etiqueta: 'Canceladas' },
+const filtros: { valor: FiltroInscripcion; clave: string }[] = [
+    { valor: 'TODAS', clave: 'inscripciones.todas' },
+    { valor: 'ACTIVA', clave: 'inscripciones.activas' },
+    { valor: 'CANCELADA', clave: 'inscripciones.canceladas' },
 ];
 
 export function MisInscripciones() {
+    const { t } = useTranslation();
     const misInscripciones = useMisInscripciones();
 
     return (
         <main className="inscripciones-page">
             <header className="inscripciones-header">
-                <h1 className="inscripciones-titulo">Mis inscripciones</h1>
+                <h1 className="inscripciones-titulo">{t('inscripciones.titulo')}</h1>
             </header>
 
             {misInscripciones.error && (
@@ -34,8 +36,8 @@ export function MisInscripciones() {
                 </p>
             )}
 
-            <div className="inscripciones-filtros" role="group" aria-label="Filtrar inscripciones">
-                {filtros.map(({ valor, etiqueta }) => (
+            <div className="inscripciones-filtros" role="group" aria-label={t('inscripciones.filtrarAria')}>
+                {filtros.map(({ valor, clave }) => (
                     <button
                         key={valor}
                         type="button"
@@ -43,13 +45,13 @@ export function MisInscripciones() {
                         aria-pressed={misInscripciones.filtro === valor}
                         onClick={() => misInscripciones.setFiltro(valor)}
                     >
-                        {etiqueta} ({misInscripciones.conteos[valor]})
+                        {t(clave)} ({misInscripciones.conteos[valor]})
                     </button>
                 ))}
             </div>
 
             {misInscripciones.cargando && (
-                <SkeletonEstado etiqueta="Cargando tus inscripciones">
+                <SkeletonEstado etiqueta={t('inscripciones.cargando')}>
                     <ul className="inscripciones-lista">
                         {Array.from({ length: 3 }, (_, indice) => (
                             <li key={indice} className="inscripcion-fila" aria-hidden="true">

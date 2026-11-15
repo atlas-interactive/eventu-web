@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { CalendarDays, ChevronLeft, ChevronRight, CircleX, Clock3, MapPin, QrCode } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { ModalAccesible } from '../../../components/ui/ModalAccesible';
 import { useAhoraBogota } from '../../../hooks/eventos/useAhoraBogota';
@@ -38,6 +39,7 @@ const claveFecha = (fecha: Date) =>
 const fechaDeInscripcion = (inscripcion: Inscripcion) => new Date(inscripcion.eventoFechaInicio);
 
 export function CalendarioInscripciones({ inscripciones, onCancelar }: CalendarioInscripcionesProps) {
+    const { t } = useTranslation();
     const ahora = useAhoraBogota();
     const [mesVisible, setMesVisible] = useState(() => {
         const hoy = new Date();
@@ -119,11 +121,11 @@ export function CalendarioInscripciones({ inscripciones, onCancelar }: Calendari
 
     return (
         <div className="inscripciones-agenda-layout">
-            <section className="inscripciones-agenda" aria-label="Agenda de mis inscripciones">
+            <section className="inscripciones-agenda" aria-label={t('calendario.agendaAria')}>
                 {agendaCompleta.length === 0 ? (
                     <p className="inscripciones-calendario-vacio" role="status">
                         <CalendarDays aria-hidden="true" />
-                        No tienes eventos publicados para mostrar
+                        {t('calendario.vacio')}
                     </p>
                 ) : (
                     agendaCompleta.map(([clave, eventos]) => {
@@ -135,9 +137,11 @@ export function CalendarioInscripciones({ inscripciones, onCancelar }: Calendari
                             >
                                 <h2 className="inscripciones-agenda-fecha">
                                     {formatoDiaAgenda.format(fecha)}
-                                    {clave === claveHoy && <span className="inscripciones-agenda-hoy">Hoy</span>}
+                                    {clave === claveHoy && <span className="inscripciones-agenda-hoy">{t('calendario.hoy')}</span>}
                                     {eventos.length > 1 && (
-                                        <span className="inscripciones-agenda-conteo">{eventos.length} eventos</span>
+                                        <span className="inscripciones-agenda-conteo">
+                                            {t('calendario.eventosCount', { count: eventos.length })}
+                                        </span>
                                     )}
                                 </h2>
                                 <div className="inscripciones-agenda-eventos">
@@ -175,9 +179,9 @@ export function CalendarioInscripciones({ inscripciones, onCancelar }: Calendari
                                                     >
                                                         {activa
                                                             ? diaEventoTerminado
-                                                                ? 'Evento finalizado'
-                                                                : 'Inscripción activa'
-                                                            : 'Inscripción cancelada'}
+                                                                ? t('calendario.estadoFinalizado')
+                                                                : t('calendario.estadoActiva')
+                                                            : t('calendario.estadoCancelada')}
                                                     </span>
                                                     {activa && !diaEventoTerminado && (
                                                         <>
@@ -185,22 +189,22 @@ export function CalendarioInscripciones({ inscripciones, onCancelar }: Calendari
                                                                 <button
                                                                     type="button"
                                                                     className="inscripciones-evento-accion"
-                                                                    aria-label={`Ver QR de ${inscripcion.eventoTitulo}`}
+                                                                    aria-label={t('calendario.verQrAria', { titulo: inscripcion.eventoTitulo })}
                                                                     onClick={() => setInscripcionQr(inscripcion)}
                                                                 >
                                                                     <QrCode aria-hidden="true" />
-                                                                    Ver QR
+                                                                    {t('calendario.verQr')}
                                                                 </button>
                                                             )}
                                                             {!eventoIniciado && (
                                                                 <button
                                                                     type="button"
                                                                     className="inscripciones-evento-accion inscripciones-evento-accion--cancelar"
-                                                                    aria-label={`Cancelar inscripción a ${inscripcion.eventoTitulo}`}
+                                                                    aria-label={t('calendario.cancelarAria', { titulo: inscripcion.eventoTitulo })}
                                                                     onClick={() => onCancelar(inscripcion)}
                                                                 >
                                                                     <CircleX aria-hidden="true" />
-                                                                    Cancelar
+                                                                    {t('calendario.cancelar')}
                                                                 </button>
                                                             )}
                                                         </>
@@ -216,15 +220,15 @@ export function CalendarioInscripciones({ inscripciones, onCancelar }: Calendari
                 )}
             </section>
 
-            <aside className="inscripciones-mini-calendario" aria-label="Calendario mensual">
+            <aside className="inscripciones-mini-calendario" aria-label={t('calendario.calendarioAria')}>
                 <header className="inscripciones-mini-calendario-cabecera">
                     <h2>{formatoMes.format(mesVisible)}</h2>
                     <div>
-                        <button type="button" onClick={volverAHoy}>Hoy</button>
-                        <button type="button" aria-label="Mes anterior" onClick={() => navegarMes(-1)}>
+                        <button type="button" onClick={volverAHoy}>{t('calendario.hoy')}</button>
+                        <button type="button" aria-label={t('calendario.mesAnterior')} onClick={() => navegarMes(-1)}>
                             <ChevronLeft aria-hidden="true" />
                         </button>
-                        <button type="button" aria-label="Mes siguiente" onClick={() => navegarMes(1)}>
+                        <button type="button" aria-label={t('calendario.mesSiguiente')} onClick={() => navegarMes(1)}>
                             <ChevronRight aria-hidden="true" />
                         </button>
                     </div>
@@ -246,7 +250,12 @@ export function CalendarioInscripciones({ inscripciones, onCancelar }: Calendari
                                 type="button"
                                 role="gridcell"
                                 className={`inscripciones-mini-dia${clave === claveHoy ? ' inscripciones-mini-dia--hoy' : ''}${clave === fechaSeleccionada ? ' inscripciones-mini-dia--seleccionado' : ''}`}
-                                aria-label={`${formatoDiaAgenda.format(fecha)}${eventos.length ? `, ${eventos.length} eventos` : ''}`}
+                                aria-label={eventos.length
+                                    ? t('calendario.diaAriaConEventos', {
+                                        fecha: formatoDiaAgenda.format(fecha),
+                                        cantidad: eventos.length,
+                                    })
+                                    : t('calendario.diaAria', { fecha: formatoDiaAgenda.format(fecha) })}
                                 aria-pressed={clave === fechaSeleccionada}
                                 onClick={() => seleccionarFecha(clave)}
                                 key={clave}
@@ -267,14 +276,14 @@ export function CalendarioInscripciones({ inscripciones, onCancelar }: Calendari
                     })}
                 </div>
                 <div className="inscripciones-mini-leyenda">
-                    <span><i /> Inscripción activa</span>
-                    <span><i className="inscripciones-mini-leyenda-cancelada" /> Inscripción o evento cancelado</span>
+                    <span><i /> {t('calendario.leyendaActiva')}</span>
+                    <span><i className="inscripciones-mini-leyenda-cancelada" /> {t('calendario.leyendaCancelada')}</span>
                 </div>
                 <p className="inscripciones-mini-ayuda">
-                    Los puntos marcan eventos. Cambia de mes con las flechas y selecciona un día para ver su resumen.
+                    {t('calendario.ayuda')}
                 </p>
                 <footer className="inscripciones-mini-resumen">
-                    <div><strong>{totalActivasDelMes}</strong><span>Activas este mes</span></div>
+                    <div><strong>{totalActivasDelMes}</strong><span>{t('calendario.activasMes')}</span></div>
                     <div>
                         <strong>
                             {fechaSeleccionada
@@ -285,14 +294,14 @@ export function CalendarioInscripciones({ inscripciones, onCancelar }: Calendari
                                   formatoMesCorto.format(new Date(`${diaConMasEventos[0]}T12:00:00`)).replace('.', '')
                                 : '—'}
                         </strong>
-                        <span>{fechaSeleccionada ? 'Eventos en el día seleccionado' : 'Día con más eventos'}</span>
+                        <span>{fechaSeleccionada ? t('calendario.eventosDiaSeleccionado') : t('calendario.diaConMasEventos')}</span>
                     </div>
                 </footer>
             </aside>
 
             {inscripcionQr?.codigoQr && !terminoDiaEvento(inscripcionQr.eventoFechaInicio, ahora) && (
                 <ModalAccesible
-                    titulo="Tu entrada"
+                    titulo={t('calendario.tuEntrada')}
                     idTitulo="titulo-qr-inscripcion"
                     onCerrar={() => setInscripcionQr(null)}
                 >
