@@ -1,4 +1,4 @@
-import { RotateCcw, X } from 'lucide-react';
+import { ChevronDown, RotateCcw, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import i18n from '../../../i18n';
 import type { Categoria } from '../../../types/categoria';
@@ -126,20 +126,23 @@ export function ResumenEventos({
             </div>
             <label className="eventos-resultados-orden">
                 <span>{t('resumen.ordenar')}</span>
-                <select
-                    aria-label={t('resumen.ordenarAria')}
-                    value={orden}
-                    onChange={(evento) => {
-                        const valor = evento.target.value;
-                        if (valor === 'fecha-proxima' || valor === 'fecha-lejana' || valor === 'titulo') {
-                            onOrdenChange(valor);
-                        }
-                    }}
-                >
-                    <option value="fecha-proxima">{t('resumen.fechaProxima')}</option>
-                    <option value="fecha-lejana">{t('resumen.fechaLejana')}</option>
-                    <option value="titulo">{t('resumen.tituloAZ')}</option>
-                </select>
+                <span className="selector-con-chevron selector-con-chevron--compact">
+                    <select
+                        aria-label={t('resumen.ordenarAria')}
+                        value={orden}
+                        onChange={(evento) => {
+                            const valor = evento.target.value;
+                            if (valor === 'fecha-proxima' || valor === 'fecha-lejana' || valor === 'titulo') {
+                                onOrdenChange(valor);
+                            }
+                        }}
+                    >
+                        <option value="fecha-proxima">{t('resumen.fechaProxima')}</option>
+                        <option value="fecha-lejana">{t('resumen.fechaLejana')}</option>
+                        <option value="titulo">{t('resumen.tituloAZ')}</option>
+                    </select>
+                    <ChevronDown aria-hidden="true" />
+                </span>
             </label>
         </section>
     );

@@ -57,6 +57,51 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+:root[data-accesibilidad-tema='claro'] :is(input[type='date'], input[type='datetime-local']) {
+  color-scheme: light;
+}
+
+:root[data-accesibilidad-tema='oscuro'] :is(input[type='date'], input[type='datetime-local']) {
+  color-scheme: dark;
+}
+
+.selector-con-chevron {
+  position: relative;
+  display: block;
+  min-width: 0;
+}
+
+.selector-con-chevron > select {
+  appearance: none;
+  padding-right: 2.25rem;
+}
+
+.selector-con-chevron > svg {
+  position: absolute;
+  top: 50%;
+  right: 0.7rem;
+  width: 1rem;
+  height: 1rem;
+  color: var(--color-eventu-main-ink);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.selector-con-chevron--compact {
+  display: inline-flex;
+  align-items: center;
+}
+
+.selector-con-chevron--compact > select {
+  padding-right: 1.75rem;
+}
+
+.selector-con-chevron--compact > svg {
+  right: 0.25rem;
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
 :root[data-accesibilidad-contraste='alto']
   :is(
     button:not(:disabled):not([aria-disabled='true']),
@@ -75,4 +120,9 @@ body {
   background-color: var(--color-eventu-interaction-highlight);
   color: var(--color-eventu-interaction-highlight-ink);
   outline-color: var(--color-eventu-interaction-highlight-ink);
+}
+
+:root[data-accesibilidad-contraste='alto']
+  .selector-con-chevron:has(> select:is(:hover, :focus-visible)) > svg {
+  color: var(--color-eventu-interaction-highlight-ink);
 }
