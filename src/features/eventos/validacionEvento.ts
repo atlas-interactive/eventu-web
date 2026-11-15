@@ -1,4 +1,4 @@
-// Campos del formulario tal como los escribe el usuario (todo texto)
+// Valores del formulario tal como los escribe el usuario
 export interface CamposEvento {
     titulo: string;
     descripcion: string;
@@ -6,6 +6,7 @@ export interface CamposEvento {
     ubicacion: string;
     cuposMaximos: string;
     categoriaId: string;
+    certificable: boolean;
 }
 
 export type ErroresEvento = Partial<Record<keyof CamposEvento, string>>;

@@ -49,6 +49,7 @@ const evento: Evento = {
     cuposMaximos: 120,
     cuposDisponibles: 38,
     estado: 'PUBLICADO',
+    certificable: false,
     organizadorId: 2,
     organizadorNombre: 'Facultad de Ciencias Básicas e Ingeniería',
     categoriaId: 4,

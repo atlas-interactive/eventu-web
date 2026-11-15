@@ -61,6 +61,7 @@ describe('CrearEvento (HU-05)', () => {
                 ubicacion: 'Auditorio',
                 cuposMaximos: 40,
                 categoriaId: 2,
+                certificable: false,
             });
         });
         expect(await screen.findByText('Evento creado exitosamente.')).toBeInTheDocument();

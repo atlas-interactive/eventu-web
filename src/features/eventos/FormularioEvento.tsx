@@ -27,6 +27,7 @@ const camposIniciales = (evento?: Evento): CamposEvento => ({
     ubicacion: evento?.ubicacion ?? '',
     cuposMaximos: evento ? String(evento.cuposMaximos) : '',
     categoriaId: evento?.categoriaId ? String(evento.categoriaId) : '',
+    certificable: Boolean(evento?.certificable),
 });
 
 // Al editar solo se envía lo que cambió: el backend ignora los campos ausentes
@@ -39,6 +40,7 @@ const cambios = (campos: CamposEvento, evento: Evento): EventoActualizacion => {
     if (campos.ubicacion.trim() !== original.ubicacion) resultado.ubicacion = campos.ubicacion.trim();
     if (campos.cuposMaximos !== original.cuposMaximos) resultado.cuposMaximos = Number(campos.cuposMaximos);
     if (campos.categoriaId !== original.categoriaId) resultado.categoriaId = Number(campos.categoriaId);
+    if (campos.certificable !== original.certificable) resultado.certificable = campos.certificable;
     return resultado;
 };
 
@@ -113,6 +115,7 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
                     ubicacion: campos.ubicacion.trim(),
                     cuposMaximos: Number(campos.cuposMaximos),
                     categoriaId: Number(campos.categoriaId),
+                    certificable: campos.certificable,
                 };
                 const respuesta = await crearEvento(solicitud);
                 onGuardado(respuesta.mensaje);
@@ -281,6 +284,27 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
                     )}
                     {mensajeCampo('categoriaId')}
                 </div>
+            </div>
+
+            <div className="evento-certificable">
+                <label className="evento-certificable-toggle">
+                    <span className="evento-certificable-label">Evento certificable</span>
+                    <input
+                        type="checkbox"
+                        role="switch"
+                        checked={campos.certificable}
+                        onChange={(e) =>
+                            setCampos((previos) => ({ ...previos, certificable: e.target.checked }))
+                        }
+                        aria-describedby="ayuda-certificable"
+                    />
+                    <span className="evento-certificable-switch" aria-hidden="true">
+                        <span />
+                    </span>
+                </label>
+                <p id="ayuda-certificable" className="evento-help">
+                    Los asistentes con asistencia verificada podrán descargar un certificado.
+                </p>
             </div>
 
             {errorGeneral && (

@@ -9,6 +9,7 @@ export interface Evento {
     cuposMaximos: number;
     cuposDisponibles: number;
     estado: string;
+    certificable: boolean;
     organizadorId: number;
     organizadorNombre: string;
     categoriaId: number;
@@ -39,6 +40,7 @@ export interface EventoSolicitud {
     fechaInicio: string;
     ubicacion: string;
     cuposMaximos: number;
+    certificable: boolean;
     categoriaId: number;
 }
 

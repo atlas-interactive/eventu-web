@@ -45,6 +45,7 @@ const EVENTO: Evento = {
     cuposMaximos: 50,
     cuposDisponibles: 30, // 20 inscritos
     estado: 'PUBLICADO',
+    certificable: true,
     organizadorId: 3,
     organizadorNombre: 'Luz',
     categoriaId: 2,
@@ -88,6 +89,7 @@ describe('FormularioEvento', () => {
             await user.type(screen.getByLabelText(/Ubicación/), 'Auditorio');
             await user.type(screen.getByLabelText(/Cupo máximo/), '50');
             await user.selectOptions(screen.getByLabelText(/Categoría/), '2');
+            expect(screen.getByRole('switch', { name: 'Evento certificable' })).not.toBeChecked();
             await user.click(screen.getByRole('button', { name: 'Crear evento' }));
 
             await waitFor(() => expect(onGuardado).toHaveBeenCalledWith('Evento creado exitosamente.'));
@@ -98,7 +100,27 @@ describe('FormularioEvento', () => {
                 ubicacion: 'Auditorio',
                 cuposMaximos: 50,
                 categoriaId: 2,
+                certificable: false,
             });
+        });
+
+        it('crea el evento como certificable cuando se activa el toggle', async () => {
+            crearMock.mockResolvedValue({ mensaje: 'Evento creado exitosamente.', eventoId: 9 });
+            await renderizar();
+            const user = userEvent.setup();
+
+            await user.type(screen.getByLabelText(/Título/), 'Feria de ciencia');
+            await user.type(screen.getByLabelText(/Descripción/), 'Proyectos');
+            await user.type(screen.getByLabelText(/Fecha y hora/), '2099-10-20T14:30');
+            await user.type(screen.getByLabelText(/Ubicación/), 'Auditorio');
+            await user.type(screen.getByLabelText(/Cupo máximo/), '50');
+            await user.selectOptions(screen.getByLabelText(/Categoría/), '2');
+            await user.click(screen.getByRole('switch', { name: 'Evento certificable' }));
+            await user.click(screen.getByRole('button', { name: 'Crear evento' }));
+
+            await waitFor(() =>
+                expect(crearMock).toHaveBeenCalledWith(expect.objectContaining({ certificable: true })),
+            );
         });
 
         it('no envía nada y marca los campos obligatorios vacíos', async () => {
@@ -144,6 +166,7 @@ describe('FormularioEvento', () => {
             expect(screen.getByLabelText(/Fecha y hora/)).toHaveValue('2099-10-20T14:30');
             expect(screen.getByLabelText(/Cupo máximo/)).toHaveValue(50);
             expect(screen.getByLabelText(/Categoría/)).toHaveValue('2');
+            expect(screen.getByRole('switch', { name: 'Evento certificable' })).toBeChecked();
             expect(screen.getByText(/Inscritos actuales: 20/)).toBeInTheDocument();
         });
 
@@ -158,6 +181,28 @@ describe('FormularioEvento', () => {
 
             await waitFor(() => expect(onGuardado).toHaveBeenCalledWith('Evento actualizado exitosamente.'));
             expect(editarMock).toHaveBeenCalledWith(7, { cuposMaximos: 80 });
+        });
+
+        it('envía false cuando se desactiva la certificación', async () => {
+            editarMock.mockResolvedValue({ mensaje: 'Evento actualizado exitosamente.', eventoId: 7 });
+            await renderizar();
+            const user = userEvent.setup();
+
+            await user.click(screen.getByRole('switch', { name: 'Evento certificable' }));
+            await user.click(screen.getByRole('button', { name: 'Guardar cambios' }));
+
+            await waitFor(() => expect(editarMock).toHaveBeenCalledWith(7, { certificable: false }));
+        });
+
+        it('envía true cuando se activa la certificación de un evento existente', async () => {
+            editarMock.mockResolvedValue({ mensaje: 'Evento actualizado exitosamente.', eventoId: 7 });
+            await renderizar({ ...EVENTO, certificable: false });
+            const user = userEvent.setup();
+
+            await user.click(screen.getByRole('switch', { name: 'Evento certificable' }));
+            await user.click(screen.getByRole('button', { name: 'Guardar cambios' }));
+
+            await waitFor(() => expect(editarMock).toHaveBeenCalledWith(7, { certificable: true }));
         });
 
         it('rechaza un cupo menor que los inscritos indicando cuántos son', async () => {

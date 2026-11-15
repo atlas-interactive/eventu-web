@@ -153,6 +153,7 @@ describe('eventoService', () => {
             ubicacion: 'Auditorio',
             cuposMaximos: 50,
             categoriaId: 2,
+            certificable: false,
         };
 
         const resultado = await crearEvento(solicitud);

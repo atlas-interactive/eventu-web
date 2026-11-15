@@ -106,6 +106,67 @@
   line-height: 1rem;
 }
 
+.evento-certificable {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.evento-certificable-toggle {
+  position: relative;
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--color-eventu-main-ink);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.evento-certificable-toggle input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+.evento-certificable-switch {
+  display: inline-flex;
+  width: 2.5rem;
+  height: 1.375rem;
+  flex: 0 0 auto;
+  align-items: center;
+  border-radius: 9999px;
+  background-color: var(--color-eventu-disabled-button);
+  padding: 0.125rem;
+  transition: background-color 150ms ease;
+}
+
+.evento-certificable-switch > span {
+  width: 1.125rem;
+  height: 1.125rem;
+  border-radius: 9999px;
+  background-color: var(--color-eventu-white-surface);
+  box-shadow: 0 1px 2px rgb(26 26 24 / 20%);
+  transition: transform 150ms ease;
+}
+
+.evento-certificable-toggle input:checked + .evento-certificable-switch {
+  background-color: var(--color-eventu-success);
+}
+
+.evento-certificable-toggle input:checked + .evento-certificable-switch > span {
+  transform: translateX(1.125rem);
+}
+
+.evento-certificable-toggle input:focus-visible + .evento-certificable-switch {
+  outline: 2px solid var(--color-eventu-institutional-red);
+  outline-offset: 2px;
+}
+
 .evento-form-grid {
   display: grid;
   gap: 1rem;

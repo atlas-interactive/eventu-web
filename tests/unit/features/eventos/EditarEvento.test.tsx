@@ -29,6 +29,7 @@ const evento: Evento = {
     cuposMaximos: 50,
     cuposDisponibles: 30,
     estado: 'PUBLICADO',
+    certificable: false,
     organizadorId: 3,
     organizadorNombre: 'Laura',
     categoriaId: 2,
