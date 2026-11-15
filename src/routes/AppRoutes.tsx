@@ -9,6 +9,7 @@ import { LayoutAutenticacion } from '../components/layout/LayoutAutenticacion';
 import { LayoutAplicacion } from '../components/layout/LayoutAplicacion';
 import { obtenerRutaInicio, obtenerSesion } from '../features/sesion/sesion';
 import { SkeletonAutenticacion, SkeletonPagina } from '../components/ui/Skeleton';
+import { AccesibilidadProvider } from '../features/accesibilidad/AccesibilidadProvider';
 
 const FormularioLogin = lazy(() =>
     import('../features/auth/FormularioLogin').then((modulo) => ({ default: modulo.FormularioLogin })),
@@ -77,7 +78,8 @@ export function RutaLogin() {
 
 export function AppRoutes() {
     return (
-        <Routes>
+        <AccesibilidadProvider>
+          <Routes>
             <Route element={<LayoutAutenticacion />}>
                 <Route path="/login" element={pantallaDiferida(<RutaLogin />, <SkeletonAutenticacion />)} />
                 <Route path="/registro" element={pantallaDiferida(<FormularioRegistro />, <SkeletonAutenticacion />)} />
@@ -148,6 +150,7 @@ export function AppRoutes() {
             </Route>
 
             <Route path="*" element={<Navigate to="/login" replace />} />
-        </Routes>
+          </Routes>
+        </AccesibilidadProvider>
     )
 }

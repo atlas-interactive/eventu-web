@@ -453,7 +453,7 @@
 }
 
 .gestion-category-state--inactive {
-  background-color: #ededeb;
+  background-color: var(--color-eventu-disabled-button);
   color: var(--color-eventu-secondary-text);
 }
 

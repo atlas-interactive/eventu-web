@@ -15,6 +15,11 @@
   gap: 0.625rem;
 }
 
+:root[data-accesibilidad-escala='1.5'] .filtros-eventos-principal,
+:root[data-accesibilidad-escala='2'] .filtros-eventos-principal {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .filtros-eventos-busqueda-grupo,
 .filtros-eventos-grupo,
 .filtros-eventos-fechas-grupo {
@@ -241,7 +246,7 @@
 
 .filtros-eventos-periodo--activo {
   border-color: var(--color-eventu-institutional-red);
-  background-color: color-mix(in srgb, var(--color-eventu-institutional-red) 10%, white);
+  background-color: color-mix(in srgb, var(--color-eventu-institutional-red) 10%, var(--color-eventu-white-surface));
   color: var(--color-eventu-institutional-red);
   font-weight: 600;
 }

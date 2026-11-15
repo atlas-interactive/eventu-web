@@ -37,9 +37,7 @@
   align-items: flex-end;
   overflow: hidden;
   border-radius: 0.75rem;
-  background:
-    radial-gradient(ellipse at 87% 35%, rgb(175 213 255 / 70%) 0, rgb(175 213 255 / 0%) 25rem),
-    linear-gradient(112deg, #1555d9 0%, #397eea 55%, #78b5f9 100%);
+  background: var(--color-eventu-hero-background);
   padding: 0.75rem;
 }
 
@@ -49,7 +47,7 @@
   right: 12%;
   width: 16rem;
   height: 16rem;
-  border: 1px solid rgb(255 255 255 / 13%);
+  border: 1px solid var(--color-eventu-hero-decoration);
   border-radius: 50%;
   content: '';
 }
@@ -102,8 +100,8 @@
 }
 
 .detalle-evento-estado--agotado {
-  background-color: #fff4e5;
-  color: #8a4b08;
+  background-color: var(--color-eventu-warning-background);
+  color: var(--color-eventu-warning);
 }
 
 .detalle-evento-estado--cancelado {
@@ -112,8 +110,8 @@
 }
 
 .detalle-evento-estado--en-curso {
-  background-color: #fff4e5;
-  color: #92400e;
+  background-color: var(--color-eventu-warning-background);
+  color: var(--color-eventu-warning);
 }
 
 .detalle-evento-estado--finalizado {
@@ -267,7 +265,7 @@
   min-height: 2.75rem;
   align-items: center;
   gap: 0.5rem;
-  border-bottom: 1px solid #d2ead8;
+  border-bottom: 1px solid var(--color-eventu-success-border);
   background-color: var(--color-eventu-green-background);
   padding-inline: 1rem;
   color: var(--color-eventu-success);
@@ -308,8 +306,8 @@
 
 .detalle-evento-qr-marco {
   display: grid;
-  width: 10.75rem;
-  height: 10.75rem;
+  width: min(10.75rem, 100%);
+  aspect-ratio: 1;
   place-items: center;
   border: 1px solid var(--color-eventu-border);
   border-radius: 0.625rem;
@@ -489,7 +487,7 @@
   align-items: center;
   gap: 0.5rem;
   margin-top: 0.75rem;
-  border: 1px solid #d2ead8;
+  border: 1px solid var(--color-eventu-success-border);
   border-radius: 0.5rem;
   background-color: var(--color-eventu-green-background);
   padding: 0.75rem 1rem;

@@ -3,19 +3,22 @@ import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { LayoutAplicacion } from '../../../src/components/layout/LayoutAplicacion';
+import { AccesibilidadProvider } from '../../../src/features/accesibilidad/AccesibilidadProvider';
 import { guardarSesion } from '../../../src/features/sesion/sesion';
 
 const renderizar = () =>
     render(
-        <MemoryRouter initialEntries={['/']} >
-            <Routes>
-                <Route element={<LayoutAplicacion />}>
-                    <Route path="/" element={<p>Contenido</p>} />
-                    <Route path="/perfil" element={<p>Pantalla de perfil</p>} />
-                    <Route path="/login" element={<p>Pantalla de login</p>} />
-                </Route>
-            </Routes>
-        </MemoryRouter>,
+        <AccesibilidadProvider>
+            <MemoryRouter initialEntries={['/']}>
+                <Routes>
+                    <Route element={<LayoutAplicacion />}>
+                        <Route path="/" element={<p>Contenido</p>} />
+                        <Route path="/perfil" element={<p>Pantalla de perfil</p>} />
+                        <Route path="/login" element={<p>Pantalla de login</p>} />
+                    </Route>
+                </Routes>
+            </MemoryRouter>
+        </AccesibilidadProvider>,
     );
 
 describe('LayoutAplicacion', () => {
@@ -173,5 +176,26 @@ describe('LayoutAplicacion', () => {
         expect(await screen.findByText('Pantalla de login')).toBeInTheDocument();
         expect(localStorage.getItem('auth_token')).toBeNull();
         expect(localStorage.getItem('auth_usuario')).toBeNull();
+    });
+
+    it('abre el panel desde el menú de perfil y restaura el foco al cerrarlo', async () => {
+        guardarSesion({
+            token: 'jwt-de-prueba',
+            usuarioId: 1,
+            nombre: 'Ana Gómez',
+            correo: 'ana@unillanos.edu.co',
+            rol: 'ORGANIZADOR',
+        });
+        const user = userEvent.setup();
+        renderizar();
+
+        const botonPerfil = screen.getByRole('button', { name: 'Menú de perfil de Ana Gómez' });
+        await user.click(botonPerfil);
+        await user.click(screen.getByRole('menuitem', { name: 'Accesibilidad' }));
+
+        expect(screen.getByRole('dialog', { name: 'Opciones de accesibilidad' })).toBeInTheDocument();
+        expect(screen.queryByRole('menu', { name: 'Opciones de perfil' })).not.toBeInTheDocument();
+        await user.keyboard('{Escape}');
+        expect(botonPerfil).toHaveFocus();
     });
 });

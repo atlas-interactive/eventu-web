@@ -95,7 +95,7 @@
 }
 
 .evento-card-status--in-progress {
-  color: #92400e;
+  color: var(--color-eventu-deportive-orange);
 }
 
 .evento-card-status--finished {
@@ -228,7 +228,7 @@
 }
 
 .evento-row-button--danger {
-  border-color: color-mix(in srgb, var(--color-eventu-institutional-red) 35%, white);
+  border-color: color-mix(in srgb, var(--color-eventu-institutional-red) 35%, var(--color-eventu-white-surface));
   color: var(--color-eventu-institutional-red);
 }
 

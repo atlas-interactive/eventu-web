@@ -7,7 +7,7 @@ Módulo Web desarrollado en React orientado principalmente a los **Organizadores
 * Dashboard de estadísticas de participación y porcentaje de asistencia.
 * Módulo de escaneo/validación de códigos QR de asistentes en tiempo real.
 * Exportación de reportes de asistencia en PDF.
-* Funcionalidades de accesibilidad integradas (alto contraste, ajuste de texto).
+* Panel de accesibilidad con ajuste de texto, temas de alto contraste e invertido y selección de tipografía.
 
 ## Configuración Local
 

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Activity, CalendarCog, CalendarDays, ChartPie, ChevronDown, ClipboardList, LogOut, Menu, Tags, UserCog, UserRound, PersonStanding, X } from 'lucide-react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { PanelAccesibilidad } from '../../features/accesibilidad/PanelAccesibilidad';
 import {
     cerrarSesion,
     esAdministrador,
@@ -35,6 +36,8 @@ const inicialesNombre = (nombre: string): string =>
 export function LayoutAplicacion() {
     const [menuAbierto, setMenuAbierto] = useState(false);
     const [navegacionAbierta, setNavegacionAbierta] = useState(false);
+    const [accesibilidadAbierta, setAccesibilidadAbierta] = useState(false);
+    const [elementoFocoAccesibilidad, setElementoFocoAccesibilidad] = useState<HTMLElement | null>(null);
     const [sesion, setSesion] = useState(obtenerSesion);
     const menuRef = useRef<HTMLDivElement>(null);
     const botonMenuRef = useRef<HTMLButtonElement>(null);
@@ -94,9 +97,9 @@ export function LayoutAplicacion() {
 
     return (
         <div className="min-h-screen bg-eventu-page-background">
-            <header className="border-b border-eventu-border bg-eventu-white-surface">
-                <div className="relative mx-auto flex w-full flex-col gap-2 px-8 py-2 sm:min-h-[58px] sm:flex-row sm:items-center sm:gap-x-4 sm:gap-y-2 sm:px-10 sm:py-0 max-[639px]:flex-row max-[639px]:items-center max-[639px]:justify-between max-[639px]:gap-2 max-[639px]:px-3 max-[639px]:py-2">
-                    <div className="flex min-w-0 items-center justify-between gap-4 sm:flex-none sm:justify-start sm:gap-x-8 max-[639px]:flex-1 max-[639px]:justify-start max-[639px]:gap-2">
+            <header className="cabecera-aplicacion border-b border-eventu-border bg-eventu-white-surface">
+                <div className="relative mx-auto flex w-full flex-col gap-2 px-8 py-2 sm:min-h-[58px] sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-4 sm:gap-y-2 sm:px-10 sm:py-0 max-[639px]:flex-row max-[639px]:items-center max-[639px]:justify-between max-[639px]:gap-2 max-[639px]:px-3 max-[639px]:py-2">
+                    <div className="flex min-w-0 items-center justify-between gap-4 sm:flex-auto sm:justify-start sm:gap-x-8 max-[639px]:flex-1 max-[639px]:justify-start max-[639px]:gap-2">
                         {sesion && (
                             <button
                                 ref={botonNavegacionRef}
@@ -117,13 +120,13 @@ export function LayoutAplicacion() {
                                 )}
                             </button>
                         )}
-                        <div className="flex min-w-0 items-center gap-2 sm:gap-3 max-[639px]:absolute max-[639px]:left-1/2 max-[639px]:-translate-x-1/2 max-[639px]:gap-1.5">
+                        <div className="marca-eventu flex min-w-0 items-center gap-2 sm:gap-3 max-[639px]:absolute max-[639px]:left-1/2 max-[639px]:-translate-x-1/2 max-[639px]:gap-1.5">
                             <img
                                 src={iconoEventU}
                                 alt="EventU"
                                 className="h-8 w-8.5 flex-none max-[639px]:h-7 max-[639px]:w-7"
                             />
-                            <p className="self-center whitespace-nowrap text-[1.075rem] font-semibold text-eventu-main-ink max-[639px]:text-base">Event<span className="text-eventu-institutional-red">U</span></p>
+                            <p className="marca-eventu-texto self-center whitespace-nowrap text-lg font-semibold text-eventu-main-ink max-[639px]:text-base">Event<span className="text-eventu-institutional-red">U</span></p>
                         </div>
                         
                         {sesion && (
@@ -132,7 +135,7 @@ export function LayoutAplicacion() {
                                 id="navegacion-principal"
                                 aria-label="Principal"
                                 onClick={() => setNavegacionAbierta(false)}
-                                className={`flex min-w-0 flex-wrap items-center justify-end gap-x-3 gap-y-1 sm:flex-nowrap sm:justify-start sm:gap-x-4 sm:self-stretch max-[639px]:absolute max-[639px]:left-3 max-[639px]:right-3 max-[639px]:top-full max-[639px]:z-50 max-[639px]:flex-col max-[639px]:items-stretch max-[639px]:gap-1 max-[639px]:rounded-lg max-[639px]:border max-[639px]:border-eventu-border max-[639px]:bg-eventu-white-surface max-[639px]:p-2 max-[639px]:shadow-lg${navegacionAbierta ? '' : ' max-[639px]:hidden'}`}
+                                className={`flex min-w-0 flex-wrap items-center justify-end gap-x-3 gap-y-1 sm:justify-start sm:gap-x-4 sm:self-stretch max-[639px]:absolute max-[639px]:left-3 max-[639px]:right-3 max-[639px]:top-full max-[639px]:z-50 max-[639px]:flex-col max-[639px]:items-stretch max-[639px]:gap-1 max-[639px]:rounded-lg max-[639px]:border max-[639px]:border-eventu-border max-[639px]:bg-eventu-white-surface max-[639px]:p-2 max-[639px]:shadow-lg${navegacionAbierta ? '' : ' max-[639px]:hidden'}`}
                             >
                                 {esAdministrador(sesion) && (
                                     <>
@@ -230,13 +233,13 @@ export function LayoutAplicacion() {
                                 </span>
                                 <span className="flex min-w-0 flex-col items-start gap-1 max-[639px]:hidden">
                                     <span
-                                        className="block truncate text-[0.875rem] leading-4 text-eventu-main-ink sm:max-w-[11rem] lg:max-w-[16rem]"
+                                        className="block truncate text-sm leading-4 text-eventu-main-ink sm:max-w-44 lg:max-w-64"
                                         title={nombreUsuario}
                                     >
                                         {nombreUsuario}
                                     </span>
                                     {ETIQUETA_ROL[sesion.rol.toUpperCase()] && (
-                                        <span className="inline-block rounded text-[0.675rem] leading-3 text-eventu-institutional-red">
+                                        <span className="inline-block rounded text-xs leading-3 text-eventu-institutional-red">
                                             {ETIQUETA_ROL[sesion.rol.toUpperCase()]}
                                         </span>
                                     )}
@@ -251,7 +254,7 @@ export function LayoutAplicacion() {
                                     id="menu-perfil"
                                     role="menu"
                                     aria-label="Opciones de perfil"
-                                    className="absolute right-0 top-full z-50 mt-2 w-48 rounded-md border border-eventu-border bg-eventu-white-surface p-1 shadow-lg"
+                                    className="absolute right-0 top-full z-50 mt-2 w-48 max-w-[calc(100vw-1.5rem)] rounded-md border border-eventu-border bg-eventu-white-surface p-1 shadow-lg"
                                 >
                                     <NavLink
                                         to="/perfil"
@@ -262,14 +265,20 @@ export function LayoutAplicacion() {
                                         <UserRound className="h-4 w-4" aria-hidden="true" />
                                         Perfil
                                     </NavLink>
-                                    <NavLink
-                                        to=""
+                                    <button
+                                        type="button"
                                         role="menuitem"
-                                        onClick={() => setMenuAbierto(false)}
-                                        className="flex w-full items-center gap-2 rounded px-3 py-2 text-left text-sm text-eventu-main-ink hover:bg-eventu-page-background focus-visible:bg-eventu-page-background focus-visible:outline-none">
+                                        aria-haspopup="dialog"
+                                        onClick={() => {
+                                            setElementoFocoAccesibilidad(botonMenuRef.current);
+                                            setMenuAbierto(false);
+                                            setAccesibilidadAbierta(true);
+                                        }}
+                                        className="flex w-full items-center gap-2 rounded px-3 py-2 text-left text-sm text-eventu-main-ink hover:bg-eventu-page-background focus-visible:bg-eventu-page-background focus-visible:outline-none"
+                                    >
                                         <PersonStanding className="h-4 w-4" aria-hidden="true" />
                                         Accesibilidad
-                                    </NavLink>
+                                    </button>
                                     <div role="separator" className="mx-2 my-1 border-t border-eventu-border" />
                                     <button
                                         type="button"
@@ -287,6 +296,12 @@ export function LayoutAplicacion() {
                 </div>
             </header>
             <Outlet />
+            {accesibilidadAbierta && (
+                <PanelAccesibilidad
+                    onCerrar={() => setAccesibilidadAbierta(false)}
+                    elementoFocoRestaurar={elementoFocoAccesibilidad}
+                />
+            )}
         </div>
     );
 }

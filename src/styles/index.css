@@ -1,6 +1,50 @@
 @import 'tailwindcss';
 @import './theme.css';
 
+html {
+  font-size: calc(100% * var(--accesibilidad-escala-texto, 1));
+}
+
+.cabecera-aplicacion {
+  font-size: 16px;
+  --spacing: 0.25em;
+}
+
+.cabecera-aplicacion .text-xs {
+  font-size: 0.75em;
+}
+
+.cabecera-aplicacion .text-sm {
+  font-size: 0.875em;
+}
+
+.cabecera-aplicacion .text-base {
+  font-size: 1em;
+}
+
+.cabecera-aplicacion .text-lg {
+  font-size: 1.125em;
+}
+
+.accesibilidad-controles-fuente {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.accesibilidad-controles-fuente button {
+  padding: 4px 8px;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+@media (max-width: 639px) {
+  :root[data-accesibilidad-escala='1.5'] .marca-eventu-texto,
+  :root[data-accesibilidad-escala='2'] .marca-eventu-texto {
+    display: none;
+  }
+}
+
 #root {
   min-height: 100vh;
 }

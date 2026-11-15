@@ -257,8 +257,8 @@
   align-items: center;
   justify-content: center;
   border-radius: 9999px;
-  background-color: #fef2f2;
-  color: #b91c1c;
+  background-color: var(--color-eventu-red-background);
+  color: var(--color-eventu-error);
   font-size: 1.25rem;
   line-height: 1.75rem;
   font-weight: 700;

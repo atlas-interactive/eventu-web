@@ -64,7 +64,7 @@ export function DashboardEstadisticas() {
                             <Skeleton className="h-5 w-32" />
                             <Skeleton className="mt-2 h-4 w-64 max-w-full" />
                             <div className="mt-6 flex flex-col items-center gap-6 sm:flex-row sm:gap-8">
-                                <Skeleton className="h-44 w-44 shrink-0 rounded-full" />
+                                <Skeleton className="h-44 w-44 max-w-full shrink-0 rounded-full" />
                                 <div className="w-full max-w-xs space-y-4">
                                     <Skeleton className="h-4 w-full" />
                                     <Skeleton className="h-4 w-full" />
