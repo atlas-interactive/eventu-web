@@ -1,4 +1,4 @@
-import { CalendarDays, RotateCcw, Search } from 'lucide-react';
+import { CalendarDays, ChevronDown, RotateCcw, Search } from 'lucide-react';
 import type { FiltrosActividad, OpcionesFiltroActividad } from '../../../types/actividad';
 
 const periodos = [
@@ -54,51 +54,60 @@ export function FiltrosActividad({
                 </label>
                 <label className="actividad-campo" htmlFor="actividad-accion">
                     <span>Acción</span>
-                    <select
-                        id="actividad-accion"
-                        value={filtros.accion}
-                        disabled={cargandoOpciones}
-                        onChange={(evento) => onChange({ ...filtros, accion: evento.target.value })}
-                    >
-                        <option value="">Todas las acciones</option>
-                        {opciones.acciones.map((accion) => (
-                            <option key={accion} value={accion}>
-                                {accion.replaceAll('_', ' ')}
-                            </option>
-                        ))}
-                    </select>
+                    <span className="actividad-select">
+                        <select
+                            id="actividad-accion"
+                            value={filtros.accion}
+                            disabled={cargandoOpciones}
+                            onChange={(evento) => onChange({ ...filtros, accion: evento.target.value })}
+                        >
+                            <option value="">Todas las acciones</option>
+                            {opciones.acciones.map((accion) => (
+                                <option key={accion} value={accion}>
+                                    {accion.replaceAll('_', ' ')}
+                                </option>
+                            ))}
+                        </select>
+                        <ChevronDown aria-hidden="true" />
+                    </span>
                 </label>
                 <label className="actividad-campo" htmlFor="actividad-entidad">
                     <span>Entidad</span>
-                    <select
-                        id="actividad-entidad"
-                        value={filtros.entidad}
-                        disabled={cargandoOpciones}
-                        onChange={(evento) => onChange({ ...filtros, entidad: evento.target.value })}
-                    >
-                        <option value="">Todas</option>
-                        {opciones.entidades.map((entidad) => (
-                            <option key={entidad} value={entidad}>
-                                {entidad}
-                            </option>
-                        ))}
-                    </select>
+                    <span className="actividad-select">
+                        <select
+                            id="actividad-entidad"
+                            value={filtros.entidad}
+                            disabled={cargandoOpciones}
+                            onChange={(evento) => onChange({ ...filtros, entidad: evento.target.value })}
+                        >
+                            <option value="">Todas</option>
+                            {opciones.entidades.map((entidad) => (
+                                <option key={entidad} value={entidad}>
+                                    {entidad}
+                                </option>
+                            ))}
+                        </select>
+                        <ChevronDown aria-hidden="true" />
+                    </span>
                 </label>
                 <label className="actividad-campo" htmlFor="actividad-resultado">
                     <span>Resultado</span>
-                    <select
-                        id="actividad-resultado"
-                        value={filtros.resultado}
-                        disabled={cargandoOpciones}
-                        onChange={(evento) => onChange({ ...filtros, resultado: evento.target.value })}
-                    >
-                        <option value="">Todos los resultados</option>
-                        {opciones.resultados.map((resultado) => (
-                            <option key={resultado} value={resultado}>
-                                {resultado}
-                            </option>
-                        ))}
-                    </select>
+                    <span className="actividad-select">
+                        <select
+                            id="actividad-resultado"
+                            value={filtros.resultado}
+                            disabled={cargandoOpciones}
+                            onChange={(evento) => onChange({ ...filtros, resultado: evento.target.value })}
+                        >
+                            <option value="">Todos los resultados</option>
+                            {opciones.resultados.map((resultado) => (
+                                <option key={resultado} value={resultado}>
+                                    {resultado}
+                                </option>
+                            ))}
+                        </select>
+                        <ChevronDown aria-hidden="true" />
+                    </span>
                 </label>
             </div>
 

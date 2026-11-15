@@ -105,7 +105,7 @@ export function PanelAccesibilidad({
                             <option value="alto">Alto contraste</option>
                         </select>
                         <ChevronDown
-                            className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-eventu-main-ink"
+                            className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2"
                             aria-hidden="true"
                         />
                     </div>
@@ -132,7 +132,7 @@ export function PanelAccesibilidad({
                             <option value="sistema">Fuente del sistema (Arial)</option>
                         </select>
                         <ChevronDown
-                            className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-eventu-main-ink"
+                            className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2"
                             aria-hidden="true"
                         />
                     </div>

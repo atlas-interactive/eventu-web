@@ -84,6 +84,26 @@
   color: var(--color-eventu-secondary-text);
 }
 
+.actividad-select {
+  position: relative;
+  display: block;
+}
+
+.actividad-select select {
+  appearance: none;
+  padding-right: 2.5rem;
+}
+
+.actividad-select > svg {
+  position: absolute;
+  top: 50%;
+  right: 0.7rem;
+  width: 1.15rem;
+  height: 1.15rem;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
 .actividad-entrada-con-icono {
   position: relative;
 }
@@ -131,7 +151,7 @@
   left: 0.6rem;
   width: 0.9rem;
   height: 0.9rem;
-  color: var(--color-eventu-secondary-text);
+  color: var(--color-eventu-main-ink);
   transform: translateY(-50%);
 }
 
