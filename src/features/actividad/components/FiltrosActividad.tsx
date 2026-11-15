@@ -1,10 +1,11 @@
 import { CalendarDays, RotateCcw, Search } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import type { FiltrosActividad, OpcionesFiltroActividad } from '../../../types/actividad';
 
 const periodos = [
-    { etiqueta: 'Hoy', dias: 1 },
-    { etiqueta: 'Últimos 7 días', dias: 7 },
-    { etiqueta: 'Últimos 30 días', dias: 30 },
+    { clave: 'actividad.hoy', dias: 1 },
+    { clave: 'actividad.ultimos7', dias: 7 },
+    { clave: 'actividad.ultimos30', dias: 30 },
 ] as const;
 
 const fechaLocal = (fecha: Date) => {
@@ -36,31 +37,32 @@ export function FiltrosActividad({
     onChange,
     onLimpiar,
 }: FiltrosActividadProps) {
+    const { t } = useTranslation();
     return (
-        <section className="actividad-filtros" aria-label="Filtros de actividad">
+        <section className="actividad-filtros" aria-label={t('actividad.filtrosAria')}>
             <div className="actividad-filtros-principales">
                 <label className="actividad-campo" htmlFor="actividad-usuario">
-                    <span>Usuario</span>
+                    <span>{t('actividad.usuario')}</span>
                     <span className="actividad-entrada-con-icono">
                         <Search aria-hidden="true" />
                         <input
                             id="actividad-usuario"
                             type="search"
-                            placeholder="Nombre o correo"
+                            placeholder={t('actividad.placeholderUsuario')}
                             value={filtros.usuario}
                             onChange={(evento) => onChange({ ...filtros, usuario: evento.target.value })}
                         />
                     </span>
                 </label>
                 <label className="actividad-campo" htmlFor="actividad-accion">
-                    <span>Acción</span>
+                    <span>{t('actividad.accion')}</span>
                     <select
                         id="actividad-accion"
                         value={filtros.accion}
                         disabled={cargandoOpciones}
                         onChange={(evento) => onChange({ ...filtros, accion: evento.target.value })}
                     >
-                        <option value="">Todas las acciones</option>
+                        <option value="">{t('actividad.todasAcciones')}</option>
                         {opciones.acciones.map((accion) => (
                             <option key={accion} value={accion}>
                                 {accion.replaceAll('_', ' ')}
@@ -69,14 +71,14 @@ export function FiltrosActividad({
                     </select>
                 </label>
                 <label className="actividad-campo" htmlFor="actividad-entidad">
-                    <span>Entidad</span>
+                    <span>{t('actividad.entidad')}</span>
                     <select
                         id="actividad-entidad"
                         value={filtros.entidad}
                         disabled={cargandoOpciones}
                         onChange={(evento) => onChange({ ...filtros, entidad: evento.target.value })}
                     >
-                        <option value="">Todas</option>
+                        <option value="">{t('actividad.todas')}</option>
                         {opciones.entidades.map((entidad) => (
                             <option key={entidad} value={entidad}>
                                 {entidad}
@@ -85,14 +87,14 @@ export function FiltrosActividad({
                     </select>
                 </label>
                 <label className="actividad-campo" htmlFor="actividad-resultado">
-                    <span>Resultado</span>
+                    <span>{t('actividad.resultado')}</span>
                     <select
                         id="actividad-resultado"
                         value={filtros.resultado}
                         disabled={cargandoOpciones}
                         onChange={(evento) => onChange({ ...filtros, resultado: evento.target.value })}
                     >
-                        <option value="">Todos los resultados</option>
+                        <option value="">{t('actividad.todosResultados')}</option>
                         {opciones.resultados.map((resultado) => (
                             <option key={resultado} value={resultado}>
                                 {resultado}
@@ -104,14 +106,14 @@ export function FiltrosActividad({
 
             <div className="actividad-filtros-fecha">
                 <div className="actividad-campo actividad-campo-fecha">
-                    <span>Fecha</span>
+                    <span>{t('actividad.fecha')}</span>
                     <div className="actividad-rango-fechas">
                         <label>
-                            <span className="sr-only">Desde</span>
+                            <span className="sr-only">{t('actividad.desde')}</span>
                             <CalendarDays aria-hidden="true" />
                             <input
                                 type="date"
-                                aria-label="Fecha desde"
+                                aria-label={t('actividad.fechaDesdeAria')}
                                 value={filtros.fechaDesde}
                                 aria-invalid={Boolean(
                                     filtros.fechaDesde && filtros.fechaHasta && filtros.fechaDesde > filtros.fechaHasta,
@@ -120,11 +122,11 @@ export function FiltrosActividad({
                             />
                         </label>
                         <label>
-                            <span className="sr-only">Hasta</span>
+                            <span className="sr-only">{t('actividad.hasta')}</span>
                             <CalendarDays aria-hidden="true" />
                             <input
                                 type="date"
-                                aria-label="Fecha hasta"
+                                aria-label={t('actividad.fechaHastaAria')}
                                 value={filtros.fechaHasta}
                                 aria-invalid={Boolean(
                                     filtros.fechaDesde && filtros.fechaHasta && filtros.fechaDesde > filtros.fechaHasta,
@@ -134,19 +136,19 @@ export function FiltrosActividad({
                         </label>
                     </div>
                 </div>
-                <div className="actividad-periodos" role="group" aria-label="Periodos rápidos">
-                    {periodos.map(({ etiqueta, dias }) => {
+                <div className="actividad-periodos" role="group" aria-label={t('actividad.periodosAria')}>
+                    {periodos.map(({ clave, dias }) => {
                         const rango = rangoPeriodo(dias);
                         const activo = filtros.fechaDesde === rango.fechaDesde && filtros.fechaHasta === rango.fechaHasta;
                         return (
                             <button
                                 type="button"
-                                key={etiqueta}
+                                key={clave}
                                 aria-pressed={activo}
                                 className={activo ? 'actividad-periodo--activo' : undefined}
                                 onClick={() => onChange({ ...filtros, ...rango })}
                             >
-                                {etiqueta}
+                                {t(clave)}
                             </button>
                         );
                     })}
@@ -158,7 +160,7 @@ export function FiltrosActividad({
                     disabled={!Object.values(filtros).some(Boolean)}
                 >
                     <RotateCcw aria-hidden="true" />
-                    Limpiar filtros
+                    {t('actividad.limpiar')}
                 </button>
             </div>
         </section>

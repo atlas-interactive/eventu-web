@@ -1,4 +1,5 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface PaginacionActividadProps {
     totalRegistros: number;
@@ -13,6 +14,7 @@ export function PaginacionActividad({
     totalPaginas,
     onCambiarPagina,
 }: PaginacionActividadProps) {
+    const { t } = useTranslation();
     const primerRegistro = totalRegistros === 0 ? 0 : pagina * 20 + 1;
     const ultimoRegistro = Math.min((pagina + 1) * 20, totalRegistros);
     const cantidadPaginasVisibles = Math.min(5, totalPaginas);
@@ -20,15 +22,19 @@ export function PaginacionActividad({
     const paginas = Array.from({ length: cantidadPaginasVisibles }, (_, indice) => primeraPaginaVisible + indice);
 
     return (
-        <nav className="actividad-paginacion" aria-label="Paginación de actividad">
+        <nav className="actividad-paginacion" aria-label={t('actividad.paginacionAria')}>
             <span>
-                {`Mostrando ${primerRegistro}–${ultimoRegistro} de ${totalRegistros} registros`}
-                <span className="actividad-tamano-pagina"> · 20 por página</span>
+                {t('actividad.mostrando', {
+                    desde: primerRegistro,
+                    hasta: ultimoRegistro,
+                    total: totalRegistros,
+                })}
+                <span className="actividad-tamano-pagina">{t('actividad.porPagina')}</span>
             </span>
             <div className="actividad-paginacion-botones">
                 <button
                     type="button"
-                    aria-label="Página anterior"
+                    aria-label={t('actividad.paginaAnterior')}
                     disabled={pagina === 0}
                     onClick={() => onCambiarPagina(pagina - 1)}
                 >
@@ -38,7 +44,7 @@ export function PaginacionActividad({
                     <button
                         type="button"
                         key={numeroPagina}
-                        aria-label={`Página ${numeroPagina + 1}`}
+                        aria-label={t('actividad.pagina', { numero: numeroPagina + 1 })}
                         aria-current={pagina === numeroPagina ? 'page' : undefined}
                         onClick={() => onCambiarPagina(numeroPagina)}
                     >
@@ -47,7 +53,7 @@ export function PaginacionActividad({
                 ))}
                 <button
                     type="button"
-                    aria-label="Página siguiente"
+                    aria-label={t('actividad.paginaSiguiente')}
                     disabled={pagina + 1 >= totalPaginas}
                     onClick={() => onCambiarPagina(pagina + 1)}
                 >

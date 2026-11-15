@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { FiltrosActividad as FiltrosActividadType, OpcionesFiltroActividad, PaginaActividad } from '../../types/actividad';
 import { mensajeDeError } from '../../api/mensajeDeError';
 import { FiltrosActividad } from './components/FiltrosActividad';
@@ -27,6 +28,7 @@ const PAGINA_VACIA: PaginaActividad = {
 };
 
 export function RegistroActividad() {
+    const { t } = useTranslation();
     const [filtros, setFiltros] = useState(FILTROS_VACIOS);
     const [pagina, setPagina] = useState(0);
     const [datos, setDatos] = useState(PAGINA_VACIA);
@@ -100,11 +102,11 @@ export function RegistroActividad() {
         <main className="actividad-pagina">
             <header className="actividad-encabezado">
                 <div>
-                    <h1>Registro de actividad</h1>
-                    <p>Quién hizo qué en EventU y cómo terminó. Del más reciente al más antiguo.</p>
+                    <h1>{t('actividad.titulo')}</h1>
+                    <p>{t('actividad.descripcion')}</p>
                 </div>
                 <span className="actividad-insignia-solo-lectura">
-                    Solo lectura: los registros no se pueden editar ni eliminar
+                    {t('actividad.soloLectura')}
                 </span>
             </header>
 
@@ -117,7 +119,7 @@ export function RegistroActividad() {
             />
 
             <div className="actividad-resumen" aria-live="polite">
-                <strong>{datos.totalElementos} {datos.totalElementos === 1 ? 'registro' : 'registros'}</strong>
+                <strong>{t('actividad.registros', { count: datos.totalElementos })}</strong>
                 <FiltrosActivosActividad filtros={filtros} onQuitar={quitarFiltro} />
             </div>
 
@@ -128,7 +130,7 @@ export function RegistroActividad() {
                 <TablaActividad
                     registros={datos.contenido}
                     filtrosAplicados={hayFiltros}
-                    mensajeVacio={hayFiltros ? 'No hay registros con esos criterios.' : 'No hay registros.'}
+                    mensajeVacio={hayFiltros ? t('actividad.sinResultados') : t('actividad.vacio')}
                 />
             )}
             <PaginacionActividad

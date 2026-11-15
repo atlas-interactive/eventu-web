@@ -1,4 +1,5 @@
 import { Cell, Pie, PieChart, ResponsiveContainer } from 'recharts';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
     inscripciones: number;
@@ -11,13 +12,14 @@ const COLOR_PENDIENTES = 'var(--color-eventu-border)';
 
 // Dona de asistentes frente a inscritos pendientes, acompañada por el porcentaje y sus totales.
 export function GraficoAsistencia({ inscripciones, asistentes, porcentaje }: Props) {
+    const { t } = useTranslation();
     const pendientes = Math.max(0, inscripciones - asistentes);
     const datos =
         inscripciones === 0
-            ? [{ nombre: 'Sin datos', valor: 1, color: COLOR_PENDIENTES }]
+            ? [{ nombre: t('estadisticas.sinDatos'), valor: 1, color: COLOR_PENDIENTES }]
             : [
-                  { nombre: 'Asistieron', valor: asistentes, color: COLOR_ASISTIERON },
-                  { nombre: 'Aún no asisten', valor: pendientes, color: COLOR_PENDIENTES },
+                  { nombre: t('estadisticas.asistieron'), valor: asistentes, color: COLOR_ASISTIERON },
+                  { nombre: t('estadisticas.aunNoAsisten'), valor: pendientes, color: COLOR_PENDIENTES },
               ];
 
     return (
@@ -44,7 +46,7 @@ export function GraficoAsistencia({ inscripciones, asistentes, porcentaje }: Pro
                 </ResponsiveContainer>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                     <span className="text-2xl font-semibold text-eventu-main-ink">{porcentaje}</span>
-                    <span className="text-xs text-eventu-secondary-text">asistencia</span>
+                    <span className="text-xs text-eventu-secondary-text">{t('estadisticas.porcentajeAsistencia')}</span>
                 </div>
             </div>
 
@@ -52,14 +54,14 @@ export function GraficoAsistencia({ inscripciones, asistentes, porcentaje }: Pro
                 <li className="flex items-center justify-between gap-4">
                     <span className="flex items-center gap-2 text-eventu-main-ink">
                         <span className="h-3 w-3 rounded-sm bg-eventu-institutional-red" aria-hidden="true" />
-                        Asistieron
+                        {t('estadisticas.asistieron')}
                     </span>
                     <span className="font-semibold text-eventu-main-ink">{asistentes}</span>
                 </li>
                 <li className="flex items-center justify-between gap-4">
                     <span className="flex items-center gap-2 text-eventu-main-ink">
                         <span className="h-3 w-3 rounded-sm bg-eventu-border" aria-hidden="true" />
-                        Aún no asisten
+                        {t('estadisticas.aunNoAsisten')}
                     </span>
                     <span className="font-semibold text-eventu-main-ink">{pendientes}</span>
                 </li>
