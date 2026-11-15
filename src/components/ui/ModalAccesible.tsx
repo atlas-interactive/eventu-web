@@ -5,6 +5,7 @@ interface ModalAccesibleProps {
     titulo: string;
     idTitulo: string;
     onCerrar: () => void;
+    elementoFocoRestaurar?: HTMLElement | null;
     children: ReactNode;
     icono?: ReactNode;
     variante?: 'centrada' | 'inferior';
@@ -15,6 +16,7 @@ export function ModalAccesible({
     titulo,
     idTitulo,
     onCerrar,
+    elementoFocoRestaurar,
     children,
     icono,
     variante = 'centrada',
@@ -27,7 +29,7 @@ export function ModalAccesible({
     });
 
     useEffect(() => {
-        const elementoPrevio = document.activeElement as HTMLElement | null;
+        const elementoPrevio = elementoFocoRestaurar ?? (document.activeElement as HTMLElement | null);
         const enfocables = () =>
             contenedor.current?.querySelectorAll<HTMLElement>(
                 'input, button:not([disabled]), [href], select, textarea, [tabindex]:not([tabindex="-1"])',
@@ -61,11 +63,12 @@ export function ModalAccesible({
             document.removeEventListener('keydown', alPresionar);
             elementoPrevio?.focus();
         };
-    }, []);
+    }, [elementoFocoRestaurar]);
 
     return (
         <div
-            className={`modal-accesible-fondo fixed inset-0 z-50 flex items-center justify-center bg-eventu-main-ink/50 p-3 sm:p-4${variante === 'inferior' ? ' modal-accesible-fondo--inferior' : ''}`}
+            className={`modal-accesible-fondo fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4${variante === 'inferior' ? ' modal-accesible-fondo--inferior' : ''}`}
+            style={{ backgroundColor: 'var(--color-eventu-overlay)' }}
             onClick={() => cerrarRef.current()}
         >
             <div
@@ -82,7 +85,7 @@ export function ModalAccesible({
                             {icono}
                         </div>
                     )}
-                    <h2 id={idTitulo} className="text-lg font-semibold">
+                    <h2 id={idTitulo} className="min-w-0 break-words text-lg font-semibold">
                         {titulo}
                     </h2>
                 </div>

@@ -3,24 +3,35 @@ import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { LayoutAplicacion } from '../../../src/components/layout/LayoutAplicacion';
+import { AccesibilidadProvider } from '../../../src/features/accesibilidad/AccesibilidadProvider';
+import { CLAVE_PREFERENCIAS_ACCESIBILIDAD } from '../../../src/features/accesibilidad/preferenciasAccesibilidad';
 import { guardarSesion } from '../../../src/features/sesion/sesion';
 
 const renderizar = () =>
     render(
-        <MemoryRouter initialEntries={['/']} >
-            <Routes>
-                <Route element={<LayoutAplicacion />}>
-                    <Route path="/" element={<p>Contenido</p>} />
-                    <Route path="/perfil" element={<p>Pantalla de perfil</p>} />
-                    <Route path="/login" element={<p>Pantalla de login</p>} />
-                </Route>
-            </Routes>
-        </MemoryRouter>,
+        <AccesibilidadProvider>
+            <MemoryRouter initialEntries={['/']}>
+                <Routes>
+                    <Route element={<LayoutAplicacion />}>
+                        <Route path="/" element={<p>Contenido</p>} />
+                        <Route path="/perfil" element={<p>Pantalla de perfil</p>} />
+                        <Route path="/login" element={<p>Pantalla de login</p>} />
+                    </Route>
+                </Routes>
+            </MemoryRouter>
+        </AccesibilidadProvider>,
     );
 
 describe('LayoutAplicacion', () => {
     beforeEach(() => localStorage.clear());
-    afterEach(cleanup);
+    afterEach(() => {
+        cleanup();
+        delete document.documentElement.dataset.accesibilidadTema;
+        delete document.documentElement.dataset.accesibilidadContraste;
+        delete document.documentElement.dataset.accesibilidadFuente;
+        delete document.documentElement.dataset.accesibilidadEscala;
+        document.documentElement.style.removeProperty('--accesibilidad-escala-texto');
+    });
 
     it('muestra al administrador las rutas disponibles y su nombre abreviado', () => {
         guardarSesion({
@@ -112,7 +123,7 @@ describe('LayoutAplicacion', () => {
             'true',
         );
         expect(screen.getByRole('navigation', { name: 'Principal' })).toHaveClass(
-            'max-[639px]:absolute',
+            'max-[769px]:absolute',
         );
 
         await user.keyboard('{Escape}');
@@ -173,5 +184,64 @@ describe('LayoutAplicacion', () => {
         expect(await screen.findByText('Pantalla de login')).toBeInTheDocument();
         expect(localStorage.getItem('auth_token')).toBeNull();
         expect(localStorage.getItem('auth_usuario')).toBeNull();
+    });
+
+    it('abre el panel desde el menú de perfil y restaura el foco al cerrarlo', async () => {
+        guardarSesion({
+            token: 'jwt-de-prueba',
+            usuarioId: 1,
+            nombre: 'Ana Gómez',
+            correo: 'ana@unillanos.edu.co',
+            rol: 'ORGANIZADOR',
+        });
+        const user = userEvent.setup();
+        renderizar();
+
+        const botonPerfil = screen.getByRole('button', { name: 'Menú de perfil de Ana Gómez' });
+        await user.click(botonPerfil);
+        await user.click(screen.getByRole('menuitem', { name: 'Accesibilidad' }));
+
+        expect(screen.getByRole('dialog', { name: 'Opciones de accesibilidad' })).toBeInTheDocument();
+        expect(screen.queryByRole('menu', { name: 'Opciones de perfil' })).not.toBeInTheDocument();
+        await user.keyboard('{Escape}');
+        expect(botonPerfil).toHaveFocus();
+    });
+
+    it('alterna el tema desde el menú sin desactivar el alto contraste', async () => {
+        guardarSesion({
+            token: 'jwt-de-prueba',
+            usuarioId: 1,
+            nombre: 'Ana Gómez',
+            correo: 'ana@unillanos.edu.co',
+            rol: 'ORGANIZADOR',
+        });
+        localStorage.setItem(
+            CLAVE_PREFERENCIAS_ACCESIBILIDAD,
+            JSON.stringify({
+                escalaTexto: 1,
+                tema: 'claro',
+                contraste: 'alto',
+                fuente: 'atkinson',
+            }),
+        );
+        const user = userEvent.setup();
+        renderizar();
+
+        await user.click(screen.getByRole('button', { name: 'Menú de perfil de Ana Gómez' }));
+        const modoOscuro = screen.getByRole('menuitemcheckbox', { name: 'Modo oscuro' });
+        expect(modoOscuro).toHaveAttribute('aria-checked', 'false');
+
+        await user.click(modoOscuro);
+        expect(modoOscuro).toHaveAttribute('aria-checked', 'true');
+        expect(document.documentElement).toHaveAttribute('data-accesibilidad-tema', 'oscuro');
+        expect(document.documentElement).toHaveAttribute('data-accesibilidad-contraste', 'alto');
+        expect(JSON.parse(localStorage.getItem(CLAVE_PREFERENCIAS_ACCESIBILIDAD) ?? '{}')).toMatchObject({
+            tema: 'oscuro',
+            contraste: 'alto',
+        });
+
+        await user.click(modoOscuro);
+        expect(modoOscuro).toHaveAttribute('aria-checked', 'false');
+        expect(document.documentElement).toHaveAttribute('data-accesibilidad-contraste', 'alto');
     });
 });

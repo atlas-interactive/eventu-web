@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { LayoutAplicacion } from '../../../../src/components/layout/LayoutAplicacion';
+import { AccesibilidadProvider } from '../../../../src/features/accesibilidad/AccesibilidadProvider';
 import { Perfil } from '../../../../src/features/perfil/Perfil';
 import {
     actualizarPerfil,
@@ -31,14 +32,16 @@ const perfil: PerfilUsuario = {
 
 const renderizar = () =>
     render(
-        <MemoryRouter initialEntries={['/perfil']}>
-            <Routes>
-                <Route element={<LayoutAplicacion />}>
-                    <Route path="/perfil" element={<Perfil />} />
-                </Route>
-                <Route path="/login" element={<p>Inicio de sesión</p>} />
-            </Routes>
-        </MemoryRouter>,
+        <AccesibilidadProvider>
+            <MemoryRouter initialEntries={['/perfil']}>
+                <Routes>
+                    <Route element={<LayoutAplicacion />}>
+                        <Route path="/perfil" element={<Perfil />} />
+                    </Route>
+                    <Route path="/login" element={<p>Inicio de sesión</p>} />
+                </Routes>
+            </MemoryRouter>
+        </AccesibilidadProvider>,
     );
 
 describe('Perfil', () => {
@@ -60,6 +63,11 @@ describe('Perfil', () => {
 
     afterEach(() => {
         cleanup();
+        delete document.documentElement.dataset.accesibilidadTema;
+        delete document.documentElement.dataset.accesibilidadContraste;
+        delete document.documentElement.dataset.accesibilidadFuente;
+        delete document.documentElement.dataset.accesibilidadEscala;
+        document.documentElement.style.removeProperty('--accesibilidad-escala-texto');
         vi.restoreAllMocks();
     });
 

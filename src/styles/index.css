@@ -1,6 +1,50 @@
 @import 'tailwindcss';
 @import './theme.css';
 
+html {
+  font-size: calc(100% * var(--accesibilidad-escala-texto, 1));
+}
+
+.cabecera-aplicacion {
+  font-size: 16px;
+  --spacing: 0.25em;
+}
+
+.cabecera-aplicacion .text-xs {
+  font-size: 0.75em;
+}
+
+.cabecera-aplicacion .text-sm {
+  font-size: 0.875em;
+}
+
+.cabecera-aplicacion .text-base {
+  font-size: 1em;
+}
+
+.cabecera-aplicacion .text-lg {
+  font-size: 1.125em;
+}
+
+.accesibilidad-controles-fuente {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.accesibilidad-controles-fuente button {
+  padding: 4px 8px;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+@media (max-width: 639px) {
+  :root[data-accesibilidad-escala='1.5'] .marca-eventu-texto,
+  :root[data-accesibilidad-escala='2'] .marca-eventu-texto {
+    display: none;
+  }
+}
+
 #root {
   min-height: 100vh;
 }
@@ -11,4 +55,24 @@ body {
   min-height: 100vh;
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+}
+
+:root[data-accesibilidad-contraste='alto']
+  :is(
+    button:not(:disabled):not([aria-disabled='true']),
+    a[href]:not([aria-disabled='true']),
+    select:not(:disabled),
+    [role='button']:not([aria-disabled='true']),
+    [role='menuitem']:not([aria-disabled='true']),
+    [role='menuitemcheckbox']:not([aria-disabled='true']),
+    [role='option'],
+    [role='tab'],
+    [role='switch'],
+    input[type='checkbox']:not(:disabled),
+    input[type='radio']:not(:disabled)
+  ):is(:hover, :focus-visible) {
+  border-color: var(--color-eventu-interaction-highlight-ink);
+  background-color: var(--color-eventu-interaction-highlight);
+  color: var(--color-eventu-interaction-highlight-ink);
+  outline-color: var(--color-eventu-interaction-highlight-ink);
 }

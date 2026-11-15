@@ -64,7 +64,7 @@ export function DashboardEstadisticas() {
                             <Skeleton className="h-5 w-32" />
                             <Skeleton className="mt-2 h-4 w-64 max-w-full" />
                             <div className="mt-6 flex flex-col items-center gap-6 sm:flex-row sm:gap-8">
-                                <Skeleton className="h-44 w-44 shrink-0 rounded-full" />
+                                <Skeleton className="h-44 w-44 max-w-full shrink-0 rounded-full" />
                                 <div className="w-full max-w-xs space-y-4">
                                     <Skeleton className="h-4 w-full" />
                                     <Skeleton className="h-4 w-full" />
@@ -111,7 +111,10 @@ export function DashboardEstadisticas() {
                             />
                         </section>
 
-                        <dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+                        <section
+                            aria-label="Indicadores principales"
+                            className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1"
+                        >
                             <TarjetaKpi
                                 titulo="Inscripciones activas"
                                 valor={formatoNumero.format(estadisticas.inscripcionesActivas)}
@@ -126,7 +129,7 @@ export function DashboardEstadisticas() {
                                 Icono={UserCheck}
                                 tono="verde"
                             />
-                        </dl>
+                        </section>
                     </div>
 
                     {admin && (

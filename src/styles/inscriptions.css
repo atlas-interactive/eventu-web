@@ -16,6 +16,8 @@
 }
 
 .inscripciones-titulo {
+  min-width: 0;
+  overflow-wrap: anywhere;
   color: var(--color-eventu-main-ink);
   font-size: 1.625rem;
   line-height: 2rem;

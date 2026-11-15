@@ -81,7 +81,7 @@
 }
 
 .actividad-campo input::placeholder {
-  color: #85857f;
+  color: var(--color-eventu-secondary-text);
 }
 
 .actividad-entrada-con-icono {
@@ -107,7 +107,7 @@
   align-items: flex-end;
   gap: 0.5rem;
   margin-top: 0.85rem;
-  border-top: 1px solid #eeede9;
+  border-top: 1px solid var(--color-eventu-border);
   padding-top: 0.75rem;
 }
 
@@ -160,7 +160,7 @@
 }
 
 .actividad-periodos button[aria-pressed='true'] {
-  border-color: #efc7c9;
+  border-color: var(--color-eventu-red-border);
   background: var(--color-eventu-soft-red-background);
   color: var(--color-eventu-institutional-red);
   font-weight: 600;
@@ -272,7 +272,7 @@
 
 .actividad-tabla th,
 .actividad-tabla td {
-  border-bottom: 1px solid #eeede9;
+  border-bottom: 1px solid var(--color-eventu-border);
   padding: 0.65rem 0.7rem;
   vertical-align: middle;
 }
@@ -365,7 +365,7 @@
   align-items: center;
   gap: 0.35rem;
   margin: 0;
-  border-top: 1px solid #eeede9;
+  border-top: 1px solid var(--color-eventu-border);
   padding: 0.65rem 0.75rem;
   color: var(--color-eventu-secondary-text);
   font-size: 0.75rem;
@@ -420,7 +420,7 @@
 }
 
 .actividad-paginacion-botones button:disabled {
-  color: #aaa9a3;
+  color: var(--color-eventu-secondary-text);
 }
 
 .actividad-paginacion-botones button[aria-current='page'] {
