@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Evento, FiltrosEvento } from '../../types/evento';
 import type { Categoria } from '../../types/categoria';
 import { mensajeDeError } from '../../api/mensajeDeError';
@@ -15,6 +16,7 @@ const fechasInvalidas = (filtros: FiltrosEvento) =>
     Boolean(filtros.fechaDesde && filtros.fechaHasta && filtros.fechaDesde > filtros.fechaHasta);
 
 export function useGestionEventos(mensajeInicial = '') {
+    const { t } = useTranslation();
     const [eventos, setEventos] = useState<Evento[]>([]);
     const [categorias, setCategorias] = useState<Categoria[]>([]);
     const [errorCategorias, setErrorCategorias] = useState('');
@@ -42,12 +44,12 @@ export function useGestionEventos(mensajeInicial = '') {
             })
             .catch((err: unknown) => {
                 console.error('No se pudieron cargar las categorías de eventos:', err);
-                if (vigente) setErrorCategorias('No se pudieron cargar las categorías.');
+                if (vigente) setErrorCategorias(t('comun.errorCategorias'));
             });
         return () => {
             vigente = false;
         };
-    }, []);
+    }, [t]);
 
     useEffect(() => {
         let vigente = true;
@@ -71,7 +73,7 @@ export function useGestionEventos(mensajeInicial = '') {
                     if (vigente) {
                         setResultadoConsulta({
                             clave: claveConsulta,
-                            error: 'No se pudieron cargar los eventos. Intenta de nuevo más tarde.',
+                            error: t('comun.errorEventos'),
                         });
                     }
                 })
@@ -90,6 +92,7 @@ export function useGestionEventos(mensajeInicial = '') {
         texto,
         claveConsulta,
         rangoFechasInvalido,
+        t,
     ]);
 
     const solicitarCancelacion = (evento: Evento) => {
@@ -99,7 +102,7 @@ export function useGestionEventos(mensajeInicial = '') {
             evento.estado.toUpperCase() === 'PUBLICADO' &&
             eventoYaIniciado(evento.fechaInicio)
         ) {
-            setErrorCancelar('No se puede cancelar un evento después de que inicia.');
+            setErrorCancelar(t('comun.noCancelarIniciado'));
             setACancelar(evento);
             return;
         }
@@ -119,7 +122,7 @@ export function useGestionEventos(mensajeInicial = '') {
             eventoACancelar.estado.toUpperCase() === 'PUBLICADO' &&
             eventoYaIniciado(eventoACancelar.fechaInicio)
         ) {
-            setErrorCancelar('No se puede cancelar un evento después de que inicia.');
+            setErrorCancelar(t('comun.noCancelarIniciado'));
             return;
         }
         setCancelando(true);
@@ -128,7 +131,9 @@ export function useGestionEventos(mensajeInicial = '') {
             const respuesta = await cancelarEvento(eventoACancelar.id);
             // Actualiza la lista local sin volver a consultar el endpoint.
             setEventos((previos) => previos.filter((evento) => evento.id !== eventoACancelar.id));
-            setMensajeExito(respuesta.mensaje || `El evento «${eventoACancelar.titulo}» fue cancelado.`);
+            setMensajeExito(
+                respuesta.mensaje || t('comun.eventoCancelado', { titulo: eventoACancelar.titulo }),
+            );
             setACancelar(null);
         } catch (err: unknown) {
             console.error('No se pudo cancelar el evento:', err);

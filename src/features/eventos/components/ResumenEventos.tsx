@@ -1,4 +1,6 @@
 import { RotateCcw, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import i18n from '../../../i18n';
 import type { Categoria } from '../../../types/categoria';
 import type { FiltrosEvento } from '../../../types/evento';
 import '../../../styles/event-results.css';
@@ -23,8 +25,8 @@ interface FiltroActivo {
 }
 
 const estados = {
-    PUBLICADO: 'Publicados',
-    CANCELADO: 'Cancelados',
+    PUBLICADO: 'resumen.publicados',
+    CANCELADO: 'resumen.cancelados',
 } as const;
 
 const formatoFecha = new Intl.DateTimeFormat('es-CO', { day: 'numeric', month: 'short' });
@@ -47,8 +49,8 @@ const formatoRangoFechas = (desde?: string, hasta?: string): string => {
         return `${formatoFecha.format(fechaDesde)} – ${formatoFecha.format(fechaHasta)}`;
     }
 
-    if (desde) return `Desde ${formatoFecha.format(aFechaLocal(desde))}`;
-    if (hasta) return `Hasta ${formatoFecha.format(aFechaLocal(hasta))}`;
+    if (desde) return i18n.t('resumen.desde', { fecha: formatoFecha.format(aFechaLocal(desde)) });
+    if (hasta) return i18n.t('resumen.hasta', { fecha: formatoFecha.format(aFechaLocal(hasta)) });
     return '';
 };
 
@@ -62,6 +64,7 @@ export function ResumenEventos({
     onLimpiar,
     onOrdenChange,
 }: ResumenEventosProps) {
+    const { t } = useTranslation();
     const estadoSeleccionado = filtros.estado ?? (mostrarEstado ? 'PUBLICADO' : 'TODOS');
     const categoria = categorias.find(({ id }) => id === filtros.categoriaId);
     const filtrosActivos: FiltroActivo[] = [];
@@ -76,14 +79,14 @@ export function ResumenEventos({
     if (mostrarEstado && estadoSeleccionado !== 'TODOS') {
         filtrosActivos.push({
             id: 'estado',
-            etiqueta: estados[estadoSeleccionado],
+            etiqueta: t(estados[estadoSeleccionado]),
             quitar: () => onChange({ ...filtros, estado: 'TODOS' }),
         });
     }
     if (filtros.categoriaId !== undefined) {
         filtrosActivos.push({
             id: 'categoria',
-            etiqueta: categoria?.nombre ?? 'Categoría',
+            etiqueta: categoria?.nombre ?? t('resumen.categoria'),
             quitar: () => onChange({ ...filtros, categoriaId: undefined }),
         });
     }
@@ -96,18 +99,18 @@ export function ResumenEventos({
     }
 
     return (
-        <section className="eventos-resultados" aria-label="Resumen y orden de eventos">
+        <section className="eventos-resultados" aria-label={t('resumen.aria')}>
             <div className="eventos-resultados-filtros">
                 <p className="eventos-resultados-cantidad" aria-live="polite">
-                    <strong>{cantidadEventos} {cantidadEventos === 1 ? 'evento' : 'eventos'}</strong>
-                    {filtrosActivos.length > 0 && <span> coinciden con</span>}
+                    <strong>{t('resumen.cantidad', { count: cantidadEventos })}</strong>
+                    {filtrosActivos.length > 0 && <span> {t('resumen.coinciden')}</span>}
                 </p>
                 {filtrosActivos.map(({ id, etiqueta, quitar }) => (
                     <button
                         key={id}
                         type="button"
                         className="eventos-resultados-chip"
-                        aria-label={`Quitar filtro: ${etiqueta}`}
+                        aria-label={t('resumen.quitarFiltro', { etiqueta })}
                         onClick={quitar}
                     >
                         {etiqueta}
@@ -117,14 +120,14 @@ export function ResumenEventos({
                 {filtrosActivos.length > 0 && (
                     <button type="button" className="eventos-resultados-limpiar" onClick={onLimpiar}>
                         <RotateCcw aria-hidden="true" />
-                        Limpiar filtros
+                        {t('resumen.limpiar')}
                     </button>
                 )}
             </div>
             <label className="eventos-resultados-orden">
-                <span>Ordenar:</span>
+                <span>{t('resumen.ordenar')}</span>
                 <select
-                    aria-label="Ordenar eventos"
+                    aria-label={t('resumen.ordenarAria')}
                     value={orden}
                     onChange={(evento) => {
                         const valor = evento.target.value;
@@ -133,9 +136,9 @@ export function ResumenEventos({
                         }
                     }}
                 >
-                    <option value="fecha-proxima">Fecha más próxima</option>
-                    <option value="fecha-lejana">Fecha más lejana</option>
-                    <option value="titulo">Título A–Z</option>
+                    <option value="fecha-proxima">{t('resumen.fechaProxima')}</option>
+                    <option value="fecha-lejana">{t('resumen.fechaLejana')}</option>
+                    <option value="titulo">{t('resumen.tituloAZ')}</option>
                 </select>
             </label>
         </section>

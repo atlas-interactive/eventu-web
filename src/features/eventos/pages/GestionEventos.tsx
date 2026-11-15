@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { CalendarPlus, CircleX, Pencil, Plus, Users } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import { IconoAviso } from '../../../components/ui/IconoAviso';
 import { Skeleton, SkeletonEstado } from '../../../components/ui/Skeleton';
@@ -13,6 +14,7 @@ import { useAhoraBogota } from '../../../hooks/eventos/useAhoraBogota';
 import '../../../styles/events.css';
 
 export function GestionEventos() {
+    const { t } = useTranslation();
     const ahora = useAhoraBogota();
     const location = useLocation();
     const mensajeNavegacion = (location.state as { mensaje?: string } | null)?.mensaje ?? '';
@@ -25,13 +27,13 @@ export function GestionEventos() {
             <header className="evento-list-header">
                 <div>
                     <h1 className="evento-page-title evento-page-title--list">
-                        {gestion.administrador ? 'Todos los eventos' : 'Mis eventos'}
+                        {gestion.administrador ? t('gestion.todos') : t('gestion.misEventos')}
                     </h1>
-                    <p className="workflow-description">Eventos publicados que puedes gestionar.</p>
+                    <p className="workflow-description">{t('gestion.descripcion')}</p>
                 </div>
                 <Link to="/organizador/eventos/nuevo" className="workflow-button workflow-button--primary gap-1.5">
                     <Plus className="h-4 w-4 shrink-0" aria-hidden="true" />
-                    Crear evento
+                    {t('gestion.crear')}
                 </Link>
             </header>
 
@@ -63,7 +65,7 @@ export function GestionEventos() {
                 orden={orden}
             />
             {gestion.cargando && (
-                <SkeletonEstado etiqueta="Cargando eventos">
+                <SkeletonEstado etiqueta={t('gestion.cargando')}>
                     <ul className="eventos-grid">
                         {Array.from({ length: 3 }, (_, indice) => (
                             <li key={indice} className="evento-card">
@@ -90,8 +92,8 @@ export function GestionEventos() {
                     gestion.filtros.fechaDesde ||
                     gestion.filtros.fechaHasta ||
                     (gestion.filtros.estado && gestion.filtros.estado !== 'PUBLICADO')
-                        ? 'No se encontraron eventos con esos filtros.'
-                        : 'Aún no tienes eventos publicados.'}
+                        ? t('gestion.sinResultados')
+                        : t('gestion.vacio')}
                 </p>
             )}
 
@@ -105,10 +107,10 @@ export function GestionEventos() {
                             <Link
                                 to={`/organizador/eventos/${evento.id}/inscritos`}
                                 className="evento-row-button"
-                                aria-label={`Ver inscritos y asistencias de ${evento.titulo}`}
+                                aria-label={t('gestion.verInscritosAria', { titulo: evento.titulo })}
                             >
                                 <Users className="h-4 w-4 shrink-0" aria-hidden="true" />
-                                Inscritos
+                                {t('gestion.inscritos')}
                             </Link>
                             {evento.estado.toUpperCase() !== 'CANCELADO' &&
                                 !(evento.estado.toUpperCase() === 'PUBLICADO' &&
@@ -117,19 +119,19 @@ export function GestionEventos() {
                                     <Link
                                         to={`/organizador/eventos/${evento.id}/editar`}
                                         className="evento-row-button"
-                                        aria-label={`Editar evento ${evento.titulo}`}
+                                        aria-label={t('gestion.editarAria', { titulo: evento.titulo })}
                                     >
                                         <Pencil className="h-4 w-4 shrink-0" aria-hidden="true" />
-                                        Editar
+                                        {t('gestion.editar')}
                                     </Link>
                                     <button
                                         type="button"
                                         className="evento-row-button evento-row-button--danger"
-                                        aria-label={`Cancelar evento ${evento.titulo}`}
+                                        aria-label={t('gestion.cancelarAria', { titulo: evento.titulo })}
                                         onClick={() => gestion.solicitarCancelacion(evento)}
                                     >
                                         <CircleX className="h-4 w-4 shrink-0" aria-hidden="true" />
-                                        Cancelar
+                                        {t('gestion.cancelar')}
                                     </button>
                                 </>
                             )}

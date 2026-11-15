@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { SubmitEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Categoria } from '../../types/categoria';
 import type { Evento, EventoActualizacion, EventoSolicitud } from '../../types/evento';
 import { Skeleton, SkeletonEstado } from '../../components/ui/Skeleton';
@@ -45,6 +46,7 @@ const cambios = (campos: CamposEvento, evento: Evento): EventoActualizacion => {
 };
 
 export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioEventoProps) {
+    const { t } = useTranslation();
     const [campos, setCampos] = useState<CamposEvento>(() => camposIniciales(evento));
     const [errores, setErrores] = useState<ErroresEvento>({});
     const [errorGeneral, setErrorGeneral] = useState('');
@@ -66,7 +68,7 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
             })
             .catch((err: unknown) => {
                 console.error('No se pudo cargar el listado de categorías:', err);
-                if (vigente) setErrorCategorias('No se pudieron cargar las categorías. Intenta de nuevo más tarde.');
+                if (vigente) setErrorCategorias(t('formulario.errorCategorias'));
             })
             .finally(() => {
                 if (vigente) setCargandoCategorias(false);
@@ -74,12 +76,12 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
         return () => {
             vigente = false;
         };
-    }, []);
+    }, [t]);
 
     // Si la categoría actual del evento se desactivó, sigue apareciendo para no perderla al editar otros campos
     const opciones =
         evento?.categoriaId && !categorias.some((c) => c.id === evento.categoriaId)
-            ? [...categorias, { id: evento.categoriaId, nombre: `${evento.categoriaNombre} (inactiva)` }]
+            ? [...categorias, { id: evento.categoriaId, nombre: t('formulario.categoriaInactiva', { nombre: evento.categoriaNombre }) }]
             : categorias;
 
     const alCambiar = (campo: keyof CamposEvento) => (e: { target: { value: string } }) =>
@@ -101,7 +103,7 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
             if (evento) {
                 const diferencias = cambios(campos, evento);
                 if (Object.keys(diferencias).length === 0) {
-                    setErrorGeneral('No hay cambios para guardar.');
+                    setErrorGeneral(t('formulario.sinCambios'));
                     setGuardando(false);
                     return;
                 }
@@ -143,7 +145,7 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
         >
             <div>
                 <label htmlFor="titulo" className="evento-field-label">
-                    Título <span aria-hidden="true">*</span>
+                    {t('formulario.titulo')} <span aria-hidden="true">*</span>
                 </label>
                 <input
                     id="titulo"
@@ -155,14 +157,14 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
                     aria-required="true"
                     aria-describedby={describir('titulo')}
                     className="evento-control"
-                    placeholder='Ej. Feria de proyectos de ingeniería'
+                    placeholder={t('formulario.placeholderTitulo')}
                 />
                 {mensajeCampo('titulo')}
             </div>
 
             <div>
                 <label htmlFor="descripcion" className="evento-field-label">
-                    Descripción <span aria-hidden="true">*</span>
+                    {t('formulario.descripcion')} <span aria-hidden="true">*</span>
                 </label>
                 <textarea
                     id="descripcion"
@@ -172,7 +174,7 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
                     aria-invalid={errores.descripcion ? true : undefined}
                     aria-describedby={describir('descripcion')}
                     className="evento-control evento-control--textarea"
-                    placeholder='Describe brevemente el evento...'
+                    placeholder={t('formulario.placeholderDescripcion')}
                     aria-required="true"
                 />
                 {mensajeCampo('descripcion')}
@@ -181,7 +183,7 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
             <div className="evento-form-grid">
                 <div className="evento-field evento-field--date">
                     <label htmlFor="fechaInicio" className="evento-field-label">
-                        Fecha y hora <span aria-hidden="true">*</span>
+                        {t('formulario.fechaHora')} <span aria-hidden="true">*</span>
                     </label>
                     <input
                         id="fechaInicio"
@@ -195,7 +197,7 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
                     />
                     {!editando && (
                         <p id="ayuda-fecha-futura" className="evento-help">
-                            La fecha debe ser futura.
+                            {t('formulario.ayudaFecha')}
                         </p>
                     )}
                     {mensajeCampo('fechaInicio')}
@@ -203,7 +205,7 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
 
                 <div className="evento-field evento-field--location">
                     <label htmlFor="ubicacion" className="evento-field-label">
-                        Ubicación <span aria-hidden="true">*</span>
+                        {t('formulario.ubicacion')} <span aria-hidden="true">*</span>
                     </label>
                     <input
                         id="ubicacion"
@@ -215,14 +217,14 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
                         aria-required="true"
                         aria-describedby={describir('ubicacion')}
                         className="evento-control"
-                        placeholder='Ej. Auditorio Eduardo Carranza'
+                        placeholder={t('formulario.placeholderUbicacion')}
                     />
                     {mensajeCampo('ubicacion')}
                 </div>
 
                 <div className="evento-field evento-field--capacity">
                     <label htmlFor="cuposMaximos" className="evento-field-label">
-                        Cupo máximo <span aria-hidden="true">*</span>
+                        {t('formulario.cupoMaximo')} <span aria-hidden="true">*</span>
                     </label>
                     <input
                         id="cuposMaximos"
@@ -235,11 +237,11 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
                         aria-required="true"
                         aria-describedby={describir('cuposMaximos')}
                         className="evento-control"
-                        placeholder='Ej. 100'
+                        placeholder={t('formulario.placeholderCupo')}
                     />
                     {editando && (
                         <p className="evento-help">
-                            Inscritos actuales: {inscritos}. Los cupos disponibles se recalculan al guardar.
+                            {t('formulario.inscritosActuales', { inscritos })}
                         </p>
                     )}
                     {mensajeCampo('cuposMaximos')}
@@ -247,7 +249,7 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
 
                 <div className="evento-field evento-field--category">
                     <label htmlFor="categoriaId" className="evento-field-label">
-                        Categoría <span aria-hidden="true">*</span>
+                        {t('formulario.categoria')} <span aria-hidden="true">*</span>
                     </label>
                     <div className="relative">
                         <select
@@ -261,7 +263,7 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
                             aria-describedby={describir('categoriaId')}
                             className={`evento-control evento-control--select ${cargandoCategorias ? 'text-transparent' : ''}`}
                         >
-                            <option value="">Selecciona una categoría</option>
+                            <option value="">{t('formulario.seleccionaCategoria')}</option>
                             {opciones.map((categoria) => (
                                 <option key={categoria.id} value={categoria.id}>
                                     {categoria.nombre}
@@ -270,7 +272,7 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
                         </select>
                         {cargandoCategorias && (
                             <SkeletonEstado
-                                etiqueta="Cargando categorías"
+                                etiqueta={t('formulario.cargandoCategorias')}
                                 className="pointer-events-none absolute inset-y-0 left-3 right-8 flex items-center"
                             >
                                 <Skeleton className="h-4 w-36" />
@@ -288,7 +290,7 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
 
             <div className="evento-certificable">
                 <label className="evento-certificable-toggle">
-                    <span className="evento-certificable-label">Evento certificable</span>
+                    <span className="evento-certificable-label">{t('formulario.certificable')}</span>
                     <input
                         type="checkbox"
                         role="switch"
@@ -303,7 +305,7 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
                     </span>
                 </label>
                 <p id="ayuda-certificable" className="evento-help">
-                    Los asistentes con asistencia verificada podrán descargar un certificado.
+                    {t('formulario.ayudaCertificable')}
                 </p>
             </div>
 
@@ -315,10 +317,10 @@ export function FormularioEvento({ evento, onGuardado, onCancelar }: FormularioE
 
             <div className="evento-form-actions">
                 <button type="button" className="workflow-button workflow-button--secondary workflow-button--compact" onClick={onCancelar}>
-                    Cancelar
+                    {t('formulario.cancelar')}
                 </button>
                 <button type="submit" className="workflow-button workflow-button--primary workflow-button--compact" disabled={guardando}>
-                    {guardando ? 'Guardando…' : editando ? 'Guardar cambios' : 'Crear evento'}
+                    {guardando ? t('formulario.guardando') : editando ? t('formulario.guardarCambios') : t('formulario.crear')}
                 </button>
             </div>
         </form>

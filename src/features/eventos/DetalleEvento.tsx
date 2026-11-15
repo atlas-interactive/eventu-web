@@ -9,6 +9,7 @@ import {
     MapPin,
     Users,
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router-dom';
 import { guardarArchivo } from '../../api/descargas';
 import { mensajeDeError } from '../../api/mensajeDeError';
@@ -66,6 +67,7 @@ const descargarCalendario = (evento: Evento) => {
 };
 
 export function DetalleEvento() {
+    const { t } = useTranslation();
     const { id } = useParams();
     const idEvento = Number(id);
     const ahora = useAhoraBogota();
@@ -130,7 +132,7 @@ export function DetalleEvento() {
     if (cargando) {
         return (
             <main className="detalle-evento-page">
-                <SkeletonEstado etiqueta="Cargando detalle del evento" className="detalle-evento-skeleton">
+                <SkeletonEstado etiqueta={t('detalle.cargando')} className="detalle-evento-skeleton">
                     <Skeleton className="h-4 w-28" />
                     <Skeleton className="mt-6 h-32 w-full rounded-xl" />
                     <Skeleton className="mt-5 h-8 w-2/3" />
@@ -144,10 +146,10 @@ export function DetalleEvento() {
         return (
             <main className="detalle-evento-page">
                 <Link to="/eventos" className="detalle-evento-volver">
-                    ← Volver a eventos
+                    {t('detalle.volver')}
                 </Link>
                 <p role="alert" className="detalle-evento-error">
-                    {noEncontrado ? 'No se encontró el evento solicitado.' : error || 'No se pudo cargar el evento.'}
+                    {noEncontrado ? t('detalle.noEncontrado') : error || t('detalle.errorCarga')}
                 </p>
             </main>
         );
@@ -219,7 +221,7 @@ export function DetalleEvento() {
             setErrorCalendario('');
         } catch (err: unknown) {
             console.error('No se pudo crear el archivo de calendario:', err);
-            setErrorCalendario('No se pudo preparar el archivo de calendario.');
+            setErrorCalendario(t('detalle.errorCalendario'));
         }
     };
 
@@ -241,7 +243,7 @@ export function DetalleEvento() {
     return (
         <main className={`detalle-evento-page${inscripcion.yaInscrito ? ' detalle-evento-page--inscrito' : ''}`}>
             <Link to="/eventos" className="detalle-evento-volver">
-                ← Volver a eventos
+                {t('detalle.volver')}
             </Link>
             {inscripcion.inscripcionRealizada && <ConfirmacionInscripcion evento={evento} />}
 
@@ -259,56 +261,56 @@ export function DetalleEvento() {
                         <span className="detalle-evento-categoria">{evento.categoriaNombre}</span>
                         {evento.certificable && (
                             <span className="detalle-evento-estado detalle-evento-estado--certificable">
-                                Certificable
+                                {t('detalle.certificable')}
                             </span>
                         )}
                         {cancelado && (
                             <span className="detalle-evento-estado detalle-evento-estado--cancelado">
-                                Evento cancelado
+                                {t('detalle.cancelado')}
                             </span>
                         )}
                         {estadoTemporal === 'EN_CURSO' && !cancelado && (
                             <span className="detalle-evento-estado detalle-evento-estado--en-curso">
-                                En curso
+                                {t('detalle.enCurso')}
                             </span>
                         )}
                         {estadoTemporal === 'FINALIZADO' && !cancelado && (
                             <span className="detalle-evento-estado detalle-evento-estado--finalizado">
-                                Evento finalizado
+                                {t('detalle.finalizado')}
                             </span>
                         )}
                         {agotado && !cancelado && !eventoIniciado && (
                             <span className="detalle-evento-estado detalle-evento-estado--agotado">
-                                Cupos agotados
+                                {t('detalle.agotado')}
                             </span>
                         )}
                     </div>
                     <h1 className="detalle-evento-titulo">{evento.titulo}</h1>
 
-                    <section className="detalle-evento-informacion" aria-label="Información del evento">
+                    <section className="detalle-evento-informacion" aria-label={t('detalle.infoAria')}>
                         <div className="detalle-evento-info-card">
                             <span className="detalle-evento-info-icono"><CalendarDays aria-hidden="true" /></span>
-                            <span><small>Fecha</small><strong>{formatoFecha.format(fechaInicio)}</strong></span>
+                            <span><small>{t('detalle.fecha')}</small><strong>{formatoFecha.format(fechaInicio)}</strong></span>
                         </div>
                         <div className="detalle-evento-info-card">
                             <span className="detalle-evento-info-icono"><Clock3 aria-hidden="true" /></span>
-                            <span><small>Hora</small><strong>{formatoHora.format(fechaInicio)}</strong></span>
+                            <span><small>{t('detalle.hora')}</small><strong>{formatoHora.format(fechaInicio)}</strong></span>
                         </div>
                         <div className="detalle-evento-info-card">
                             <span className="detalle-evento-info-icono"><MapPin aria-hidden="true" /></span>
-                            <span><small>Lugar</small><strong>{evento.ubicacion}</strong></span>
+                            <span><small>{t('detalle.lugar')}</small><strong>{evento.ubicacion}</strong></span>
                         </div>
                         <div className="detalle-evento-info-card">
                             <span className="detalle-evento-info-icono"><Users aria-hidden="true" /></span>
                             <span>
-                                <small>Cupos</small>
-                                <strong>{evento.cuposDisponibles} de {evento.cuposMaximos} disponibles</strong>
+                                <small>{t('detalle.cupos')}</small>
+                                <strong>{t('detalle.disponibles', { disponibles: evento.cuposDisponibles, maximos: evento.cuposMaximos })}</strong>
                             </span>
                         </div>
                     </section>
 
                     <section className="detalle-evento-sobre">
-                        <h2>Sobre el evento</h2>
+                        <h2>{t('detalle.sobre')}</h2>
                         <p>{evento.descripcion}</p>
                     </section>
 
@@ -316,14 +318,14 @@ export function DetalleEvento() {
                         <span className="detalle-evento-organiza-avatar" aria-hidden="true">
                             {evento.organizadorNombre.split(/\s+/).slice(0, 2).map((parte) => parte[0]).join('').toUpperCase()}
                         </span>
-                        <div><small>Organiza</small><strong>{evento.organizadorNombre}</strong></div>
+                        <div><small>{t('detalle.organiza')}</small><strong>{evento.organizadorNombre}</strong></div>
                     </div>
                 </article>
 
                 <aside
                     className={`detalle-evento-panel${inscripcion.yaInscrito ? ' detalle-evento-panel--entrada' : ''}`}
                     id="entrada-evento"
-                    aria-label={inscripcion.yaInscrito ? 'Tu entrada al evento' : 'Inscripción al evento'}
+                    aria-label={inscripcion.yaInscrito ? t('detalle.panelInscritoAria') : t('detalle.panelInscripcionAria')}
                 >
                     {inscripcion.yaInscrito ? (
                         <>
@@ -331,17 +333,17 @@ export function DetalleEvento() {
                                 className={`detalle-evento-inscrito${estadoTemporal === 'FINALIZADO' ? ' detalle-evento-inscrito--finalizado' : ''}`}
                             >
                                 {estadoTemporal !== 'FINALIZADO' && <Check aria-hidden="true" />}
-                                {estadoTemporal === 'FINALIZADO' ? 'Evento finalizado' : 'Estás inscrito'}
+                                {estadoTemporal === 'FINALIZADO' ? t('detalle.finalizado') : t('detalle.estasInscrito')}
                             </div>
                             {qrDisponible && (
                                 <>
                                     <div className="detalle-evento-panel-contenido">
-                                        <h2>Tu entrada</h2>
+                                        <h2>{t('detalle.tuEntrada')}</h2>
                                         {codigoQr ? (
                                             <EntradaQr codigo={codigoQr} nombreArchivo={`entrada-evento-${evento.id}.svg`} />
                                         ) : (
                                             <p className="detalle-evento-qr-no-disponible" role="status">
-                                                No hay un código QR disponible para esta inscripción.
+                                                {t('detalle.qrNoDisponible')}
                                             </p>
                                         )}
                                         <button
@@ -350,16 +352,16 @@ export function DetalleEvento() {
                                             onClick={crearArchivoCalendario}
                                         >
                                             <CalendarPlus aria-hidden="true" />
-                                            Añadir al calendario
+                                            {t('detalle.anadirCalendario')}
                                         </button>
                                         {errorCalendario && <p className="detalle-evento-error" role="alert">{errorCalendario}</p>}
                                         <p className="detalle-evento-qr-ayuda">
-                                            La validación de la entrada se realiza desde la aplicación móvil.
+                                            {t('detalle.ayudaQr')}
                                         </p>
                                     </div>
                                     <div className="detalle-evento-panel-ocupacion">
-                                        <div><span>Cupos ocupados</span><strong>{inscritos} / {evento.cuposMaximos}</strong></div>
-                                        <div className="detalle-evento-cupos" role="meter" aria-label="Cupos ocupados" aria-valuemin={0} aria-valuemax={evento.cuposMaximos} aria-valuenow={inscritos}>
+                                        <div><span>{t('detalle.cuposOcupados')}</span><strong>{inscritos} / {evento.cuposMaximos}</strong></div>
+                                        <div className="detalle-evento-cupos" role="meter" aria-label={t('detalle.cuposOcupados')} aria-valuemin={0} aria-valuemax={evento.cuposMaximos} aria-valuenow={inscritos}>
                                             <span style={{ width: `${porcentajeOcupado}%` }} />
                                         </div>
                                     </div>
@@ -369,7 +371,7 @@ export function DetalleEvento() {
                                             className="detalle-evento-cancelar-inscripcion"
                                             onClick={() => setACancelar(inscripcion.inscripcionActiva)}
                                         >
-                                            Cancelar mi inscripción
+                                            {t('detalle.cancelarInscripcion')}
                                         </button>
                                     )}
                                 </>
@@ -384,7 +386,7 @@ export function DetalleEvento() {
                                         aria-busy={descargandoCertificado}
                                     >
                                         <Download aria-hidden="true" />
-                                        {descargandoCertificado ? 'Generando certificado…' : 'Descargar certificado'}
+                                        {descargandoCertificado ? t('detalle.generandoCertificado') : t('detalle.descargarCertificado')}
                                     </button>
                                     {errorCertificado && (
                                         <p role="alert" className="detalle-evento-error">
@@ -397,30 +399,30 @@ export function DetalleEvento() {
                     ) : (
                         <div className="detalle-evento-panel-contenido">
                             {cancelado ? (
-                                <p className="detalle-evento-panel-estado">Evento cancelado</p>
+                                <p className="detalle-evento-panel-estado">{t('detalle.cancelado')}</p>
                             ) : eventoIniciado ? (
                                 <p className="detalle-evento-panel-estado">
-                                    El evento ya inició. No se permiten nuevas inscripciones.
+                                    {t('detalle.eventoIniciado')}
                                 </p>
                             ) : agotado ? (
-                                <p className="detalle-evento-panel-estado">Cupos agotados</p>
+                                <p className="detalle-evento-panel-estado">{t('detalle.agotado')}</p>
                             ) : noPublicado ? (
                                 <p className="detalle-evento-panel-estado">
-                                    No se permiten inscripciones en eventos que no estén publicados.
+                                    {t('detalle.noPublicado')}
                                 </p>
                             ) : esPropio ? (
                                 <p className="detalle-evento-panel-estado">
-                                    No puedes inscribirte en un evento que tú organizas.
+                                    {t('detalle.eventoPropio')}
                                 </p>
                             ) : !puedeInscribirse ? (
                                 <p className="detalle-evento-panel-estado">
                                     {esAdministrador(sesion)
-                                        ? 'Los administradores no pueden inscribirse en eventos.'
-                                        : 'Debes iniciar sesión para inscribirte.'}
+                                        ? t('detalle.adminNoInscribe')
+                                        : t('detalle.debeIniciarSesion')}
                                 </p>
                             ) : inscripcion.verificando ? (
                                 <button type="button" className="detalle-evento-inscripcion" disabled aria-busy="true">
-                                    Verificando inscripción…
+                                    {t('detalle.verificando')}
                                 </button>
                             ) : inscripcion.errorVerificacion ? (
                                 <button
@@ -428,7 +430,7 @@ export function DetalleEvento() {
                                     className="detalle-evento-inscripcion"
                                     onClick={inscripcion.reintentarVerificacion}
                                 >
-                                    Reintentar verificación
+                                    {t('detalle.reintentarVerificacion')}
                                 </button>
                             ) : (
                                 <button
@@ -438,17 +440,17 @@ export function DetalleEvento() {
                                     aria-busy={inscripcion.inscribiendo}
                                     onClick={inscribirse}
                                 >
-                                    {inscripcion.inscribiendo ? 'Inscribiendo…' : 'Inscribirme al evento'}
+                                    {inscripcion.inscribiendo ? t('detalle.inscribiendo') : t('detalle.inscribirme')}
                                 </button>
                             )}
                             {inscripcion.errorVerificacion && (
                                 <p role="alert" className="detalle-evento-error">
-                                    No se pudo verificar si ya estás inscrito: {inscripcion.errorVerificacion}
+                                    {t('detalle.errorVerificacion', { error: inscripcion.errorVerificacion })}
                                 </p>
                             )}
                             {inscripcion.error && <p role="alert" className="detalle-evento-error">{inscripcion.error}</p>}
                             <div className="detalle-evento-panel-categoria">
-                                <span>Categoría</span>
+                                <span>{t('detalle.categoria')}</span>
                                 <span className="detalle-evento-categoria">{evento.categoriaNombre}</span>
                             </div>
                         </div>
@@ -462,11 +464,11 @@ export function DetalleEvento() {
                         className={estadoTemporal === 'FINALIZADO' ? 'detalle-evento-entrada-movil-estado--finalizado' : undefined}
                     >
                         {estadoTemporal !== 'FINALIZADO' && <Check aria-hidden="true" />}
-                        {estadoTemporal === 'FINALIZADO' ? 'Evento finalizado' : 'Estás inscrito'}
+                        {estadoTemporal === 'FINALIZADO' ? t('detalle.finalizado') : t('detalle.estasInscrito')}
                     </span>
                     {qrDisponible && (
                         <button type="button" onClick={() => setEntradaAbierta(true)}>
-                            Ver mi entrada
+                            {t('detalle.verMiEntrada')}
                         </button>
                     )}
                 </div>
@@ -474,7 +476,7 @@ export function DetalleEvento() {
 
             {entradaAbierta && inscripcion.yaInscrito && qrDisponible && (
                 <ModalAccesible
-                    titulo="Tu entrada"
+                    titulo={t('detalle.tuEntrada')}
                     idTitulo="titulo-entrada-evento"
                     onCerrar={() => setEntradaAbierta(false)}
                 >
@@ -482,7 +484,7 @@ export function DetalleEvento() {
                         <EntradaQr codigo={codigoQr} nombreArchivo={`entrada-evento-${evento.id}.svg`} />
                     ) : (
                         <p className="detalle-evento-qr-no-disponible" role="status">
-                            No hay un código QR disponible para esta inscripción.
+                            {t('detalle.qrNoDisponible')}
                         </p>
                     )}
                     <button
@@ -491,20 +493,20 @@ export function DetalleEvento() {
                         onClick={crearArchivoCalendario}
                     >
                         <CalendarPlus aria-hidden="true" />
-                        Añadir al calendario
+                        {t('detalle.anadirCalendario')}
                     </button>
                     {errorCalendario && (
                         <p className="detalle-evento-error" role="alert">{errorCalendario}</p>
                     )}
                     <p className="detalle-evento-qr-ayuda">
-                        La validación de la entrada se realiza desde la aplicación móvil.
+                        {t('detalle.ayudaQr')}
                     </p>
                     <button
                         type="button"
                         className="detalle-evento-modal-cerrar"
                         onClick={() => setEntradaAbierta(false)}
                     >
-                        Cerrar
+                        {t('detalle.cerrar')}
                     </button>
                 </ModalAccesible>
             )}

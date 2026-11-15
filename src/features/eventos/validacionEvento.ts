@@ -1,3 +1,5 @@
+import i18n from '../../i18n';
+
 // Valores del formulario tal como los escribe el usuario
 export interface CamposEvento {
     titulo: string;
@@ -28,33 +30,37 @@ export function validarEvento(campos: CamposEvento, opciones: OpcionesValidacion
     const ahora = opciones.ahora ?? new Date();
 
     const titulo = campos.titulo.trim();
-    if (!titulo) errores.titulo = 'El título es obligatorio.';
-    else if (titulo.length > MAX_TITULO) errores.titulo = `El título no puede superar los ${MAX_TITULO} caracteres.`;
+    if (!titulo) errores.titulo = i18n.t('validacion.tituloObligatorio');
+    else if (titulo.length > MAX_TITULO) {
+        errores.titulo = i18n.t('validacion.tituloMaximo', { max: MAX_TITULO });
+    }
 
-    if (!campos.descripcion.trim()) errores.descripcion = 'La descripción es obligatoria.';
+    if (!campos.descripcion.trim()) errores.descripcion = i18n.t('validacion.descripcionObligatoria');
 
     if (!campos.fechaInicio) {
-        errores.fechaInicio = 'La fecha y hora de inicio son obligatorias.';
+        errores.fechaInicio = i18n.t('validacion.fechaObligatoria');
     } else if (campos.fechaInicio !== opciones.fechaOriginal && new Date(campos.fechaInicio) <= ahora) {
-        errores.fechaInicio = 'La fecha de inicio debe ser futura.';
+        errores.fechaInicio = i18n.t('validacion.fechaFutura');
     }
 
     const ubicacion = campos.ubicacion.trim();
-    if (!ubicacion) errores.ubicacion = 'La ubicación es obligatoria.';
+    if (!ubicacion) errores.ubicacion = i18n.t('validacion.ubicacionObligatoria');
     else if (ubicacion.length > MAX_UBICACION) {
-        errores.ubicacion = `La ubicación no puede superar los ${MAX_UBICACION} caracteres.`;
+        errores.ubicacion = i18n.t('validacion.ubicacionMaxima', { max: MAX_UBICACION });
     }
 
     const cupos = Number(campos.cuposMaximos);
     if (campos.cuposMaximos.trim() === '') {
-        errores.cuposMaximos = 'El cupo máximo es obligatorio.';
+        errores.cuposMaximos = i18n.t('validacion.cupoObligatorio');
     } else if (!Number.isInteger(cupos) || cupos < 1) {
-        errores.cuposMaximos = 'El cupo máximo debe ser mayor a cero.';
+        errores.cuposMaximos = i18n.t('validacion.cupoMayorCero');
     } else if (opciones.inscritos !== undefined && cupos < opciones.inscritos) {
-        errores.cuposMaximos = `No se puede reducir la capacidad por debajo de los inscritos actuales (${opciones.inscritos}).`;
+        errores.cuposMaximos = i18n.t('validacion.cupoMinimoInscritos', {
+            inscritos: opciones.inscritos,
+        });
     }
 
-    if (!campos.categoriaId) errores.categoriaId = 'La categoría es obligatoria.';
+    if (!campos.categoriaId) errores.categoriaId = i18n.t('validacion.categoriaObligatoria');
 
     return errores;
 }

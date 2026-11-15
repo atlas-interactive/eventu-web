@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { IconoAviso } from '../../../components/ui/IconoAviso';
 import { ModalAccesible } from '../../../components/ui/ModalAccesible';
 import type { Evento } from '../../../types/evento';
@@ -17,17 +18,19 @@ export function ConfirmarCancelacionEvento({
     onCerrar,
     onConfirmar,
 }: ConfirmarCancelacionEventoProps) {
+    const { t } = useTranslation();
     return (
         <ModalAccesible
-            titulo="¿Cancelar evento?"
+            titulo={t('cancelarEvento.titulo')}
             idTitulo="titulo-cancelar-evento"
             onCerrar={onCerrar}
             icono={<span className="evento-dialog-icon">!</span>}
         >
             <h3 className="evento-dialog-title">{evento.titulo}</h3>
             <p className="evento-dialog-copy">
-                Se notificará por correo a los {evento.cuposMaximos - evento.cuposDisponibles} usuarios inscritos, sus inscripciones
-                pasaran a ser canceladas y ya no se podrán realizar nuevas inscripciones. Esta acciónn no elimina el registro histórico del evento.
+                {t('cancelarEvento.mensaje', {
+                    inscritos: evento.cuposMaximos - evento.cuposDisponibles,
+                })}
             </p>
             {error && (
                 <p role="alert" className="workflow-inline-error evento-dialog-error flex items-start gap-2">
@@ -42,7 +45,7 @@ export function ConfirmarCancelacionEvento({
                     onClick={onCerrar}
                     disabled={cancelando}
                 >
-                    Volver
+                    {t('cancelarEvento.volver')}
                 </button>
                 <button
                     type="button"
@@ -50,7 +53,7 @@ export function ConfirmarCancelacionEvento({
                     onClick={onConfirmar}
                     disabled={cancelando}
                 >
-                    {cancelando ? 'Cancelando…' : 'Cancelar evento'}
+                    {cancelando ? t('cancelarEvento.cancelando') : t('cancelarEvento.confirmar')}
                 </button>
             </div>
         </ModalAccesible>

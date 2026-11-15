@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Categoria } from '../../types/categoria';
 import type { Evento, FiltrosEvento } from '../../types/evento';
 import { mensajeDeError } from '../../api/mensajeDeError';
@@ -9,6 +10,7 @@ const fechasInvalidas = (filtros: FiltrosEvento) =>
     Boolean(filtros.fechaDesde && filtros.fechaHasta && filtros.fechaDesde > filtros.fechaHasta);
 
 export function useCatalogoEventos() {
+    const { t } = useTranslation();
     const [eventos, setEventos] = useState<Evento[]>([]);
     const [categorias, setCategorias] = useState<Categoria[]>([]);
     const [filtros, setFiltros] = useState<FiltrosEvento>({});
@@ -35,12 +37,12 @@ export function useCatalogoEventos() {
             })
             .catch((err: unknown) => {
                 console.error('No se pudieron cargar las categorías de eventos:', err);
-                if (vigente) setErrorCategorias('No se pudieron cargar las categorías.');
+                if (vigente) setErrorCategorias(t('comun.errorCategorias'));
             });
         return () => {
             vigente = false;
         };
-    }, []);
+    }, [t]);
 
     useEffect(() => {
         let vigente = true;

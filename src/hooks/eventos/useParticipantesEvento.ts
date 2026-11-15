@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { mensajeDeError } from '../../api/mensajeDeError';
 import type { Evento, InscritoEvento } from '../../types/evento';
 import { listarInscritosEvento, obtenerEvento } from '../../features/eventos/services/eventoService';
 
 export function useParticipantesEvento(eventoId: number) {
+    const { t } = useTranslation();
     const [resultado, setResultado] = useState<{
         eventoId: number;
         evento: Evento | null;
@@ -16,7 +18,7 @@ export function useParticipantesEvento(eventoId: number) {
     const evento = resultadoActual?.evento ?? null;
     const inscritos = resultadoActual?.inscritos ?? [];
     const error = !identificadorValido
-        ? 'El identificador del evento no es válido.'
+        ? t('participantes.errorId')
         : resultadoActual?.error ?? '';
 
     useEffect(() => {

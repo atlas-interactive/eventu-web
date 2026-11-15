@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { SkeletonEstado } from '../../../components/ui/Skeleton';
 import { FiltrosEventos } from '../components/FiltrosEventos';
@@ -8,6 +9,7 @@ import { useCatalogoEventos } from '../../../hooks/eventos/useCatalogoEventos';
 import '../../../styles/event-catalog.css';
 
 export function CatalogoEventos() {
+    const { t } = useTranslation();
     const catalogo = useCatalogoEventos();
     const [orden, setOrden] = useState<OrdenEventos>('fecha-proxima');
     const eventosOrdenados = ordenarEventos(catalogo.eventos, orden);
@@ -15,7 +17,7 @@ export function CatalogoEventos() {
     return (
         <main className="catalogo-eventos">
             <header className="catalogo-eventos-header">
-                <h1 className="catalogo-eventos-titulo">Eventos en campus</h1>
+                <h1 className="catalogo-eventos-titulo">{t('catalogo.titulo')}</h1>
             </header>
 
             {catalogo.errorCategorias && (
@@ -40,7 +42,7 @@ export function CatalogoEventos() {
                 </p>
             )}
             {catalogo.cargando && (
-                <SkeletonEstado etiqueta="Cargando eventos">
+                <SkeletonEstado etiqueta={t('catalogo.cargando')}>
                     <ul className="eventos-grid">
                         {Array.from({ length: 3 }, (_, indice) => (
                             <li key={indice} className="evento-card" aria-hidden="true">
@@ -60,8 +62,8 @@ export function CatalogoEventos() {
                 catalogo.eventos.length === 0 && (
                     <p className="catalogo-evento-mensaje">
                         {catalogo.hayFiltrosActivos
-                            ? 'No se encontraron eventos con esos filtros.'
-                            : 'No hay eventos disponibles por ahora.'}
+                            ? t('catalogo.sinResultados')
+                            : t('catalogo.vacio')}
                     </p>
                 )}
             {!catalogo.cargando &&
@@ -74,9 +76,9 @@ export function CatalogoEventos() {
                                 <Link
                                     to={`/eventos/${evento.id}`}
                                     className="evento-catalogo-row-button"
-                                    aria-label={`Ver detalle de ${evento.titulo}`}
+                                    aria-label={t('catalogo.verDetalleAria', { titulo: evento.titulo })}
                                 >
-                                    Ver detalle
+                                    {t('catalogo.verDetalle')}
                                 </Link>
                             </TarjetaEvento>
                         ))}
