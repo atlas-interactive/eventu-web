@@ -5,6 +5,7 @@ import {
     CalendarPlus,
     Check,
     Clock3,
+    Download,
     MapPin,
     Users,
 } from 'lucide-react';
@@ -15,13 +16,14 @@ import { ModalAccesible } from '../../components/ui/ModalAccesible';
 import { Skeleton, SkeletonEstado } from '../../components/ui/Skeleton';
 import { ConfirmarCancelacionInscripcion } from '../inscripciones/components/ConfirmarCancelacionInscripcion';
 import { EntradaQr } from '../inscripciones/components/EntradaQr';
+import { descargarCertificadoEvento } from '../inscripciones/services/inscripcionService';
 import type { Evento } from '../../types/evento';
 import type { Inscripcion } from '../../types/inscripcion';
 import { esAdministrador, esOrganizador, esUsuario, obtenerSesion } from '../sesion/sesion';
 import { useInscripcionEvento } from '../../hooks/eventos/useInscripcionEvento';
 import { useAhoraBogota } from '../../hooks/eventos/useAhoraBogota';
 import { ConfirmacionInscripcion } from './components/ConfirmacionInscripcion';
-import { obtenerEstadoTemporalEvento } from './estadoTemporalEvento';
+import { eventoYaIniciado, obtenerEstadoTemporalEvento } from './estadoTemporalEvento';
 import { obtenerEvento } from './services/eventoService';
 import '../../styles/event-detail.css';
 
@@ -88,6 +90,8 @@ export function DetalleEvento() {
     const [aCancelar, setACancelar] = useState<Inscripcion | null>(null);
     const [errorCalendario, setErrorCalendario] = useState('');
     const [entradaAbierta, setEntradaAbierta] = useState(false);
+    const [descargandoCertificado, setDescargandoCertificado] = useState(false);
+    const [errorCertificado, setErrorCertificado] = useState('');
 
     useEffect(() => {
         let vigente = true;
@@ -153,6 +157,7 @@ export function DetalleEvento() {
     const estadoTemporal = evento.estado.toUpperCase() === 'PUBLICADO'
         ? obtenerEstadoTemporalEvento(evento.fechaInicio, ahora)
         : null;
+    const fechaInicioAlcanzada = eventoYaIniciado(evento.fechaInicio, ahora);
     const eventoIniciado = estadoTemporal === 'EN_CURSO' || estadoTemporal === 'FINALIZADO';
     const qrDisponible = estadoTemporal === 'FUTURO' || estadoTemporal === 'EN_CURSO';
     const agotado = evento.cuposDisponibles <= 0;
@@ -164,6 +169,11 @@ export function DetalleEvento() {
     const puedeInscribirse = esUsuario(sesion) || esOrganizador(sesion);
     const noPublicado = evento.estado.toUpperCase() !== 'PUBLICADO';
     const codigoQr = inscripcion.inscripcionActiva?.codigoQr;
+    const puedeDescargarCertificado =
+        puedeConsultarInscripcion &&
+        evento.certificable &&
+        fechaInicioAlcanzada &&
+        inscripcion.yaInscrito;
 
     const inscribirse = async () => {
         const realizada = await inscripcion.inscribir(evento);
@@ -210,6 +220,21 @@ export function DetalleEvento() {
         } catch (err: unknown) {
             console.error('No se pudo crear el archivo de calendario:', err);
             setErrorCalendario('No se pudo preparar el archivo de calendario.');
+        }
+    };
+
+    const descargarCertificado = async () => {
+        if (!puedeDescargarCertificado || descargandoCertificado) return;
+        setDescargandoCertificado(true);
+        setErrorCertificado('');
+        try {
+            const pdf = await descargarCertificadoEvento(evento.id);
+            guardarArchivo(pdf, `certificado-evento-${evento.id}.pdf`);
+        } catch (err: unknown) {
+            console.error('No se pudo descargar el certificado del evento:', err);
+            setErrorCertificado(mensajeDeError(err));
+        } finally {
+            setDescargandoCertificado(false);
         }
     };
 
@@ -348,6 +373,25 @@ export function DetalleEvento() {
                                         </button>
                                     )}
                                 </>
+                            )}
+                            {puedeDescargarCertificado && (
+                                <div className="detalle-evento-certificado">
+                                    <button
+                                        type="button"
+                                        className="detalle-evento-calendario"
+                                        onClick={descargarCertificado}
+                                        disabled={descargandoCertificado}
+                                        aria-busy={descargandoCertificado}
+                                    >
+                                        <Download aria-hidden="true" />
+                                        {descargandoCertificado ? 'Generando certificado…' : 'Descargar certificado'}
+                                    </button>
+                                    {errorCertificado && (
+                                        <p role="alert" className="detalle-evento-error">
+                                            {errorCertificado}
+                                        </p>
+                                    )}
+                                </div>
                             )}
                         </>
                     ) : (

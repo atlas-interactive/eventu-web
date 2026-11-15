@@ -1,28 +1,37 @@
-import { cleanup, render, screen, within } from '@testing-library/react';
+import { cleanup, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { DetalleEvento } from '../../../../src/features/eventos/DetalleEvento';
 import { obtenerEvento } from '../../../../src/features/eventos/services/eventoService';
 import {
+    descargarCertificadoEvento,
     inscribirEnEvento,
     obtenerInscripcionActiva,
 } from '../../../../src/features/inscripciones/services/inscripcionService';
 import { guardarSesion } from '../../../../src/features/sesion/sesion';
 import type { Evento } from '../../../../src/types/evento';
+import { guardarArchivo } from '../../../../src/api/descargas';
 
 vi.mock('../../../../src/features/eventos/services/eventoService', () => ({
     obtenerEvento: vi.fn(),
 }));
 
 vi.mock('../../../../src/features/inscripciones/services/inscripcionService', () => ({
+    descargarCertificadoEvento: vi.fn(),
     inscribirEnEvento: vi.fn(),
     obtenerInscripcionActiva: vi.fn(),
 }));
 
+vi.mock('../../../../src/api/descargas', () => ({
+    guardarArchivo: vi.fn(),
+}));
+
 const obtenerEventoMock = vi.mocked(obtenerEvento);
+const descargarCertificadoMock = vi.mocked(descargarCertificadoEvento);
 const inscribirEnEventoMock = vi.mocked(inscribirEnEvento);
 const obtenerInscripcionActivaMock = vi.mocked(obtenerInscripcionActiva);
+const guardarArchivoMock = vi.mocked(guardarArchivo);
 
 const fechaEnBogota = (diasDesdeHoy: number, hora: string) => {
     const partes = new Intl.DateTimeFormat('en-US', {
@@ -74,6 +83,8 @@ describe('DetalleEvento', () => {
             inscripcionId: 12,
             codigoQr: 'EVENTU-QR-SECRETO',
         });
+        descargarCertificadoMock.mockReset();
+        guardarArchivoMock.mockReset();
         obtenerInscripcionActivaMock.mockReset().mockResolvedValue(null);
         localStorage.clear();
         guardarSesion({
@@ -127,6 +138,140 @@ describe('DetalleEvento', () => {
         expect(await screen.findByText('EVENTU-QR-ACTIVO')).toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Cancelar mi inscripción' })).toBeInTheDocument();
         expect(inscribirEnEventoMock).not.toHaveBeenCalled();
+    });
+
+    it.each(['USUARIO', 'ORGANIZADOR'])(
+        'permite descargar certificado a un %s inscrito en un evento certificable',
+        async (rol) => {
+            const usuario = userEvent.setup();
+            const pdf = new Blob(['%PDF-1.7'], { type: 'application/pdf' });
+            const eventoFinalizado = {
+                ...evento,
+                certificable: true,
+                fechaInicio: fechaEnBogota(-1, '09:00:00'),
+            };
+            guardarSesion({
+                token: 'token-prueba',
+                usuarioId: 1,
+                nombre: 'Ana',
+                correo: 'ana@unillanos.edu.co',
+                rol,
+            });
+            obtenerEventoMock.mockResolvedValue(eventoFinalizado);
+            obtenerInscripcionActivaMock.mockResolvedValue({
+                id: 12,
+                estado: 'ACTIVA',
+                codigoQr: 'EVENTU-QR-ACTIVO',
+                fechaInscripcion: '2026-09-10T14:20:00',
+                eventoId: 5,
+                eventoTitulo: evento.titulo,
+                eventoFechaInicio: eventoFinalizado.fechaInicio,
+                eventoUbicacion: evento.ubicacion,
+                eventoEstado: evento.estado,
+            });
+            descargarCertificadoMock.mockResolvedValue(pdf);
+            renderDetalle();
+
+            await usuario.click(await screen.findByRole('button', { name: 'Descargar certificado' }));
+
+            await waitFor(() => {
+                expect(descargarCertificadoMock).toHaveBeenCalledWith(5);
+                expect(guardarArchivoMock).toHaveBeenCalledWith(pdf, 'certificado-evento-5.pdf');
+            });
+        },
+    );
+
+    it('no ofrece la descarga si el evento no es certificable', async () => {
+        obtenerEventoMock.mockResolvedValue({
+            ...evento,
+            fechaInicio: fechaEnBogota(-1, '09:00:00'),
+        });
+        obtenerInscripcionActivaMock.mockResolvedValue({
+            id: 12,
+            estado: 'ACTIVA',
+            codigoQr: 'EVENTU-QR-ACTIVO',
+            fechaInscripcion: '2026-09-10T14:20:00',
+            eventoId: 5,
+            eventoTitulo: evento.titulo,
+            eventoFechaInicio: evento.fechaInicio,
+            eventoUbicacion: evento.ubicacion,
+            eventoEstado: evento.estado,
+        });
+        renderDetalle();
+
+        await screen.findByRole('heading', { name: 'Feria de proyectos' });
+        expect(screen.queryByRole('button', { name: 'Descargar certificado' })).not.toBeInTheDocument();
+    });
+
+    it('no ofrece la descarga si no hay inscripción activa', async () => {
+        obtenerEventoMock.mockResolvedValue({
+            ...evento,
+            certificable: true,
+            fechaInicio: fechaEnBogota(-1, '09:00:00'),
+        });
+        obtenerInscripcionActivaMock.mockResolvedValue(null);
+        renderDetalle();
+
+        await screen.findByRole('heading', { name: 'Feria de proyectos' });
+        expect(screen.queryByRole('button', { name: 'Descargar certificado' })).not.toBeInTheDocument();
+    });
+
+    it('no ofrece la descarga a administradores', async () => {
+        guardarSesion({
+            token: 'token-prueba',
+            usuarioId: 1,
+            nombre: 'Admin',
+            correo: 'admin@unillanos.edu.co',
+            rol: 'ADMIN',
+        });
+        obtenerEventoMock.mockResolvedValue({
+            ...evento,
+            certificable: true,
+            fechaInicio: fechaEnBogota(-1, '09:00:00'),
+        });
+        renderDetalle();
+
+        await screen.findByRole('heading', { name: 'Feria de proyectos' });
+        expect(screen.queryByRole('button', { name: 'Descargar certificado' })).not.toBeInTheDocument();
+        expect(obtenerInscripcionActivaMock).not.toHaveBeenCalled();
+    });
+
+    it('muestra el rechazo del backend si la asistencia no está verificada', async () => {
+        const usuario = userEvent.setup();
+        const errorConsola = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+        const eventoFinalizado = {
+            ...evento,
+            certificable: true,
+            fechaInicio: fechaEnBogota(-1, '09:00:00'),
+        };
+        obtenerEventoMock.mockResolvedValue(eventoFinalizado);
+        obtenerInscripcionActivaMock.mockResolvedValue({
+            id: 12,
+            estado: 'ACTIVA',
+            codigoQr: 'EVENTU-QR-ACTIVO',
+            fechaInscripcion: '2026-09-10T14:20:00',
+            eventoId: 5,
+            eventoTitulo: evento.titulo,
+            eventoFechaInicio: eventoFinalizado.fechaInicio,
+            eventoUbicacion: evento.ubicacion,
+            eventoEstado: evento.estado,
+        });
+        descargarCertificadoMock.mockRejectedValue({
+            isAxiosError: true,
+            response: {
+                status: 409,
+                data: { error: 'No se puede generar el certificado sin asistencia verificada.' },
+            },
+        });
+        renderDetalle();
+
+        await usuario.click(await screen.findByRole('button', { name: 'Descargar certificado' }));
+
+        expect(await screen.findByRole('alert')).toHaveTextContent(
+            'No se puede generar el certificado sin asistencia verificada.',
+        );
+        expect(guardarArchivoMock).not.toHaveBeenCalled();
+        errorConsola.mockRestore();
     });
 
     it('muestra En curso y bloquea nuevas inscripciones cuando el evento ya inició hoy', async () => {
