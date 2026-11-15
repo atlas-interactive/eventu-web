@@ -23,6 +23,13 @@ describe('PanelAccesibilidad', () => {
         document.documentElement.style.removeProperty('--accesibilidad-escala-texto');
     });
 
+    it('usa la fuente Arial como opción predeterminada del sistema', () => {
+        renderizar();
+
+        expect(screen.getByLabelText('Tipografía')).toHaveValue('sistema');
+        expect(document.documentElement).toHaveAttribute('data-accesibilidad-fuente', 'sistema');
+    });
+
     it('aplica y persiste tamaño, contraste y tipografía seleccionados', async () => {
         const user = userEvent.setup();
         renderizar();

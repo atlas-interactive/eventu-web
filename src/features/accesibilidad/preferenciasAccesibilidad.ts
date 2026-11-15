@@ -17,7 +17,7 @@ export const PREFERENCIAS_ACCESIBILIDAD_INICIALES: PreferenciasAccesibilidad = {
     escalaTexto: 1,
     tema: 'claro',
     contraste: 'normal',
-    fuente: 'atkinson',
+    fuente: 'sistema',
 };
 
 interface ResultadoCargaPreferencias {
