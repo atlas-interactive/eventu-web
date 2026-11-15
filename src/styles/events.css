@@ -150,7 +150,7 @@
   height: 1.125rem;
   border-radius: 9999px;
   background-color: var(--color-eventu-white-surface);
-  box-shadow: 0 1px 2px rgb(26 26 24 / 20%);
+  box-shadow: 0 1px 2px var(--color-eventu-shadow-medium);
   transition: transform 150ms ease;
 }
 

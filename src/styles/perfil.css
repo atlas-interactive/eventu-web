@@ -73,7 +73,7 @@
   border: 1px solid var(--color-eventu-border);
   border-radius: 0.75rem;
   background-color: var(--color-eventu-white-surface);
-  box-shadow: 0 1px 2px rgb(26 26 24 / 8%);
+  box-shadow: 0 1px 2px var(--color-eventu-shadow-soft);
 }
 
 .perfil-card-accent {
@@ -100,7 +100,7 @@
   justify-content: center;
   border-radius: 9999px;
   background-color: var(--color-eventu-soft-red-background);
-  box-shadow: 0 0 0 4px rgb(251 234 234 / 60%);
+  box-shadow: 0 0 0 4px var(--color-eventu-avatar-ring);
   color: var(--color-eventu-institutional-red);
   font-size: 1.125rem;
   font-weight: 600;

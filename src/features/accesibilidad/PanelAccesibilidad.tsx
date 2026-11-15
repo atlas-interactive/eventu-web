@@ -88,7 +88,7 @@ export function PanelAccesibilidad({
 
                 <div>
                     <label htmlFor="accesibilidad-contraste" className="block text-sm font-medium">
-                        Contraste y colores
+                        Nivel de contraste
                     </label>
                     <select
                         id="accesibilidad-contraste"
@@ -99,9 +99,8 @@ export function PanelAccesibilidad({
                             if (esModoContraste(contraste)) actualizarPreferencia('contraste', contraste);
                         }}
                     >
-                        <option value="normal">Colores originales</option>
+                        <option value="normal">Normal</option>
                         <option value="alto">Alto contraste</option>
-                        <option value="invertido">Colores invertidos (tema oscuro)</option>
                     </select>
                     <p className="mt-1 text-sm text-eventu-secondary-text">
                         El tema no aplica filtros a imágenes ni códigos QR.

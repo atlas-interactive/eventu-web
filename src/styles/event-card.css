@@ -16,7 +16,7 @@
   border-radius: 0.75rem;
   background-color: var(--color-eventu-white-surface);
   padding: 1rem;
-  box-shadow: 0 1px 3px rgb(26 26 24 / 5%);
+  box-shadow: 0 1px 3px var(--color-eventu-shadow-card);
 }
 
 .evento-card-content {

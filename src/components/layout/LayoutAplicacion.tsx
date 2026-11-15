@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import { Activity, CalendarCog, CalendarDays, ChartPie, ChevronDown, ClipboardList, LogOut, Menu, Tags, UserCog, UserRound, PersonStanding, X } from 'lucide-react';
+import { Activity, CalendarCog, CalendarDays, ChartPie, ChevronDown, ClipboardList, LogOut, Menu, Moon, Tags, UserCog, UserRound, PersonStanding, X } from 'lucide-react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { PanelAccesibilidad } from '../../features/accesibilidad/PanelAccesibilidad';
+import { useAccesibilidad } from '../../features/accesibilidad/useAccesibilidad';
 import {
     cerrarSesion,
     esAdministrador,
@@ -39,6 +40,7 @@ export function LayoutAplicacion() {
     const [accesibilidadAbierta, setAccesibilidadAbierta] = useState(false);
     const [elementoFocoAccesibilidad, setElementoFocoAccesibilidad] = useState<HTMLElement | null>(null);
     const [sesion, setSesion] = useState(obtenerSesion);
+    const { preferencias, actualizarPreferencia } = useAccesibilidad();
     const menuRef = useRef<HTMLDivElement>(null);
     const botonMenuRef = useRef<HTMLButtonElement>(null);
     const navegacionRef = useRef<HTMLElement>(null);
@@ -265,6 +267,39 @@ export function LayoutAplicacion() {
                                         <UserRound className="h-4 w-4" aria-hidden="true" />
                                         Perfil
                                     </NavLink>
+                                    <button
+                                        type="button"
+                                        role="menuitemcheckbox"
+                                        aria-checked={preferencias.tema === 'oscuro'}
+                                        onClick={() =>
+                                            actualizarPreferencia(
+                                                'tema',
+                                                preferencias.tema === 'oscuro' ? 'claro' : 'oscuro',
+                                            )
+                                        }
+                                        className="flex w-full items-center justify-between gap-2 rounded px-3 py-2 text-left text-sm text-eventu-main-ink hover:bg-eventu-page-background focus-visible:bg-eventu-page-background focus-visible:outline-none"
+                                    >
+                                        <span className="flex items-center gap-2">
+                                            <Moon className="h-4 w-4" aria-hidden="true" />
+                                            Modo oscuro
+                                        </span>
+                                        <span
+                                            aria-hidden="true"
+                                            className={`relative h-5 w-9 rounded-full transition-colors ${
+                                                preferencias.tema === 'oscuro'
+                                                    ? 'bg-eventu-institutional-red'
+                                                    : 'bg-eventu-disabled-button'
+                                            }`}
+                                        >
+                                            <span
+                                                className={`absolute top-0.5 h-4 w-4 rounded-full bg-eventu-white-surface shadow transition-transform ${
+                                                    preferencias.tema === 'oscuro'
+                                                        ? 'translate-x-4'
+                                                        : 'translate-x-0.5'
+                                                }`}
+                                            />
+                                        </span>
+                                    </button>
                                     <button
                                         type="button"
                                         role="menuitem"

@@ -5,6 +5,10 @@
   --color-eventu-soft-red-background: #fbeaea;
   --color-eventu-main-ink: #1a1a18;
   --color-eventu-secondary-text: #6b6b68;
+  --color-eventu-shadow-soft: rgb(26 26 24 / 8%);
+  --color-eventu-shadow-card: rgb(26 26 24 / 5%);
+  --color-eventu-shadow-medium: rgb(26 26 24 / 20%);
+  --color-eventu-avatar-ring: rgb(251 234 234 / 60%);
   --color-eventu-disabled-button: #EDEDEA;
   --color-eventu-border: #e4e3de;
   --color-eventu-page-background: #f8f7f4;
@@ -34,7 +38,7 @@
   --font-sans: Arial, sans-serif;
 }
 
-:root[data-accesibilidad-contraste='alto'] {
+:root[data-accesibilidad-tema='claro'][data-accesibilidad-contraste='alto'] {
   --color-eventu-institutional-red: #a00000;
   --color-eventu-institutional-red-hover: #760000;
   --color-eventu-soft-red-background: #ffffff;
@@ -59,12 +63,16 @@
   --color-eventu-warning-background: #ffffff;
   --color-eventu-red-border: #a00000;
   --color-eventu-success-border: #333333;
+  --color-eventu-shadow-soft: transparent;
+  --color-eventu-shadow-card: transparent;
+  --color-eventu-shadow-medium: transparent;
+  --color-eventu-avatar-ring: #a00000;
   --color-eventu-hero-background: #000000;
   --color-eventu-hero-decoration: rgb(255 255 255 / 40%);
   --color-eventu-overlay: rgb(0 0 0 / 75%);
 }
 
-:root[data-accesibilidad-contraste='invertido'] {
+:root[data-accesibilidad-tema='oscuro'] {
   --color-eventu-institutional-red: #ff737b;
   --color-eventu-institutional-red-hover: #ff9a9f;
   --color-eventu-soft-red-background: #43181d;
@@ -89,7 +97,45 @@
   --color-eventu-warning-background: #382b16;
   --color-eventu-red-border: #7b2c33;
   --color-eventu-success-border: #52705c;
+  --color-eventu-shadow-soft: rgb(0 0 0 / 40%);
+  --color-eventu-shadow-card: rgb(0 0 0 / 35%);
+  --color-eventu-shadow-medium: rgb(0 0 0 / 50%);
+  --color-eventu-avatar-ring: rgb(255 115 123 / 40%);
   --color-eventu-hero-background: #222222;
   --color-eventu-hero-decoration: rgb(255 255 255 / 20%);
   --color-eventu-overlay: rgb(0 0 0 / 75%);
+}
+
+:root[data-accesibilidad-tema='oscuro'][data-accesibilidad-contraste='alto'] {
+  --color-eventu-institutional-red: #ff737b;
+  --color-eventu-institutional-red-hover: #ff9a9f;
+  --color-eventu-soft-red-background: #000000;
+  --color-eventu-main-ink: #ffffff;
+  --color-eventu-secondary-text: #ffffff;
+  --color-eventu-disabled-button: #000000;
+  --color-eventu-border: #ffffff;
+  --color-eventu-page-background: #000000;
+  --color-eventu-white-surface: #000000;
+  --color-eventu-success: #70e091;
+  --color-eventu-green-background: #000000;
+  --color-eventu-error: #ff8585;
+  --color-eventu-red-background: #000000;
+  --color-eventu-deportive-orange: #ffd08a;
+  --color-eventu-deportive-orange-background: #000000;
+  --color-eventu-cultural-purple: #c7a6ff;
+  --color-eventu-cultural-purple-background: #000000;
+  --color-eventu-category-text: #ffffff;
+  --color-eventu-category-background: #000000;
+  --color-eventu-field-border: #ffffff;
+  --color-eventu-warning: #ffd08a;
+  --color-eventu-warning-background: #000000;
+  --color-eventu-red-border: #ff737b;
+  --color-eventu-success-border: #ffffff;
+  --color-eventu-shadow-soft: transparent;
+  --color-eventu-shadow-card: transparent;
+  --color-eventu-shadow-medium: transparent;
+  --color-eventu-avatar-ring: #ffffff;
+  --color-eventu-hero-background: #000000;
+  --color-eventu-hero-decoration: rgb(255 255 255 / 40%);
+  --color-eventu-overlay: rgb(0 0 0 / 85%);
 }
