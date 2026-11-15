@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { Activity, CalendarCog, CalendarDays, ChartPie, ChevronDown, ClipboardList, LogOut, Menu, Moon, Tags, UserCog, UserRound, PersonStanding, X } from 'lucide-react';
+import { Activity, CalendarCog, CalendarDays, ChartPie, Check, ChevronDown, ClipboardList, LogOut, Menu, Moon, Tags, UserCog, UserRound, PersonStanding, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { PanelAccesibilidad } from '../../features/accesibilidad/PanelAccesibilidad';
 import { useAccesibilidad } from '../../features/accesibilidad/useAccesibilidad';
@@ -11,11 +12,12 @@ import {
     obtenerSesion,
     puedeGestionarEventos,
 } from '../../features/sesion/sesion';
+import { cambiarIdioma, IDIOMAS, type Idioma } from '../../i18n';
 import iconoEventU from '../../assets/icons/iconoEventU.png';
 
-const ETIQUETA_ROL: Record<string, string> = {
-    ADMIN: 'Administrador',
-    ORGANIZADOR: 'Organizador',
+const CLAVE_ROL: Record<string, string> = {
+    ADMIN: 'comun.roles.admin',
+    ORGANIZADOR: 'comun.roles.organizador',
 };
 
 const nombreVisible = (nombre: string): string => {
@@ -46,7 +48,10 @@ export function LayoutAplicacion() {
     const navegacionRef = useRef<HTMLElement>(null);
     const botonNavegacionRef = useRef<HTMLButtonElement>(null);
     const navigate = useNavigate();
+    const { t, i18n } = useTranslation();
+    const idiomaActual: Idioma = i18n.resolvedLanguage === 'en' ? 'en' : 'es';
     const nombreUsuario = sesion ? nombreVisible(sesion.nombre) : '';
+    const etiquetaRol = sesion ? CLAVE_ROL[sesion.rol.toUpperCase()] : undefined;
 
     useEffect(() => {
         const actualizarSesion = () => setSesion(obtenerSesion());
@@ -106,7 +111,7 @@ export function LayoutAplicacion() {
                             <button
                                 ref={botonNavegacionRef}
                                 type="button"
-                                aria-label={navegacionAbierta ? 'Cerrar navegación' : 'Abrir navegación'}
+                                aria-label={navegacionAbierta ? t('layout.cerrarNavegacion') : t('layout.abrirNavegacion')}
                                 aria-expanded={navegacionAbierta}
                                 aria-controls="navegacion-principal"
                                 onClick={() => {
@@ -135,7 +140,7 @@ export function LayoutAplicacion() {
                             <nav
                                 ref={navegacionRef}
                                 id="navegacion-principal"
-                                aria-label="Principal"
+                                aria-label={t('layout.navegacionPrincipal')}
                                 onClick={() => setNavegacionAbierta(false)}
                                 className={`flex min-w-0 flex-wrap items-center justify-end gap-x-3 gap-y-1 sm:justify-start sm:gap-x-4 sm:self-stretch max-[769px]:absolute max-[769px]:left-3 max-[769px]:right-3 max-[769px]:top-full max-[769px]:z-50 max-[769px]:flex-col max-[769px]:items-stretch max-[769px]:gap-1 max-[769px]:rounded-lg max-[769px]:border max-[769px]:border-eventu-border max-[769px]:bg-eventu-white-surface max-[769px]:p-2 max-[769px]:shadow-lg${navegacionAbierta ? '' : ' max-[769px]:hidden'}`}
                             >
@@ -143,11 +148,11 @@ export function LayoutAplicacion() {
                                     <>
                                         <NavLink to="/admin/categorias" className={({ isActive }) => `${claseEnlace({ isActive })} gap-1.5`}>
                                             <Tags className="h-4 w-4 shrink-0" aria-hidden="true" />
-                                            Categorías
+                                            {t('layout.categorias')}
                                         </NavLink>
                                         <NavLink to="/admin/usuarios" className={({ isActive }) => `${claseEnlace({ isActive })} gap-1.5`}>
                                             <UserCog className="h-4 w-4 shrink-0" aria-hidden="true" />
-                                            Organizadores
+                                            {t('layout.organizadores')}
                                         </NavLink>
                                     </>
                                 )}
@@ -160,7 +165,7 @@ export function LayoutAplicacion() {
                                                 className={({ isActive }) => `${claseEnlace({ isActive })} gap-1.5`}
                                             >
                                                 <CalendarDays className="h-4 w-4 shrink-0" aria-hidden="true" />
-                                                Explorar eventos
+                                                {t('layout.explorarEventos')}
                                             </NavLink>
                                         )}
                                         {!esAdministrador(sesion) && (
@@ -169,26 +174,26 @@ export function LayoutAplicacion() {
                                                 className={({ isActive }) => `${claseEnlace({ isActive })} gap-1.5`}
                                             >
                                                 <ClipboardList className="h-4 w-4 shrink-0" aria-hidden="true" />
-                                                Mis inscripciones
+                                                {t('layout.misInscripciones')}
                                             </NavLink>
                                         )}
                                         <NavLink to="/organizador/eventos" className={({ isActive }) => `${claseEnlace({ isActive })} gap-1.5`}>
                                             <CalendarCog className="h-4 w-4 shrink-0" aria-hidden="true" />
-                                            {esAdministrador(sesion) ? 'Eventos' : 'Mis eventos'}
+                                            {esAdministrador(sesion) ? t('layout.eventos') : t('layout.misEventos')}
                                         </NavLink>
                                         <NavLink
                                             to={esAdministrador(sesion) ? '/admin/estadisticas' : '/organizador/estadisticas'}
                                             className={({ isActive }) => `${claseEnlace({ isActive })} gap-1.5`}
                                         >
                                             <ChartPie className="h-4 w-4 shrink-0" aria-hidden="true" />
-                                            Estadísticas
+                                            {t('layout.estadisticas')}
                                         </NavLink>
                                     </>
                                 )}
                                 {esAdministrador(sesion) && (
                                     <NavLink to="/admin/actividad" className={({ isActive }) => `${claseEnlace({ isActive })} gap-1.5`}>
                                         <Activity className="h-4 w-4 shrink-0" aria-hidden="true" />
-                                        Actividad
+                                        {t('layout.actividad')}
                                     </NavLink>
                                 )}
                                 {esUsuario(sesion) && (
@@ -199,14 +204,14 @@ export function LayoutAplicacion() {
                                             className={({ isActive }) => `${claseEnlace({ isActive })} gap-1.5`}
                                         >
                                             <CalendarDays className="h-4 w-4 shrink-0" aria-hidden="true" />
-                                            Eventos en campus
+                                            {t('layout.eventosEnCampus')}
                                         </NavLink>
                                         <NavLink
                                             to="/mis-inscripciones"
                                             className={({ isActive }) => `${claseEnlace({ isActive })} gap-1.5`}
                                         >
                                             <ClipboardList className="h-4 w-4 shrink-0" aria-hidden="true" />
-                                            Mis inscripciones
+                                            {t('layout.misInscripciones')}
                                         </NavLink>
                                     </>
                                 )}
@@ -218,17 +223,17 @@ export function LayoutAplicacion() {
                             <button
                                 ref={botonMenuRef}
                                 type="button"
-                                aria-label={`Menú de perfil de ${nombreUsuario}`}
+                                aria-label={t('layout.menuPerfil', { nombre: nombreUsuario })}
                                 aria-haspopup="menu"
                                 aria-expanded={menuAbierto}
                                 aria-controls="menu-perfil"
                                 onClick={() => setMenuAbierto((abierto) => !abierto)}
-                                title="Menú de perfil"
+                                title={t('layout.menuPerfilTitulo')}
                                 className="flex min-w-0 items-center border-1 border-eventu-border justify-center sm:gap-0 rounded-2xl text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red hover:bg-eventu-page-background sm:gap-3 sm:px-2.25 sm:py-1.25 shadow max-[639px]:h-10 max-[639px]:w-16 max-[639px]:gap-1 max-[639px]:rounded-full max-[639px]:px-1"
                             >
                                 <span
                                     role="img"
-                                    aria-label={`Avatar de ${nombreUsuario}`}
+                                    aria-label={t('layout.avatar', { nombre: nombreUsuario })}
                                     className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-eventu-soft-red-background text-lg font-medium text-eventu-institutional-red max-[639px]:h-8 max-[639px]:w-8 max-[639px]:text-base"
                                 >
                                     {inicialesNombre(nombreUsuario)}
@@ -240,9 +245,9 @@ export function LayoutAplicacion() {
                                     >
                                         {nombreUsuario}
                                     </span>
-                                    {ETIQUETA_ROL[sesion.rol.toUpperCase()] && (
+                                    {etiquetaRol && (
                                         <span className="inline-block rounded text-xs leading-3 text-eventu-institutional-red">
-                                            {ETIQUETA_ROL[sesion.rol.toUpperCase()]}
+                                            {t(etiquetaRol)}
                                         </span>
                                     )}
                                 </span>
@@ -255,7 +260,7 @@ export function LayoutAplicacion() {
                                 <div
                                     id="menu-perfil"
                                     role="menu"
-                                    aria-label="Opciones de perfil"
+                                    aria-label={t('layout.opcionesPerfil')}
                                     className="absolute right-0 top-full z-50 mt-2 w-48 max-w-[calc(100vw-1.5rem)] rounded-md border border-eventu-border bg-eventu-white-surface p-1 shadow-lg"
                                 >
                                     <NavLink
@@ -265,7 +270,7 @@ export function LayoutAplicacion() {
                                         className="flex w-full items-center gap-2 rounded px-3 py-2 text-left text-sm text-eventu-main-ink hover:bg-eventu-page-background focus-visible:bg-eventu-page-background focus-visible:outline-none"
                                     >
                                         <UserRound className="h-4 w-4" aria-hidden="true" />
-                                        Perfil
+                                        {t('layout.perfil')}
                                     </NavLink>
                                     <button
                                         type="button"
@@ -281,7 +286,7 @@ export function LayoutAplicacion() {
                                     >
                                         <span className="flex items-center gap-2">
                                             <Moon className="h-4 w-4" aria-hidden="true" />
-                                            Modo oscuro
+                                            {t('layout.modoOscuro')}
                                         </span>
                                         <span
                                             aria-hidden="true"
@@ -312,8 +317,29 @@ export function LayoutAplicacion() {
                                         className="flex w-full items-center gap-2 rounded px-3 py-2 text-left text-sm text-eventu-main-ink hover:bg-eventu-page-background focus-visible:bg-eventu-page-background focus-visible:outline-none"
                                     >
                                         <PersonStanding className="h-4 w-4" aria-hidden="true" />
-                                        Accesibilidad
+                                        {t('layout.accesibilidad')}
                                     </button>
+                                    <div role="separator" className="mx-2 my-1 border-t border-eventu-border" />
+                                    <div role="group" aria-label={t('layout.idioma')} className="px-1 py-1">
+                                        <p className="px-2 pb-1 text-xs font-medium text-eventu-secondary-text">
+                                            {t('layout.idioma')}
+                                        </p>
+                                        {IDIOMAS.map((idioma) => (
+                                            <button
+                                                key={idioma}
+                                                type="button"
+                                                role="menuitemradio"
+                                                aria-checked={idiomaActual === idioma}
+                                                onClick={() => cambiarIdioma(idioma)}
+                                                className="flex w-full items-center justify-between gap-2 rounded px-2 py-1.5 text-left text-sm text-eventu-main-ink hover:bg-eventu-page-background focus-visible:bg-eventu-page-background focus-visible:outline-none"
+                                            >
+                                                {idioma === 'es' ? t('layout.espanol') : t('layout.ingles')}
+                                                {idiomaActual === idioma && (
+                                                    <Check className="h-4 w-4" aria-hidden="true" />
+                                                )}
+                                            </button>
+                                        ))}
+                                    </div>
                                     <div role="separator" className="mx-2 my-1 border-t border-eventu-border" />
                                     <button
                                         type="button"
@@ -322,7 +348,7 @@ export function LayoutAplicacion() {
                                         className="flex w-full items-center gap-2 rounded px-3 py-2 text-left text-sm text-eventu-main-ink hover:bg-eventu-page-background focus-visible:bg-eventu-page-background focus-visible:outline-none"
                                     >
                                         <LogOut className="h-4 w-4" aria-hidden="true" />
-                                        Cerrar sesión
+                                        {t('layout.cerrarSesion')}
                                     </button>
                                 </div>
                             )}
