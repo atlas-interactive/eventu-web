@@ -121,6 +121,11 @@
   color: var(--color-eventu-secondary-text);
 }
 
+.detalle-evento-estado--certificable {
+  background-color: var(--color-eventu-green-background);
+  color: var(--color-eventu-success);
+}
+
 .detalle-evento-titulo {
   margin-top: 0.5rem;
   color: var(--color-eventu-main-ink);

@@ -232,6 +232,11 @@ export function DetalleEvento() {
 
                     <div className="detalle-evento-etiquetas">
                         <span className="detalle-evento-categoria">{evento.categoriaNombre}</span>
+                        {evento.certificable && (
+                            <span className="detalle-evento-estado detalle-evento-estado--certificable">
+                                Certificable
+                            </span>
+                        )}
                         {cancelado && (
                             <span className="detalle-evento-estado detalle-evento-estado--cancelado">
                                 Evento cancelado

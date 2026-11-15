@@ -97,8 +97,17 @@ describe('DetalleEvento', () => {
         expect(obtenerEventoMock).toHaveBeenCalledWith(5);
         expect(screen.getByText('Espacio para la presentación de proyectos innovadores.')).toBeInTheDocument();
         expect(screen.getByText('38 de 120 disponibles')).toBeInTheDocument();
+        expect(screen.queryByText('Certificable')).not.toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Inscribirme al evento' })).toBeEnabled();
         expect(obtenerInscripcionActivaMock).toHaveBeenCalledWith(5);
+    });
+
+    it('muestra la etiqueta Certificable en el detalle cuando está habilitada', async () => {
+        obtenerEventoMock.mockResolvedValue({ ...evento, certificable: true });
+        renderDetalle();
+
+        expect(await screen.findByText('Feria de proyectos')).toBeInTheDocument();
+        expect(screen.getByText('Certificable')).toBeInTheDocument();
     });
 
     it('muestra la entrada QR si ya existe una inscripción activa', async () => {
