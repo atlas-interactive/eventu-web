@@ -24,7 +24,7 @@ export function GraficoAsistencia({ inscripciones, asistentes, porcentaje }: Pro
         <div className="flex flex-col items-center gap-6 sm:flex-row sm:gap-8">
             <div className="relative h-44 w-44 max-w-full shrink-0" aria-hidden="true">
                 <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
+                    <PieChart accessibilityLayer={false}>
                         <Pie
                             data={datos}
                             dataKey="valor"

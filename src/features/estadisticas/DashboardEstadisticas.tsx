@@ -111,7 +111,10 @@ export function DashboardEstadisticas() {
                             />
                         </section>
 
-                        <dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+                        <section
+                            aria-label="Indicadores principales"
+                            className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1"
+                        >
                             <TarjetaKpi
                                 titulo="Inscripciones activas"
                                 valor={formatoNumero.format(estadisticas.inscripcionesActivas)}
@@ -126,7 +129,7 @@ export function DashboardEstadisticas() {
                                 Icono={UserCheck}
                                 tono="verde"
                             />
-                        </dl>
+                        </section>
                     </div>
 
                     {admin && (

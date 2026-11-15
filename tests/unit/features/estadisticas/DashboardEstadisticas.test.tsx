@@ -57,11 +57,14 @@ describe('DashboardEstadisticas', () => {
         expect(await screen.findByText('Participación en todos los eventos de la plataforma.')).toBeInTheDocument();
         expect(screen.getByText(`${new Intl.NumberFormat('es-CO', { maximumFractionDigits: 2 }).format(66.67)} %`))
             .toBeInTheDocument();
-        expect(screen.getByText('Inscripciones activas')).toBeInTheDocument();
-        expect(screen.getByText('Asistentes')).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: 'Inscripciones activas', level: 2 })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: 'Asistentes', level: 2 })).toBeInTheDocument();
         expect(screen.getByRole('heading', { name: 'Categorías más concurridas' })).toBeInTheDocument();
         expect(screen.getByRole('heading', { name: 'Eventos con más inscritos' })).toBeInTheDocument();
         expect(screen.getByText('Festival universitario')).toBeInTheDocument();
+        const grafico = document.querySelector('.relative[aria-hidden="true"]');
+        expect(grafico).toBeInTheDocument();
+        expect(grafico?.querySelector('[tabindex="0"]')).toBeNull();
     });
 
     it('presenta los indicadores del organizador sin mostrar los rankings globales', async () => {
