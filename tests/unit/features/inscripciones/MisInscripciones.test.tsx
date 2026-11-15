@@ -19,9 +19,20 @@ vi.mock('../../../../src/features/eventos/services/eventoService', () => ({
     listarEventos: vi.fn(),
 }));
 
-const fechaDelMesActual = (dia: number, hora: string) => {
-    const hoy = new Date();
-    return `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}T${hora}`;
+const fechaEnBogota = (diasDesdeHoy: number, hora: string) => {
+    const partes = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'America/Bogota',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+    }).formatToParts(new Date());
+    const valores = Object.fromEntries(partes.map(({ type, value }) => [type, value]));
+    const fecha = new Date(Date.UTC(
+        Number(valores.year),
+        Number(valores.month) - 1,
+        Number(valores.day) + diasDesdeHoy,
+    ));
+    return `${fecha.toISOString().slice(0, 10)}T${hora}`;
 };
 
 const inscripciones: Inscripcion[] = [
@@ -32,7 +43,7 @@ const inscripciones: Inscripcion[] = [
         fechaInscripcion: '2026-03-01T10:00:00',
         eventoId: 5,
         eventoTitulo: 'Festival universitario',
-        eventoFechaInicio: fechaDelMesActual(4, '09:00:00'),
+        eventoFechaInicio: fechaEnBogota(1, '09:00:00'),
         eventoUbicacion: 'Campus',
     },
     {
@@ -42,7 +53,7 @@ const inscripciones: Inscripcion[] = [
         fechaInscripcion: '2026-03-02T10:00:00',
         eventoId: 6,
         eventoTitulo: 'Feria cultural',
-        eventoFechaInicio: fechaDelMesActual(4, '14:30:00'),
+        eventoFechaInicio: fechaEnBogota(1, '14:30:00'),
         eventoUbicacion: 'Auditorio',
     },
 ];
@@ -138,7 +149,7 @@ describe('MisInscripciones', () => {
 
     it('muestra la agenda junto al calendario y permite seleccionar un día con varios eventos', async () => {
         const hoy = new Date();
-        const fechaEvento = fechaDelMesActual(15, '09:00:00');
+        const fechaEvento = fechaEnBogota(1, '09:00:00');
         listarMock.mockResolvedValue([
             ...inscripciones.slice(0, 1).map((inscripcion) => ({
                 ...inscripcion,
@@ -175,7 +186,9 @@ describe('MisInscripciones', () => {
             'href',
             '/eventos/5',
         );
-        const diaCalendario = screen.getByRole('gridcell', { name: /15.*3 eventos/ });
+        const diaCalendario = screen.getByRole('gridcell', {
+            name: new RegExp(`${Number(fechaEvento.slice(8, 10))}.*3 eventos`),
+        });
         await user.click(diaCalendario);
         expect(diaCalendario).toHaveAttribute('aria-pressed', 'true');
         expect(screen.getByText('Eventos en el día seleccionado')).toBeInTheDocument();
@@ -234,6 +247,41 @@ describe('MisInscripciones', () => {
         expect(within(dialog).getByText('Festival universitario')).toBeInTheDocument();
         expect(within(dialog).getByText('NO-RENDERIZAR-QR')).toBeInTheDocument();
         expect(within(dialog).getByRole('button', { name: 'Descargar entrada' })).toBeInTheDocument();
+    });
+
+    it('incluye inscripciones activas de eventos iniciados aunque no estén en el listado general', async () => {
+        listarMock.mockResolvedValue([
+            {
+                ...inscripciones[0],
+                eventoId: 77,
+                eventoTitulo: 'Evento en curso',
+                eventoFechaInicio: fechaEnBogota(0, '00:00:00'),
+            },
+        ]);
+        listarEventosMock.mockResolvedValue([]);
+        renderizar();
+
+        expect(await screen.findByRole('heading', { name: 'Evento en curso' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Ver QR de Evento en curso' })).toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Cancelar inscripción a Evento en curso' })).not.toBeInTheDocument();
+    });
+
+    it('conserva inscripciones activas vencidas sin mostrar QR ni permitir cancelarlas', async () => {
+        listarMock.mockResolvedValue([
+            {
+                ...inscripciones[0],
+                eventoId: 78,
+                eventoTitulo: 'Evento finalizado',
+                eventoFechaInicio: fechaEnBogota(-1, '09:00:00'),
+            },
+        ]);
+        listarEventosMock.mockResolvedValue([]);
+        renderizar();
+
+        expect(await screen.findByRole('heading', { name: 'Evento finalizado' })).toBeInTheDocument();
+        expect(screen.getByText('Evento finalizado', { selector: 'span.inscripcion-estado' })).toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Ver QR de Evento finalizado' })).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Cancelar inscripción a Evento finalizado' })).not.toBeInTheDocument();
     });
 
     it('confirma la cancelación, actualiza el estado y deja de ofrecer cancelación', async () => {

@@ -1,6 +1,8 @@
 import { CalendarDays, MapPin } from 'lucide-react';
 import type { ReactNode } from 'react';
 import type { Evento } from '../../../types/evento';
+import { useAhoraBogota } from '../../../hooks/eventos/useAhoraBogota';
+import { obtenerEstadoTemporalEvento } from '../estadoTemporalEvento';
 import '../../../styles/event-card.css';
 
 const formatoFecha = new Intl.DateTimeFormat('es-CO', { dateStyle: 'medium', timeStyle: 'short' });
@@ -17,7 +19,18 @@ const porcentajeOcupado = (evento: Evento): number => {
 };
 
 export function TarjetaEvento({ evento, children }: TarjetaEventoProps) {
+    const ahora = useAhoraBogota();
     const estaCancelado = evento.estado.toUpperCase() === 'CANCELADO';
+    const estadoTemporal = !estaCancelado && evento.estado.toUpperCase() === 'PUBLICADO'
+        ? obtenerEstadoTemporalEvento(evento.fechaInicio, ahora)
+        : null;
+    const etiquetaEstado = estadoTemporal === 'EN_CURSO'
+        ? 'En curso'
+        : estadoTemporal === 'FINALIZADO'
+            ? 'Evento finalizado'
+            : estaCancelado
+                ? 'Cancelado'
+                : 'Publicado';
     const ocupados = evento.cuposMaximos > 0
         ? Math.max(0, Math.min(evento.cuposMaximos, evento.cuposMaximos - evento.cuposDisponibles))
         : 0;
@@ -35,11 +48,17 @@ export function TarjetaEvento({ evento, children }: TarjetaEventoProps) {
                     )}
                     <span
                         className={`evento-card-status ${
-                            estaCancelado ? 'evento-card-status--cancelled' : 'evento-card-status--published'
+                            estaCancelado
+                                ? 'evento-card-status--cancelled'
+                                : estadoTemporal === 'EN_CURSO'
+                                    ? 'evento-card-status--in-progress'
+                                    : estadoTemporal === 'FINALIZADO'
+                                        ? 'evento-card-status--finished'
+                                        : 'evento-card-status--published'
                         }`}
                     >
                         <span className="evento-card-status-dot" aria-hidden="true" />
-                        {estaCancelado ? 'Cancelado' : 'Publicado'}
+                        {etiquetaEstado}
                     </span>
                 </div>
 

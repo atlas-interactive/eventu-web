@@ -137,6 +137,11 @@
   color: var(--color-eventu-secondary-text);
 }
 
+.inscripcion-estado--finalizado {
+  background-color: var(--color-eventu-disabled-button);
+  color: var(--color-eventu-secondary-text);
+}
+
 .inscripciones-vacio {
   display: flex;
   align-items: center;

@@ -72,6 +72,14 @@
   color: var(--color-eventu-secondary-text);
 }
 
+.evento-card-status--in-progress {
+  color: #92400e;
+}
+
+.evento-card-status--finished {
+  color: var(--color-eventu-secondary-text);
+}
+
 .evento-card-title {
   margin: 0;
   color: var(--color-eventu-main-ink);

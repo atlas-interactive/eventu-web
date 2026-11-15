@@ -24,7 +24,7 @@ const evento: Evento = {
     id: 5,
     titulo: 'Feria de proyectos',
     descripcion: 'Descripción',
-    fechaInicio: '2026-09-10T14:00:00',
+    fechaInicio: '2099-09-10T14:00:00',
     ubicacion: 'Auditorio',
     cuposMaximos: 120,
     cuposDisponibles: 38,
@@ -82,6 +82,10 @@ describe('ParticipantesEvento', () => {
         renderizar();
 
         expect(await screen.findByRole('heading', { name: 'Feria de proyectos' })).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: 'Editar evento' })).toHaveAttribute(
+            'href',
+            '/organizador/eventos/5/editar',
+        );
         expect(screen.getByText('Feria de proyectos')).toBeInTheDocument();
         expect(screen.getByText('2', { selector: 'strong' })).toBeInTheDocument();
         expect(screen.getByText('/ 120', { selector: 'small' })).toBeInTheDocument();
@@ -93,6 +97,17 @@ describe('ParticipantesEvento', () => {
         expect(screen.getAllByText('Pendiente')).toHaveLength(2);
         expect(obtenerEventoMock).toHaveBeenCalledWith(5);
         expect(listarInscritosMock).toHaveBeenCalledWith(5);
+    });
+
+    it('oculta la opción de editar cuando el evento ya inició', async () => {
+        obtenerEventoMock.mockResolvedValue({
+            ...evento,
+            fechaInicio: '2020-09-10T14:00:00',
+        });
+        renderizar();
+
+        expect(await screen.findByRole('heading', { name: 'Feria de proyectos' })).toBeInTheDocument();
+        expect(screen.queryByRole('link', { name: 'Editar evento' })).not.toBeInTheDocument();
     });
 
     it('filtra por nombre o correo ignorando mayúsculas y tildes', async () => {

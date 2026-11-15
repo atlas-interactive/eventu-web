@@ -111,6 +111,16 @@
   color: var(--color-eventu-secondary-text);
 }
 
+.detalle-evento-estado--en-curso {
+  background-color: #fff4e5;
+  color: #92400e;
+}
+
+.detalle-evento-estado--finalizado {
+  background-color: var(--color-eventu-disabled-button);
+  color: var(--color-eventu-secondary-text);
+}
+
 .detalle-evento-titulo {
   margin-top: 0.5rem;
   color: var(--color-eventu-main-ink);
@@ -263,6 +273,12 @@
 .detalle-evento-inscrito svg {
   width: 1rem;
   height: 1rem;
+}
+
+.detalle-evento-inscrito--finalizado {
+  border-bottom-color: var(--color-eventu-border);
+  background-color: var(--color-eventu-disabled-button);
+  color: var(--color-eventu-secondary-text);
 }
 
 .detalle-evento-entrada-qr {
@@ -516,6 +532,10 @@
     color: var(--color-eventu-success);
     font-size: 0.8125rem;
     font-weight: 700;
+  }
+
+  .detalle-evento-entrada-movil > .detalle-evento-entrada-movil-estado--finalizado {
+    color: var(--color-eventu-secondary-text);
   }
 
   .detalle-evento-entrada-movil svg {

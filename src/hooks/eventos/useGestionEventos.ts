@@ -8,6 +8,7 @@ import {
     listarEventos,
     listarMisEventos,
 } from '../../features/eventos/services/eventoService';
+import { eventoYaIniciado } from '../../features/eventos/estadoTemporalEvento';
 import { listarCategorias } from '../../features/categorias/services/categoriaService';
 
 const fechasInvalidas = (filtros: FiltrosEvento) =>
@@ -94,6 +95,14 @@ export function useGestionEventos(mensajeInicial = '') {
     const solicitarCancelacion = (evento: Evento) => {
         setMensajeExito('');
         setErrorCancelar('');
+        if (
+            evento.estado.toUpperCase() === 'PUBLICADO' &&
+            eventoYaIniciado(evento.fechaInicio)
+        ) {
+            setErrorCancelar('No se puede cancelar un evento después de que inicia.');
+            setACancelar(evento);
+            return;
+        }
         setACancelar(evento);
     };
 
@@ -106,6 +115,13 @@ export function useGestionEventos(mensajeInicial = '') {
     const confirmarCancelacion = async () => {
         const eventoACancelar = aCancelar;
         if (!eventoACancelar || cancelando) return;
+        if (
+            eventoACancelar.estado.toUpperCase() === 'PUBLICADO' &&
+            eventoYaIniciado(eventoACancelar.fechaInicio)
+        ) {
+            setErrorCancelar('No se puede cancelar un evento después de que inicia.');
+            return;
+        }
         setCancelando(true);
         setErrorCancelar('');
         try {
