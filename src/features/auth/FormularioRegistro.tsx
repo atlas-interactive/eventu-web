@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import type { ChangeEvent, SubmitEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import { IconoAviso } from '../../components/ui/IconoAviso';
 import '../../styles/auth.css';
 import { mensajeDeError } from '../../api/mensajeDeError';
@@ -10,6 +11,7 @@ import { registrarUsuario } from './services/authService';
 import type { RegistroDTO } from '../../types/auth';
 
 export const FormularioRegistro: React.FC = () => {
+    const { t } = useTranslation();
     const [formData, setFormData] = useState<RegistroDTO>({
         nombre: '',
         correo: '',
@@ -48,12 +50,12 @@ export const FormularioRegistro: React.FC = () => {
         setMensajeExito(null);
 
         if (!validarCorreoInstitucional(formData.correo)) {
-            setMensajeError('Debe ingresar un correo institucional educativo válido.');
+            setMensajeError(t('auth.registro.errorCorreo'));
             return;
         }
 
         if (!validarLongitudContrasena(formData.password)) {
-            setMensajeError('La contraseña debe tener entre 8 y 72 caracteres.');
+            setMensajeError(t('auth.registro.errorContrasena'));
             return;
         }
 
@@ -61,7 +63,7 @@ export const FormularioRegistro: React.FC = () => {
 
         try {
             const response = await registrarUsuario(formData);
-            setMensajeExito(response.mensaje || 'Usuario registrado exitosamente.');
+            setMensajeExito(response.mensaje || t('auth.registro.exito'));
             setFormData({ nombre: '', correo: '', password: '' });
         } catch (err: unknown) {
             setMensajeError(mensajeDeError(err));
@@ -75,8 +77,8 @@ export const FormularioRegistro: React.FC = () => {
             <header className="mb-3 text-center">
                 <img src={iconoEventU} alt="" aria-hidden="true" className="mx-auto mb-2 h-9 w-9" />
                 <p className="text-2xl font-semibold leading-5">Event<span className="text-eventu-institutional-red">U</span> </p>
-                <h1 className="mt-2 text-base font-semibold leading-7">Crea tu cuenta</h1>
-                <p className="register-subtitle mt-0.5 text-sm leading-7">Usa tu correo institucional para registrarte</p>
+                <h1 className="mt-2 text-base font-semibold leading-7">{t('auth.registro.titulo')}</h1>
+                <p className="register-subtitle mt-0.5 text-sm leading-7">{t('auth.registro.subtitulo')}</p>
             </header>
 
             {/* Alerta visual de Error */}
@@ -97,7 +99,7 @@ export const FormularioRegistro: React.FC = () => {
 
             <form onSubmit={handleSubmit} className="space-y-1">
                 <div>
-                    <label htmlFor="nombre" className="register-label block text-sm font-medium leading-5">Nombre completo</label>
+                    <label htmlFor="nombre" className="register-label block text-sm font-medium leading-5">{t('auth.registro.nombre')}</label>
                     <input
                         type="text"
                         id="nombre"
@@ -106,13 +108,13 @@ export const FormularioRegistro: React.FC = () => {
                         onChange={handleChange}
                         aria-invalid={mostrarCampoInvalido('nombre') || undefined}
                         className={`register-input mt-1 h-11 w-full rounded-md border px-2.5 text-base leading-6 outline-none${mostrarCampoInvalido('nombre') ? ' register-input-invalid' : ''}`}
-                        placeholder="Ej. Laura Gomez"
+                        placeholder={t('auth.registro.placeholderNombre')}
                         required
                     />
                 </div>
 
                 <div>
-                    <label htmlFor="correo" className="register-label block text-sm font-medium leading-5">Correo institucional</label>
+                    <label htmlFor="correo" className="register-label block text-sm font-medium leading-5">{t('auth.registro.correo')}</label>
                     <input
                         type="email"
                         id="correo"
@@ -121,13 +123,13 @@ export const FormularioRegistro: React.FC = () => {
                         onChange={handleChange}
                         aria-invalid={mostrarCampoInvalido('correo') || undefined}
                         className={`register-input mt-1 h-11 w-full rounded-md border px-2.5 text-base leading-6 outline-none${mostrarCampoInvalido('correo') ? ' register-input-invalid' : ''}`}
-                        placeholder="nombre@unillanos.edu.co"
+                        placeholder={t('auth.registro.placeholderCorreo')}
                         required
                     />
                 </div>
 
                 <div>
-                    <label htmlFor="password" className="register-label block text-sm font-medium leading-5">Contraseña</label>
+                    <label htmlFor="password" className="register-label block text-sm font-medium leading-5">{t('auth.registro.contrasena')}</label>
                     <input
                         type="password"
                         id="password"
@@ -136,7 +138,7 @@ export const FormularioRegistro: React.FC = () => {
                         onChange={handleChange}
                         aria-invalid={mostrarCampoInvalido('password') || undefined}
                         className={`register-input mt-1 h-11 w-full rounded-md border px-2.5 text-base leading-6 outline-none${mostrarCampoInvalido('password') ? ' register-input-invalid' : ''}`}
-                        placeholder="Mínimo 8 caracteres"
+                        placeholder={t('auth.registro.placeholderContrasena')}
                         minLength={8}
                         maxLength={72}
                         required
@@ -148,13 +150,13 @@ export const FormularioRegistro: React.FC = () => {
                     disabled={loading}
                     className="register-submit mt-1 h-11 w-full rounded-md text-base font-normal leading-6 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                    {loading ? 'Validando...' : 'Crear cuenta'}
+                    {loading ? t('auth.registro.validando') : t('auth.registro.crearCuenta')}
                 </button>
             </form>
             <p className="register-login-link mt-2 text-center text-sm leading-5">
-                ¿Ya tienes cuenta?{' '}
+                {t('auth.registro.yaTienesCuenta')}{' '}
                 <Link to="/login" className="link_form">
-                    Inicia sesión
+                    {t('auth.registro.iniciaSesion')}
                 </Link>
             </p>
         </section>
