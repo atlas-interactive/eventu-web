@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { CalendarCheck, ChartPie, Tags, Ticket, UserCheck } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import type { Estadisticas } from '../../types/estadisticas';
 import { mensajeDeError } from '../../api/mensajeDeError';
 import { Skeleton, SkeletonEstado } from '../../components/ui/Skeleton';
@@ -14,6 +15,7 @@ const formatoPorcentaje = new Intl.NumberFormat('es-CO', { maximumFractionDigits
 
 // HU-16: el organizador ve los indicadores de sus eventos; el administrador, los de toda la plataforma y los rankings
 export function DashboardEstadisticas() {
+    const { t } = useTranslation();
     const admin = esAdministrador(obtenerSesion());
     const [estadisticas, setEstadisticas] = useState<Estadisticas | null>(null);
     const [cargando, setCargando] = useState(true);
@@ -43,11 +45,11 @@ export function DashboardEstadisticas() {
     return (
         <main className="mx-auto w-full max-w-[70rem] px-4 py-8 sm:px-8">
             <header className="mb-6">
-                <h1 className="text-[1.375rem] font-semibold text-eventu-main-ink">Estadísticas</h1>
+                <h1 className="text-[1.375rem] font-semibold text-eventu-main-ink">{t('estadisticas.titulo')}</h1>
                 <p className="mt-1 text-sm text-eventu-secondary-text">
                     {admin
-                        ? 'Participación en todos los eventos de la plataforma.'
-                        : 'Participación en los eventos que creaste.'}
+                        ? t('estadisticas.descripcionAdmin')
+                        : t('estadisticas.descripcionOrganizador')}
                 </p>
             </header>
 
@@ -58,7 +60,7 @@ export function DashboardEstadisticas() {
             )}
 
             {cargando && (
-                <SkeletonEstado etiqueta="Cargando estadísticas" className="space-y-4">
+                <SkeletonEstado etiqueta={t('estadisticas.cargando')} className="space-y-4">
                     <div className="grid gap-4 lg:grid-cols-3">
                         <section className="rounded-xl border border-eventu-border bg-eventu-white-surface p-5 sm:p-6 lg:col-span-2">
                             <Skeleton className="h-5 w-32" />
@@ -90,8 +92,8 @@ export function DashboardEstadisticas() {
                     {sinDatos && (
                         <p role="status" className="mb-4 rounded-md bg-eventu-soft-red-background px-4 py-3 text-sm text-eventu-main-ink">
                             {admin
-                                ? 'Todavía no hay inscripciones en la plataforma.'
-                                : 'Todavía no hay inscripciones en tus eventos. Los indicadores se actualizarán cuando alguien se inscriba.'}
+                                ? t('estadisticas.sinDatosAdmin')
+                                : t('estadisticas.sinDatosOrganizador')}
                         </p>
                     )}
 
@@ -99,10 +101,10 @@ export function DashboardEstadisticas() {
                         <section className="rounded-xl border border-eventu-border bg-eventu-white-surface p-5 sm:p-6 lg:col-span-2">
                             <h2 className="flex items-center gap-2 text-base font-semibold text-eventu-main-ink">
                                 <ChartPie className="h-5 w-5 text-eventu-institutional-red" aria-hidden="true" />
-                                Asistencia
+                                {t('estadisticas.asistencia')}
                             </h2>
                             <p className="mb-5 mt-1 text-sm text-eventu-secondary-text">
-                                Asistentes registrados con el QR sobre las inscripciones activas.
+                                {t('estadisticas.asistenciaDescripcion')}
                             </p>
                             <GraficoAsistencia
                                 inscripciones={estadisticas.inscripcionesActivas}
@@ -112,20 +114,22 @@ export function DashboardEstadisticas() {
                         </section>
 
                         <section
-                            aria-label="Indicadores principales"
+                            aria-label={t('estadisticas.indicadoresAria')}
                             className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1"
                         >
                             <TarjetaKpi
-                                titulo="Inscripciones activas"
+                                titulo={t('estadisticas.inscripcionesActivas')}
                                 valor={formatoNumero.format(estadisticas.inscripcionesActivas)}
-                                detalle="Cupos reservados"
+                                detalle={t('estadisticas.cuposReservados')}
                                 Icono={Ticket}
                                 tono="rojo"
                             />
                             <TarjetaKpi
-                                titulo="Asistentes"
+                                titulo={t('estadisticas.asistentes')}
                                 valor={formatoNumero.format(estadisticas.asistentes)}
-                                detalle={`De ${formatoNumero.format(estadisticas.inscripcionesActivas)} inscritos`}
+                                detalle={t('estadisticas.deInscritos', {
+                                    cantidad: formatoNumero.format(estadisticas.inscripcionesActivas),
+                                })}
                                 Icono={UserCheck}
                                 tono="verde"
                             />
@@ -135,11 +139,11 @@ export function DashboardEstadisticas() {
                     {admin && (
                         <div className="mt-4 grid items-start gap-4 lg:grid-cols-2">
                             <RankingBarras
-                                titulo="Categorías más concurridas"
+                                titulo={t('estadisticas.categoriasConcurridas')}
                                 Icono={Tags}
-                                descripcion="Por número de inscripciones activas."
-                                unidad="inscripciones activas"
-                                textoVacio="Todavía no hay inscripciones activas en ninguna categoría."
+                                descripcion={t('estadisticas.porInscripciones')}
+                                unidad={t('estadisticas.unidadInscripciones')}
+                                textoVacio={t('estadisticas.vacioCategorias')}
                                 elementos={estadisticas.categoriasMasConcurridas.map((c) => ({
                                     clave: c.categoria,
                                     nombre: c.categoria,
@@ -147,11 +151,11 @@ export function DashboardEstadisticas() {
                                 }))}
                             />
                             <RankingBarras
-                                titulo="Eventos con más inscritos"
+                                titulo={t('estadisticas.eventosMasInscritos')}
                                 Icono={CalendarCheck}
-                                descripcion="Por número de inscripciones activas."
-                                unidad="inscripciones activas"
-                                textoVacio="Todavía no hay eventos con inscripciones activas."
+                                descripcion={t('estadisticas.porInscripciones')}
+                                unidad={t('estadisticas.unidadInscripciones')}
+                                textoVacio={t('estadisticas.vacioEventos')}
                                 elementos={estadisticas.eventosConMasInscritos.map((e) => ({
                                     clave: String(e.eventoId),
                                     nombre: e.titulo,

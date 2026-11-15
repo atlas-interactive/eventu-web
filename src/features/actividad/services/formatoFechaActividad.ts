@@ -1,3 +1,5 @@
+import i18n from '../../../i18n';
+
 const formatoFechaHora = new Intl.DateTimeFormat('es-CO', {
     day: 'numeric',
     month: 'short',
@@ -45,16 +47,20 @@ export function formatearTiempoRelativoActividad(fecha: string, ahora = new Date
     const inicioRegistro = new Date(valor.getFullYear(), valor.getMonth(), valor.getDate());
     const diferenciaDias = Math.round((inicioHoy.getTime() - inicioRegistro.getTime()) / DIA);
 
-    if (diferenciaDias === 1) return 'Ayer';
+    if (diferenciaDias === 1) return i18n.t('actividad.ayer');
     if (diferenciaDias > 1 || diferenciaDias < 0) {
         return fechaCorta(valor, valor.getFullYear() !== ahora.getFullYear());
     }
 
     const diferencia = ahora.getTime() - valor.getTime();
     if (diferencia < 0) return formatoFechaCorta.format(valor);
-    if (diferencia < MINUTO) return 'Ahora';
-    if (diferencia < HORA) return `Hace ${Math.floor(diferencia / MINUTO)} min`;
-    if (diferencia < DIA) return `Hace ${Math.floor(diferencia / HORA)} h`;
+    if (diferencia < MINUTO) return i18n.t('actividad.ahora');
+    if (diferencia < HORA) {
+        return i18n.t('actividad.haceMinutos', { cantidad: Math.floor(diferencia / MINUTO) });
+    }
+    if (diferencia < DIA) {
+        return i18n.t('actividad.haceHoras', { cantidad: Math.floor(diferencia / HORA) });
+    }
 
     return fechaCorta(valor, valor.getFullYear() !== ahora.getFullYear());
 }

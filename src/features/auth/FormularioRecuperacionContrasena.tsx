@@ -1,4 +1,5 @@
 import { useState, type SubmitEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { IconoAviso } from '../../components/ui/IconoAviso';
 import { mensajeDeError } from '../../api/mensajeDeError';
@@ -8,6 +9,7 @@ import { validarCorreoInstitucional } from './validacionAuth';
 import { solicitarRecuperacionContrasena } from './services/authService';
 
 export function FormularioRecuperacionContrasena() {
+    const { t } = useTranslation();
     const [correo, setCorreo] = useState('');
     const [loading, setLoading] = useState(false);
     const [mensajeError, setMensajeError] = useState<string | null>(null);
@@ -21,7 +23,7 @@ export function FormularioRecuperacionContrasena() {
         setMensajeExito(null);
 
         if (!validarCorreoInstitucional(correoNormalizado)) {
-            setMensajeError('Debe ingresar un correo institucional válido.');
+            setMensajeError(t('auth.recuperacion.errorCorreo'));
             return;
         }
 
@@ -41,9 +43,9 @@ export function FormularioRecuperacionContrasena() {
             <header className="mb-3 text-center">
                 <img src={iconoEventU} alt="" aria-hidden="true" className="mx-auto mb-2 h-9 w-9" />
                 <p className="text-2xl font-semibold leading-5">Event<span className="text-eventu-institutional-red">U</span> </p>
-                <h1 className="mt-2 text-base font-semibold leading-7">Recupera tu contraseña</h1>
+                <h1 className="mt-2 text-base font-semibold leading-7">{t('auth.recuperacion.titulo')}</h1>
                 <p className="register-subtitle mt-0.5 text-sm leading-5">
-                    Ingresa tu correo institucional y te enviaremos un enlace.
+                    {t('auth.recuperacion.subtitulo')}
                 </p>
             </header>
 
@@ -64,7 +66,7 @@ export function FormularioRecuperacionContrasena() {
             <form onSubmit={handleSubmit} className="space-y-1">
                 <div>
                     <label htmlFor="correo" className="register-label block text-sm font-medium leading-5">
-                        Correo institucional
+                        {t('auth.recuperacion.correo')}
                     </label>
                     <input
                         type="email"
@@ -74,7 +76,7 @@ export function FormularioRecuperacionContrasena() {
                         onChange={(event) => setCorreo(event.target.value)}
                         aria-invalid={correoInvalido || undefined}
                         className={`register-input mt-1 h-11 w-full rounded-md border px-2.5 text-base leading-6 outline-none${correoInvalido ? ' register-input-invalid' : ''}`}
-                        placeholder="nombre@unillanos.edu.co"
+                        placeholder={t('auth.recuperacion.placeholderCorreo')}
                         required
                     />
                 </div>
@@ -84,13 +86,13 @@ export function FormularioRecuperacionContrasena() {
                     disabled={loading}
                     className="register-submit mt-1 h-11 w-full rounded-md text-base font-normal leading-6 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                    {loading ? 'Enviando...' : 'Enviar enlace'}
+                    {loading ? t('auth.recuperacion.enviando') : t('auth.recuperacion.enviarEnlace')}
                 </button>
             </form>
 
             <p className="register-login-link mt-2 text-center text-sm leading-5">
                 <Link to="/login" className="font-medium hover:underline">
-                    Volver al inicio de sesión
+                    {t('auth.recuperacion.volverLogin')}
                 </Link>
             </p>
         </section>

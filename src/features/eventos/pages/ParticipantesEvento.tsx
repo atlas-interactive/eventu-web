@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { CalendarDays, Check, Download, MapPin, Pencil, Search, Users } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router-dom';
 import { guardarArchivo } from '../../../api/descargas';
 import { mensajeDeError } from '../../../api/mensajeDeError';
@@ -37,6 +38,7 @@ const iniciales = (nombre: string) =>
     nombre.split(/\s+/).slice(0, 2).map((parte) => parte[0]).join('').toLocaleUpperCase('es-CO');
 
 export function ParticipantesEvento() {
+    const { t } = useTranslation();
     const { id } = useParams();
     const consulta = useParticipantesEvento(Number(id));
     const [busqueda, setBusqueda] = useState('');
@@ -74,11 +76,11 @@ export function ParticipantesEvento() {
     return (
         <main className="participantes-page">
             <Link to="/organizador/eventos" className="participantes-volver">
-                ← Mis eventos
+                {t('participantes.volver')}
             </Link>
 
             {consulta.cargando && (
-                <SkeletonEstado etiqueta="Cargando inscritos del evento">
+                <SkeletonEstado etiqueta={t('participantes.cargando')}>
                     <Skeleton className="mt-4 h-7 w-56" />
                     <div className="mt-5 grid gap-4 sm:grid-cols-4">
                         {Array.from({ length: 4 }, (_, indice) => (
@@ -120,7 +122,7 @@ export function ParticipantesEvento() {
                                 aria-busy={descargando}
                             >
                                 <Download aria-hidden="true" />
-                                {descargando ? 'Generando…' : 'Reporte PDF'}
+                                {descargando ? t('participantes.generando') : t('participantes.reporte')}
                             </button>
                             {!eventoYaIniciado(consulta.evento.fechaInicio) && (
                                 <Link
@@ -128,7 +130,7 @@ export function ParticipantesEvento() {
                                     className="participantes-accion"
                                 >
                                     <Pencil aria-hidden="true" />
-                                    Editar evento
+                                    {t('participantes.editar')}
                                 </Link>
                             )}
                         </div>
@@ -138,21 +140,21 @@ export function ParticipantesEvento() {
                         <p role="alert" className="participantes-error">{errorReporte}</p>
                     )}
 
-                    <section className="participantes-resumen" aria-label="Resumen del evento">
+                    <section className="participantes-resumen" aria-label={t('participantes.resumenAria')}>
                         <div className="participantes-metrica">
-                            <span>Inscritos</span>
+                            <span>{t('participantes.inscritos')}</span>
                             <strong>{consulta.inscritos.length}<small> / {consulta.evento.cuposMaximos}</small></strong>
                         </div>
                         <div className="participantes-metrica">
-                            <span>Cupos disponibles</span>
-                            <strong>{consulta.evento.cuposDisponibles}<small> de {consulta.evento.cuposMaximos}</small></strong>
+                            <span>{t('participantes.cuposDisponibles')}</span>
+                            <strong>{consulta.evento.cuposDisponibles}<small> {t('participantes.deMaximos', { maximos: consulta.evento.cuposMaximos })}</small></strong>
                         </div>
                         <div className="participantes-metrica participantes-metrica--asistieron">
-                            <div><span>Asistieron</span><strong>{asistentes}</strong></div>
+                            <div><span>{t('participantes.asistieron')}</span><strong>{asistentes}</strong></div>
                             <div
                                 className="participantes-progreso"
                                 role="meter"
-                                aria-label="Asistencias registradas"
+                                aria-label={t('participantes.asistenciasAria')}
                                 aria-valuemin={0}
                                 aria-valuemax={consulta.inscritos.length}
                                 aria-valuenow={asistentes}
@@ -161,7 +163,7 @@ export function ParticipantesEvento() {
                             </div>
                         </div>
                         <div className="participantes-metrica">
-                            <span>Pendientes</span>
+                            <span>{t('participantes.pendientes')}</span>
                             <strong>{pendientes}</strong>
                         </div>
                     </section>
@@ -169,26 +171,26 @@ export function ParticipantesEvento() {
                     {consulta.inscritos.length === 0 ? (
                         <p className="participantes-vacio">
                             <Users className="h-4 w-4 shrink-0" aria-hidden="true" />
-                            Este evento aún no tiene inscripciones activas.
+                            {t('participantes.vacio')}
                         </p>
                     ) : (
-                        <section className="participantes-listado" aria-label="Participantes">
+                        <section className="participantes-listado" aria-label={t('participantes.listadoAria')}>
                             <div className="participantes-listado-controles">
                                 <label className="participantes-busqueda">
                                     <Search className="h-4 w-4 shrink-0" aria-hidden="true" />
-                                    <span className="sr-only">Buscar por nombre o correo</span>
+                                    <span className="sr-only">{t('participantes.buscarAria')}</span>
                                     <input
                                         type="search"
                                         value={busqueda}
                                         onChange={(evento) => setBusqueda(evento.target.value)}
-                                        placeholder="Buscar por nombre o correo"
+                                        placeholder={t('participantes.buscarPlaceholder')}
                                     />
                                 </label>
-                                <div className="participantes-filtros" role="group" aria-label="Filtrar por asistencia">
+                                <div className="participantes-filtros" role="group" aria-label={t('participantes.filtrarAria')}>
                                     {([
-                                        ['TODOS', `Todos (${consulta.inscritos.length})`],
-                                        ['ASISTIERON', `Asistieron (${asistentes})`],
-                                        ['PENDIENTES', `Pendientes (${pendientes})`],
+                                        ['TODOS', t('participantes.filtroTodos', { cantidad: consulta.inscritos.length })],
+                                        ['ASISTIERON', t('participantes.filtroAsistieron', { cantidad: asistentes })],
+                                        ['PENDIENTES', t('participantes.filtroPendientes', { cantidad: pendientes })],
                                     ] as const).map(([valor, etiqueta]) => (
                                         <button
                                             key={valor}
@@ -205,7 +207,7 @@ export function ParticipantesEvento() {
 
                             {inscritosVisibles.length === 0 ? (
                                 <p className="participantes-vacio" role="status">
-                                    No se encontraron participantes con esos criterios.
+                                    {t('participantes.sinResultados')}
                                 </p>
                             ) : (
                                 <>
@@ -213,9 +215,9 @@ export function ParticipantesEvento() {
                                         <table className="participantes-tabla">
                                             <thead>
                                                 <tr>
-                                                    <th scope="col">Participante</th>
-                                                    <th scope="col">Inscripción</th>
-                                                    <th scope="col">Asistencia</th>
+                                                    <th scope="col">{t('participantes.participante')}</th>
+                                                    <th scope="col">{t('participantes.inscripcion')}</th>
+                                                    <th scope="col">{t('participantes.asistencia')}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -241,7 +243,7 @@ export function ParticipantesEvento() {
                                                         <td>
                                                             <span className={`participantes-asistencia${inscrito.asistio ? ' participantes-asistencia--asistio' : ' participantes-asistencia--pendiente'}`}>
                                                                 {inscrito.asistio && <Check aria-hidden="true" />}
-                                                                {inscrito.asistio ? 'Asistió' : 'Pendiente'}
+                                                                {inscrito.asistio ? t('participantes.asistio') : t('participantes.pendiente')}
                                                             </span>
                                                         </td>
                                                     </tr>
@@ -265,7 +267,7 @@ export function ParticipantesEvento() {
                                                     </time>
                                                 </span>
                                                 <span className={`participantes-asistencia${inscrito.asistio ? ' participantes-asistencia--asistio' : ' participantes-asistencia--pendiente'}`}>
-                                                    {inscrito.asistio ? 'Asistió' : 'Pendiente'}
+                                                    {inscrito.asistio ? t('participantes.asistio') : t('participantes.pendiente')}
                                                 </span>
                                             </li>
                                         ))}

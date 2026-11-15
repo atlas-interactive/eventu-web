@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import type { ChangeEvent, SubmitEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import { IconoAviso } from '../../components/ui/IconoAviso';
 import '../../styles/auth.css';
 import { mensajeDeError } from '../../api/mensajeDeError';
@@ -13,6 +14,7 @@ import type { AutenticacionDTO, RespuestaAutenticacion } from '../../types/auth'
 const correoInstitucionalRegex = /^[a-zA-Z0-9._%+-]+@unillanos\.edu\.co$/;
 
 export const FormularioLogin: React.FC = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const location = useLocation();
     const mensajeRecuperacion =
@@ -85,12 +87,12 @@ export const FormularioLogin: React.FC = () => {
         setMensajeExito(null);
 
         if (!correoInstitucionalRegex.test(formData.correo)) {
-            setMensajeError('Debe ingresar un correo institucional válido.');
+            setMensajeError(t('auth.login.errorCorreo'));
             return;
         }
 
         if (formData.password.length < 8 || formData.password.length > 72) {
-            setMensajeError('La contraseña debe tener entre 8 y 72 caracteres.');
+            setMensajeError(t('auth.login.errorContrasena'));
             return;
         }
 
@@ -116,8 +118,8 @@ export const FormularioLogin: React.FC = () => {
             <header className="mb-3 text-center">
                 <img src={iconoEventU} alt="" aria-hidden="true" className="mx-auto mb-2 h-9 w-9" />
                 <p className="text-2xl font-semibold leading-5">Event<span className="text-eventu-institutional-red">U</span> </p>
-                <h1 className="mt-2 text-base font-semibold leading-7">Inicia sesión</h1>
-                <p className="register-subtitle mt-0.5 text-sm leading-5">Ingresa con tu correo institucional</p>
+                <h1 className="mt-2 text-base font-semibold leading-7">{t('auth.login.titulo')}</h1>
+                <p className="register-subtitle mt-0.5 text-sm leading-5">{t('auth.login.subtitulo')}</p>
             </header>
 
             {mensajeError && (
@@ -137,7 +139,7 @@ export const FormularioLogin: React.FC = () => {
             <form onSubmit={handleSubmit} className="space-y-1">
                 <div>
                     <label htmlFor="correo" className="register-label block text-sm font-medium leading-5">
-                        Correo institucional
+                        {t('auth.login.correo')}
                     </label>
                     <input
                         type="email"
@@ -147,14 +149,14 @@ export const FormularioLogin: React.FC = () => {
                         onChange={handleChange}
                         aria-invalid={mostrarCampoInvalido('correo') || undefined}
                         className={`register-input mt-1 h-11 w-full rounded-md border px-2.5 text-base leading-6 outline-none${mostrarCampoInvalido('correo') ? ' register-input-invalid' : ''}`}
-                        placeholder="nombre@unillanos.edu.co"
+                        placeholder={t('auth.login.placeholderCorreo')}
                         required
                     />
                 </div>
 
                 <div>
                     <label htmlFor="password" className="register-label block text-sm font-medium leading-5">
-                        Contraseña
+                        {t('auth.login.contrasena')}
                     </label>
                     <input
                         type="password"
@@ -164,7 +166,7 @@ export const FormularioLogin: React.FC = () => {
                         onChange={handleChange}
                         aria-invalid={mostrarCampoInvalido('password') || undefined}
                         className={`register-input mt-1 h-11 w-full rounded-md border px-2.5 text-base leading-6 outline-none${mostrarCampoInvalido('password') ? ' register-input-invalid' : ''}`}
-                        placeholder="Mínimo 8 caracteres"
+                        placeholder={t('auth.login.placeholderContrasena')}
                         minLength={8}
                         maxLength={72}
                         required
@@ -176,32 +178,32 @@ export const FormularioLogin: React.FC = () => {
                     disabled={loading}
                     className="register-submit mt-1 h-11 w-full rounded-md text-base font-normal leading-6 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                    {loading ? 'Validando...' : 'Iniciar sesión'}
+                    {loading ? t('auth.login.validando') : t('auth.login.iniciarSesion')}
                 </button>
             </form>
 
             <p className="register-login-link mt-2 text-center text-sm leading-5">
-                ¿No tienes cuenta?{' '}
+                {t('auth.login.sinCuenta')}{' '}
                 <Link to="/registro" className="font-medium link_form hover:link_form-hover">
-                    Regístrate
+                    {t('auth.login.registrate')}
                 </Link>
             </p>
 
             <p className="register-login-link mt-2 text-center text-sm leading-5">
                 <Link to="/recuperar-contrasena" className="font-medium link_form hover:link_form-hover">
-                    ¿Olvidaste tu contraseña?
+                    {t('auth.login.olvidasteContrasena')}
                 </Link>
             </p>
 
             {respuestaPendiente && (
                 <ModalAccesible
-                    titulo="Cuenta reactivada"
+                    titulo={t('auth.login.cuentaReactivadaTitulo')}
                     idTitulo="titulo-cuenta-reactivada"
                     onCerrar={() => continuarConSesion(respuestaPendiente)}
                     icono={<IconoAviso tipo="exito" className="h-6 w-6" />}
                 >
                     <p className="workflow-dialog-copy">
-                        Tu cuenta ha sido reactivada correctamente. Puedes continuar a EventU.
+                        {t('auth.login.cuentaReactivadaMensaje')}
                     </p>
                     <div className="workflow-dialog-actions">
                         <button
@@ -209,7 +211,7 @@ export const FormularioLogin: React.FC = () => {
                             className="workflow-button workflow-button--primary"
                             onClick={() => continuarConSesion(respuestaPendiente)}
                         >
-                            Continuar
+                            {t('auth.login.continuar')}
                         </button>
                     </div>
                 </ModalAccesible>

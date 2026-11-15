@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { mensajeDeError } from '../../api/mensajeDeError';
 import type { Evento } from '../../types/evento';
 import type { Inscripcion } from '../../types/inscripcion';
@@ -10,6 +11,7 @@ import {
 import { eventoYaIniciado } from '../../features/eventos/estadoTemporalEvento';
 
 export function useInscripcionEvento(eventoId: number, habilitado = true) {
+    const { t } = useTranslation();
     const [intentoVerificacion, setIntentoVerificacion] = useState(0);
     const claveVerificacion = `${eventoId}:${habilitado}:${intentoVerificacion}`;
     const identificadorValido = habilitado && Number.isSafeInteger(eventoId) && eventoId > 0;
@@ -69,7 +71,7 @@ export function useInscripcionEvento(eventoId: number, habilitado = true) {
     const inscribir = async (evento: Evento): Promise<boolean> => {
         if (verificando || errorVerificacion || yaInscrito || inscribiendo || inscripcionRealizada) return false;
         if (eventoYaIniciado(evento.fechaInicio)) {
-            setError('El evento ya inició. No se permiten nuevas inscripciones.');
+            setError(t('comun.eventoYaIniciado'));
             return false;
         }
         setInscribiendo(true);
@@ -106,7 +108,7 @@ export function useInscripcionEvento(eventoId: number, habilitado = true) {
     const cancelarInscripcionActiva = async (): Promise<boolean> => {
         if (!inscripcionActiva || cancelando) return false;
         if (eventoYaIniciado(inscripcionActiva.eventoFechaInicio)) {
-            setErrorCancelacion('No se puede cancelar la inscripción después de que inicia el evento.');
+            setErrorCancelacion(t('comun.noCancelarInscripcionIniciada'));
             return false;
         }
         setCancelando(true);

@@ -1,4 +1,5 @@
 import { X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import type { FiltrosActividad } from '../../../types/actividad';
 
 interface FiltrosActivosActividadProps {
@@ -12,29 +13,35 @@ const fechaCorta = (fecha: string) =>
     );
 
 export function FiltrosActivosActividad({ filtros, onQuitar }: FiltrosActivosActividadProps) {
+    const { t } = useTranslation();
     const activos: { campo: keyof FiltrosActividad; etiqueta: string }[] = [];
-    if (filtros.usuario) activos.push({ campo: 'usuario', etiqueta: `Usuario: ${filtros.usuario}` });
+    if (filtros.usuario) {
+        activos.push({
+            campo: 'usuario',
+            etiqueta: t('actividad.usuarioPrefijo', { usuario: filtros.usuario }),
+        });
+    }
     if (filtros.accion) activos.push({ campo: 'accion', etiqueta: filtros.accion.replaceAll('_', ' ') });
     if (filtros.entidad) activos.push({ campo: 'entidad', etiqueta: filtros.entidad });
     if (filtros.resultado) activos.push({ campo: 'resultado', etiqueta: filtros.resultado });
     if (filtros.fechaDesde || filtros.fechaHasta) {
         activos.push({
             campo: 'fechaDesde',
-            etiqueta: `${filtros.fechaDesde ? fechaCorta(filtros.fechaDesde) : 'Desde'} – ${filtros.fechaHasta ? fechaCorta(filtros.fechaHasta) : 'Hoy'}`,
+            etiqueta: `${filtros.fechaDesde ? fechaCorta(filtros.fechaDesde) : t('actividad.desde')} – ${filtros.fechaHasta ? fechaCorta(filtros.fechaHasta) : t('actividad.hoy')}`,
         });
     }
 
     if (activos.length === 0) return null;
 
     return (
-        <div className="actividad-filtros-activos" aria-label="Filtros aplicados">
-            <span>Con</span>
+        <div className="actividad-filtros-activos" aria-label={t('actividad.filtrosActivosAria')}>
+            <span>{t('actividad.con')}</span>
             {activos.map(({ campo, etiqueta }) => (
                 <button
                     className="actividad-filtro-activo"
                     type="button"
                     key={campo}
-                    aria-label={`Quitar filtro: ${etiqueta}`}
+                    aria-label={t('actividad.quitarFiltro', { etiqueta })}
                     onClick={() => onQuitar(campo)}
                 >
                     {etiqueta}

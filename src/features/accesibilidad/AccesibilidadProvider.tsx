@@ -1,5 +1,6 @@
 import { useCallback, useLayoutEffect, useState } from 'react';
 import type { ReactNode } from 'react';
+import i18n from '../../i18n';
 import { ContextoAccesibilidad } from './AccesibilidadContext';
 import {
     aplicarPreferenciasAccesibilidad,
@@ -31,9 +32,7 @@ export function AccesibilidadProvider({ children }: { children: ReactNode }) {
         } catch (error) {
             if (!(error instanceof DOMException)) throw error;
             console.error('No se pudieron guardar las preferencias de accesibilidad.', error);
-            setErrorAlGuardar(
-                'El ajuste se aplicó, pero no se pudo guardar en este navegador.',
-            );
+            setErrorAlGuardar(i18n.t('accesibilidad.errorGuardar'));
         }
     }, []);
 

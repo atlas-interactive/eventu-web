@@ -1,5 +1,6 @@
 import { RotateCcw, Search, SlidersHorizontal } from 'lucide-react';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Categoria } from '../../../types/categoria';
 import type { FiltrosEvento } from '../../../types/evento';
 import { ModalAccesible } from '../../../components/ui/ModalAccesible';
@@ -19,16 +20,16 @@ interface FiltrosEventosProps {
 }
 
 const estados = [
-    { valor: 'TODOS', etiqueta: 'Todos' },
-    { valor: 'PUBLICADO', etiqueta: 'Publicados' },
-    { valor: 'CANCELADO', etiqueta: 'Cancelados' },
+    { valor: 'TODOS', clave: 'filtros.todos' },
+    { valor: 'PUBLICADO', clave: 'filtros.publicados' },
+    { valor: 'CANCELADO', clave: 'filtros.cancelados' },
 ] as const;
 
 const periodos = [
-    { valor: 'hoy', etiqueta: 'Hoy' },
-    { valor: 'semana', etiqueta: 'Esta semana' },
-    { valor: 'mes', etiqueta: 'Este mes' },
-    { valor: 'proximo-mes', etiqueta: 'Próximo mes' },
+    { valor: 'hoy', clave: 'filtros.hoy' },
+    { valor: 'semana', clave: 'filtros.estaSemana' },
+    { valor: 'mes', clave: 'filtros.esteMes' },
+    { valor: 'proximo-mes', clave: 'filtros.proximoMes' },
 ] as const;
 
 const aFechaLocal = (fecha: Date) => {
@@ -70,6 +71,7 @@ export function FiltrosEventos({
     mostrarEstado = false,
     orden,
 }: FiltrosEventosProps) {
+    const { t } = useTranslation();
     const [panelMovilAbierto, setPanelMovilAbierto] = useState(false);
     const estadoSeleccionado = filtros.estado ?? (mostrarEstado ? 'PUBLICADO' : 'TODOS');
     const fechasInvalidas = Boolean(
@@ -103,9 +105,9 @@ export function FiltrosEventos({
     const renderEstado = () =>
         mostrarEstado && (
             <div className="filtros-eventos-grupo">
-                <span className="filtros-eventos-etiqueta">Estado</span>
-                <div className="filtros-eventos-estados" role="group" aria-label="Filtrar por estado">
-                    {estados.map(({ valor, etiqueta }) => (
+                <span className="filtros-eventos-etiqueta">{t('filtros.estado')}</span>
+                <div className="filtros-eventos-estados" role="group" aria-label={t('filtros.filtrarPorEstado')}>
+                    {estados.map(({ valor, clave }) => (
                         <button
                             key={valor}
                             type="button"
@@ -113,7 +115,7 @@ export function FiltrosEventos({
                             aria-pressed={estadoSeleccionado === valor}
                             onClick={() => cambiarEstado(valor)}
                         >
-                            {etiqueta}
+                            {t(clave)}
                         </button>
                     ))}
                 </div>
@@ -123,7 +125,7 @@ export function FiltrosEventos({
     const renderFechas = (sufijo: string) => (
         <div className="filtros-eventos-fechas">
             <label className="filtros-eventos-fecha-campo" htmlFor={`eventos-fecha-desde-${sufijo}`}>
-                <span className="filtros-eventos-etiqueta">Desde</span>
+                <span className="filtros-eventos-etiqueta">{t('filtros.desde')}</span>
                 <input
                     id={`eventos-fecha-desde-${sufijo}`}
                     className="filtros-eventos-input"
@@ -135,7 +137,7 @@ export function FiltrosEventos({
                 />
             </label>
             <label className="filtros-eventos-fecha-campo" htmlFor={`eventos-fecha-hasta-${sufijo}`}>
-                <span className="filtros-eventos-etiqueta">Hasta</span>
+                <span className="filtros-eventos-etiqueta">{t('filtros.hasta')}</span>
                 <input
                     id={`eventos-fecha-hasta-${sufijo}`}
                     className="filtros-eventos-input"
@@ -151,9 +153,9 @@ export function FiltrosEventos({
 
     const renderPeriodos = () => (
         <div className="filtros-eventos-periodos-grupo">
-            <span className="filtros-eventos-etiqueta">Fecha:</span>
-            <div className="filtros-eventos-periodos" aria-label="Rangos de fecha rápidos">
-                {periodos.map(({ valor, etiqueta }) => {
+            <span className="filtros-eventos-etiqueta">{t('filtros.fechaEtiqueta')}</span>
+            <div className="filtros-eventos-periodos" aria-label={t('filtros.rangosRapidos')}>
+                {periodos.map(({ valor, clave }) => {
                     const rango = obtenerRangoPeriodo(valor);
                     const activo = mismoRango(filtros, rango);
                     return (
@@ -164,7 +166,7 @@ export function FiltrosEventos({
                             aria-pressed={activo}
                             onClick={() => cambiarPeriodo(valor)}
                         >
-                            {etiqueta}
+                            {t(clave)}
                         </button>
                     );
                 })}
@@ -173,10 +175,10 @@ export function FiltrosEventos({
     );
 
     return (
-        <section className={`filtros-eventos${mostrarEstado ? ' filtros-eventos--gestion' : ''}`} aria-label="Buscar y filtrar eventos">
+        <section className={`filtros-eventos${mostrarEstado ? ' filtros-eventos--gestion' : ''}`} aria-label={t('filtros.buscarYFiltrar')}>
             <div className="filtros-eventos-principal">
                 <div className="filtros-eventos-busqueda-grupo">
-                    <label className="filtros-eventos-etiqueta" htmlFor="buscar-eventos">Buscar</label>
+                    <label className="filtros-eventos-etiqueta" htmlFor="buscar-eventos">{t('filtros.buscar')}</label>
                     <div className="filtros-eventos-busqueda-campo">
                         <Search className="filtros-eventos-busqueda-icono" aria-hidden="true" />
                         <input
@@ -184,7 +186,7 @@ export function FiltrosEventos({
                             className="filtros-eventos-input filtros-eventos-busqueda"
                             type="search"
                             maxLength={100}
-                            placeholder="Buscar eventos..."
+                            placeholder={t('filtros.placeholderBuscar')}
                             value={filtros.texto ?? ''}
                             onChange={(evento) => onChange({ ...filtros, texto: evento.target.value })}
                         />
@@ -198,7 +200,7 @@ export function FiltrosEventos({
                     onClick={() => setPanelMovilAbierto(true)}
                 >
                     <SlidersHorizontal aria-hidden="true" />
-                    Filtros
+                    {t('filtros.filtros')}
                     {filtrosActivos > 0 && <span className="filtros-eventos-contador">{filtrosActivos}</span>}
                 </button>
 
@@ -210,15 +212,15 @@ export function FiltrosEventos({
             <div className="filtros-eventos-secundarios">
                 <div className="filtros-eventos-periodos-escritorio">{renderPeriodos()}</div>
                 <div role="separator" className="filtros-eventos-separator" aria-orientation="vertical"/>
-                <div className="filtros-eventos-categorias" aria-label="Filtrar por categoría">
-                    <span className="filtros-eventos-etiqueta">Categoría:</span>
+                <div className="filtros-eventos-categorias" aria-label={t('filtros.filtrarPorCategoria')}>
+                    <span className="filtros-eventos-etiqueta">{t('filtros.categoriaEtiqueta')}</span>
                     <button
                         type="button"
                         className={`filtros-eventos-categoria${filtros.categoriaId === undefined ? ' filtros-eventos-categoria--activa' : ''}`}
                         aria-pressed={filtros.categoriaId === undefined}
                         onClick={() => cambiarCategoria()}
                     >
-                        Todas
+                        {t('filtros.todas')}
                     </button>
                     {categorias.map((categoria) => (
                         <button
@@ -254,13 +256,13 @@ export function FiltrosEventos({
 
             {fechasInvalidas && (
                 <p className="filtros-eventos-error" role="alert">
-                    La fecha inicial no puede ser posterior a la fecha final.
+                    {t('filtros.fechaInvalida')}
                 </p>
             )}
 
             {panelMovilAbierto && (
                 <ModalAccesible
-                    titulo="Filtros"
+                    titulo={t('filtros.filtros')}
                     idTitulo="titulo-filtros-eventos"
                     onCerrar={() => setPanelMovilAbierto(false)}
                     variante="inferior"
@@ -274,14 +276,14 @@ export function FiltrosEventos({
                     <div className="filtros-eventos-acciones-movil">
                         <button type="button" className="filtros-eventos-limpiar" onClick={limpiarFiltros}>
                             <RotateCcw aria-hidden="true" />
-                            Limpiar filtros
+                            {t('filtros.limpiar')}
                         </button>
                         <button
                             type="button"
                             className="filtros-eventos-listo"
                             onClick={() => setPanelMovilAbierto(false)}
                         >
-                            Listo
+                            {t('filtros.listo')}
                         </button>
                     </div>
                 </ModalAccesible>

@@ -1,3 +1,5 @@
+import i18n from '../../i18n';
+
 export const CLAVE_PREFERENCIAS_ACCESIBILIDAD = 'eventu:preferencias-accesibilidad';
 
 export const ESCALAS_TEXTO = [0.75, 1, 1.25, 1.5, 2] as const;
@@ -82,7 +84,7 @@ export const leerPreferenciasAccesibilidad = (): ResultadoCargaPreferencias => {
         console.error('No se pudieron leer las preferencias de accesibilidad.', error);
         return {
             preferencias: PREFERENCIAS_ACCESIBILIDAD_INICIALES,
-            advertencia: 'No se pudieron cargar las preferencias guardadas en este navegador.',
+            advertencia: i18n.t('accesibilidad.advertenciaCarga'),
         };
     }
 
@@ -98,7 +100,7 @@ export const leerPreferenciasAccesibilidad = (): ResultadoCargaPreferencias => {
         console.error('Las preferencias de accesibilidad guardadas no tienen un formato válido.', error);
         return {
             preferencias: PREFERENCIAS_ACCESIBILIDAD_INICIALES,
-            advertencia: 'Las preferencias guardadas no eran válidas; se restablecieron los valores iniciales.',
+            advertencia: i18n.t('accesibilidad.advertenciaInvalida'),
         };
     }
 
@@ -107,7 +109,7 @@ export const leerPreferenciasAccesibilidad = (): ResultadoCargaPreferencias => {
         console.error('Las preferencias de accesibilidad guardadas contienen valores no admitidos.');
         return {
             preferencias: PREFERENCIAS_ACCESIBILIDAD_INICIALES,
-            advertencia: 'Las preferencias guardadas no eran válidas; se restablecieron los valores iniciales.',
+            advertencia: i18n.t('accesibilidad.advertenciaInvalida'),
         };
     }
 

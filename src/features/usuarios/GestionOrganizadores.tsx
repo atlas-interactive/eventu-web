@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Search, UserCog, UserMinus, UserPlus } from 'lucide-react';
 import { isAxiosError } from 'axios';
+import { useTranslation } from 'react-i18next';
 import type { UsuarioBuscado } from '../../types/usuario';
 import { ModalAccesible } from '../../components/ui/ModalAccesible';
 import { IconoAviso } from '../../components/ui/IconoAviso';
@@ -9,10 +10,10 @@ import { mensajeDeError } from '../../api/mensajeDeError';
 import { asignarOrganizador, buscarUsuarios, listarOrganizadores, revocarOrganizador } from './services/usuarioService';
 import '../../styles/management.css';
 
-const ETIQUETA_ROL: Record<string, string> = {
-    USUARIO: 'Usuario',
-    ORGANIZADOR: 'Organizador',
-    ADMIN: 'Administrador',
+const CLAVE_ROL: Record<string, string> = {
+    USUARIO: 'comun.roles.usuario',
+    ORGANIZADOR: 'comun.roles.organizador',
+    ADMIN: 'comun.roles.admin',
 };
 
 // Cuántos caracteres se necesitan para buscar y cuánto se espera tras la última tecla
@@ -29,6 +30,7 @@ const iniciales = (nombre: string) =>
 
 // HU-03: el administrador busca un usuario ya registrado y le asigna o le revoca el rol de organizador
 export function GestionOrganizadores() {
+    const { t } = useTranslation();
     const [criterio, setCriterio] = useState('');
     const [resultados, setResultados] = useState<UsuarioBuscado[]>([]);
     const [buscando, setBuscando] = useState(false);
@@ -153,16 +155,16 @@ export function GestionOrganizadores() {
     return (
         <main className="workflow-page gestion-organizer-page">
             <header className="workflow-page-header">
-                <h1 className="workflow-title">Gestión de organizadores</h1>
+                <h1 className="workflow-title">{t('organizadores.titulo')}</h1>
                 <p className="workflow-description">
-                    Busca un usuario ya registrado y asígnale el rol de organizador.
+                    {t('organizadores.descripcion')}
                 </p>
             </header>
 
             <section className="gestion-panel">
                 <div className="gestion-search">
                     <label htmlFor="criterio" className="workflow-label">
-                        Buscar por nombre o correo institucional
+                        {t('organizadores.buscarLabel')}
                     </label>
                     <div className="relative">
                         <Search
@@ -175,7 +177,7 @@ export function GestionOrganizadores() {
                             autoComplete="off"
                             value={criterio}
                             onChange={(e) => alEscribir(e.target.value)}
-                            placeholder="Escribe al menos 2 letras del nombre o del correo..."
+                            placeholder={t('organizadores.placeholderBusqueda')}
                             aria-invalid={hayCriterio && errorBusqueda ? true : undefined}
                             aria-describedby={hayCriterio && errorBusqueda ? 'error-busqueda' : 'ayuda-busqueda'}
                             className="gestion-search-input gestion-search-input--with-icon"
@@ -183,9 +185,9 @@ export function GestionOrganizadores() {
                     </div>
                     <p id="ayuda-busqueda" aria-live="polite" className="gestion-help">
                         {!hayCriterio
-                              ? 'Solo se muestran usuarios que ya están registrados en la plataforma.'
+                              ? t('organizadores.ayuda')
                               : resultadosVisibles.length > 0
-                                ? `${resultadosVisibles.length} ${resultadosVisibles.length === 1 ? 'coincidencia' : 'coincidencias'}`
+                                ? t('organizadores.coincidencias', { count: resultadosVisibles.length })
                                 : ''}
                     </p>
                 </div>
@@ -215,7 +217,7 @@ export function GestionOrganizadores() {
                 )}
 
                 {hayCriterio && buscando && (
-                    <SkeletonEstado etiqueta="Buscando usuarios" className="gestion-results">
+                    <SkeletonEstado etiqueta={t('organizadores.buscando')} className="gestion-results">
                         {Array.from({ length: 2 }, (_, indice) => (
                             <div key={indice} className="gestion-result">
                                 <div className="gestion-result-person">
@@ -247,7 +249,9 @@ export function GestionOrganizadores() {
                                     <div className="gestion-result-details">
                                         <p className="gestion-result-name">{usuario.nombre}</p>
                                         <p className="gestion-result-meta">
-                                            {usuario.correo} · {ETIQUETA_ROL[usuario.rol] ?? usuario.rol}
+                                            {usuario.correo} · {CLAVE_ROL[usuario.rol]
+                                                ? t(CLAVE_ROL[usuario.rol])
+                                                : usuario.rol}
                                         </p>
                                     </div>
                                 </div>
@@ -256,18 +260,18 @@ export function GestionOrganizadores() {
                                         type="button"
                                         className="gestion-organizer-action gestion-organizer-action--assign gap-1.5"
                                         disabled={procesandoId === usuario.id}
-                                        aria-label={`Asignar organizador a ${usuario.nombre}`}
+                                        aria-label={t('organizadores.asignarAria', { nombre: usuario.nombre })}
                                         onClick={() => asignar(usuario)}
                                     >
                                         <UserPlus className="h-4 w-4 shrink-0" aria-hidden="true" />
-                                        {procesandoId === usuario.id ? 'Asignando…' : 'Asignar organizador'}
+                                        {procesandoId === usuario.id ? t('organizadores.asignando') : t('organizadores.asignar')}
                                     </button>
                                 )}
                                 {usuario.rol === 'ORGANIZADOR' && (
                                     <button
                                         type="button"
                                         className="gestion-organizer-action gestion-organizer-action--revoke gap-1.5"
-                                        aria-label={`Revocar rol de organizador a ${usuario.nombre}`}
+                                        aria-label={t('organizadores.revocarAria', { nombre: usuario.nombre })}
                                         onClick={() => {
                                             setMensajeExito('');
                                             setErrorAccion('');
@@ -275,7 +279,7 @@ export function GestionOrganizadores() {
                                         }}
                                     >
                                         <UserMinus className="h-4 w-4 shrink-0" aria-hidden="true" />
-                                        Revocar rol
+                                        {t('organizadores.revocar')}
                                     </button>
                                 )}
                             </li>
@@ -287,7 +291,7 @@ export function GestionOrganizadores() {
 
             <section aria-labelledby="titulo-organizadores" className="gestion-panel gestion-panel--spaced">
                 <h2 id="titulo-organizadores" className="gestion-table-title">
-                    Organizadores actuales
+                    {t('organizadores.organizadoresActuales')}
                 </h2>
                 {errorTabla && (
                     <p role="alert" className="gestion-table-error flex items-start gap-2">
@@ -296,7 +300,7 @@ export function GestionOrganizadores() {
                     </p>
                 )}
                 {cargandoTabla ? (
-                    <SkeletonEstado etiqueta="Cargando organizadores" className="gestion-table-scroll">
+                    <SkeletonEstado etiqueta={t('organizadores.cargando')} className="gestion-table-scroll">
                         <table className="gestion-organizer-table" aria-hidden="true">
                             <tbody>
                                 {Array.from({ length: 3 }, (_, indice) => (
@@ -318,34 +322,34 @@ export function GestionOrganizadores() {
                 ) : organizadores.length === 0 && !errorTabla ? (
                     <p className="gestion-table-state">
                         <UserCog className="mr-2 inline h-4 w-4 align-text-bottom" aria-hidden="true" />
-                        Aún no hay organizadores asignados.
+                        {t('organizadores.vacio')}
                     </p>
                 ) : (
                     organizadores.length > 0 && (
                         <div className="gestion-table-scroll">
                             <table className="gestion-organizer-table">
-                                <caption className="sr-only">Usuarios con rol de organizador</caption>
+                                <caption className="sr-only">{t('organizadores.caption')}</caption>
                                 <thead>
                                     <tr>
-                                        <th scope="col">Nombre</th>
-                                        <th scope="col">Correo</th>
-                                        <th scope="col">Acción</th>
+                                        <th scope="col">{t('organizadores.nombre')}</th>
+                                        <th scope="col">{t('organizadores.correo')}</th>
+                                        <th scope="col">{t('organizadores.accion')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {organizadores.map((organizador) => (
                                         <tr key={organizador.id} className="gestion-organizer-row">
-                                            <td data-label="Nombre" className="gestion-organizer-cell gestion-organizer-cell--name">
+                                            <td data-label={t('organizadores.nombre')} className="gestion-organizer-cell gestion-organizer-cell--name">
                                                 <span className="gestion-cell-value gestion-cell-value--name">{organizador.nombre}</span>
                                             </td>
-                                            <td data-label="Correo" className="gestion-organizer-cell gestion-organizer-cell--email">
+                                            <td data-label={t('organizadores.correo')} className="gestion-organizer-cell gestion-organizer-cell--email">
                                                 <span className="gestion-cell-value gestion-cell-value--email">{organizador.correo}</span>
                                             </td>
-                                            <td data-label="Acción" className="gestion-organizer-cell gestion-organizer-cell--action">
+                                            <td data-label={t('organizadores.accion')} className="gestion-organizer-cell gestion-organizer-cell--action">
                                                 <button
                                                     type="button"
                                                     className="gestion-organizer-action gestion-organizer-action--revoke gap-1.5"
-                                                    aria-label={`Revocar rol de ${organizador.nombre}`}
+                                                    aria-label={t('organizadores.revocarRolAria', { nombre: organizador.nombre })}
                                                     onClick={() => {
                                                         setMensajeExito('');
                                                         setErrorAccion('');
@@ -353,7 +357,7 @@ export function GestionOrganizadores() {
                                                     }}
                                                 >
                                                     <UserMinus className="h-4 w-4 shrink-0" aria-hidden="true" />
-                                                    Revocar rol
+                                                    {t('organizadores.revocar')}
                                                 </button>
                                             </td>
                                         </tr>
@@ -367,17 +371,16 @@ export function GestionOrganizadores() {
 
             {aRevocar && (
                 <ModalAccesible
-                    titulo="¿Revocar rol de organizador?"
+                    titulo={t('organizadores.confirmarTitulo')}
                     idTitulo="titulo-revocar-organizador"
                     onCerrar={() => setARevocar(null)}
                 >
                     <p className="workflow-dialog-copy">
-                        {aRevocar.nombre} dejará de poder crear y gestionar eventos. Conservará el acceso a su cuenta con rol
-                        Usuario. Sus eventos se conservarán y, desde ahora, solo un administrador podrá editarlos.
+                        {t('organizadores.confirmarMensaje', { nombre: aRevocar.nombre })}
                     </p>
                     <div className="workflow-dialog-actions">
                         <button type="button" className="workflow-button workflow-button--secondary" onClick={() => setARevocar(null)}>
-                            Cancelar
+                            {t('organizadores.cancelar')}
                         </button>
                         <button
                             type="button"
@@ -386,7 +389,7 @@ export function GestionOrganizadores() {
                             onClick={() => revocar(aRevocar)}
                         >
                             <UserMinus className="h-4 w-4 shrink-0" aria-hidden="true" />
-                            {procesandoId === aRevocar.id ? 'Revocando…' : 'Sí, revocar rol'}
+                            {procesandoId === aRevocar.id ? t('organizadores.revocando') : t('organizadores.confirmarRevocar')}
                         </button>
                     </div>
                 </ModalAccesible>

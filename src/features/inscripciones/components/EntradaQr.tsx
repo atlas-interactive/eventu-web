@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { Download } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { QRCodeSVG } from 'qrcode.react';
 import { guardarArchivo } from '../../../api/descargas';
 
@@ -9,13 +10,14 @@ interface EntradaQrProps {
 }
 
 export function EntradaQr({ codigo, nombreArchivo }: EntradaQrProps) {
+    const { t } = useTranslation();
     const qrRef = useRef<SVGSVGElement>(null);
     const [error, setError] = useState('');
 
     const descargar = () => {
         const qr = qrRef.current;
         if (!qr) {
-            setError('No se pudo preparar la descarga del código QR.');
+            setError(t('entradaQr.error'));
             return;
         }
 
@@ -35,16 +37,16 @@ export function EntradaQr({ codigo, nombreArchivo }: EntradaQrProps) {
                     size={176}
                     level="M"
                     marginSize={4}
-                    title="Código QR de tu entrada"
+                    title={t('entradaQr.tituloQr')}
                 />
             </div>
             <p className="detalle-evento-qr-codigo">{codigo}</p>
             <p className="detalle-evento-qr-ayuda">
-                Muéstralo en la entrada para registrar tu asistencia desde la aplicación móvil.
+                {t('entradaQr.ayuda')}
             </p>
             <button type="button" className="detalle-evento-qr-descargar" onClick={descargar}>
                 <Download aria-hidden="true" />
-                Descargar entrada
+                {t('entradaQr.descargar')}
             </button>
             {error && <p className="detalle-evento-error" role="alert">{error}</p>}
         </div>

@@ -2,6 +2,7 @@ import { configure } from '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
 import { afterAll, afterEach, beforeAll } from 'vitest';
 import { server } from './mocks/server';
+import '../src/i18n';
 
 configure({ asyncUtilTimeout: 5000 });
 

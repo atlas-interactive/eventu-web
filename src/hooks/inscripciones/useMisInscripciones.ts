@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { mensajeDeError } from '../../api/mensajeDeError';
 import type { EstadoInscripcion, Inscripcion } from '../../types/inscripcion';
 import {
@@ -11,6 +12,7 @@ import { eventoYaIniciado } from '../../features/eventos/estadoTemporalEvento';
 export type FiltroInscripcion = 'TODAS' | EstadoInscripcion;
 
 export function useMisInscripciones() {
+    const { t } = useTranslation();
     const [inscripciones, setInscripciones] = useState<Inscripcion[]>([]);
     const [cargando, setCargando] = useState(true);
     const [error, setError] = useState('');
@@ -71,7 +73,7 @@ export function useMisInscripciones() {
         setErrorCancelacion('');
         setMensajeExito('');
         if (eventoYaIniciado(inscripcion.eventoFechaInicio)) {
-            setErrorCancelacion('No se puede cancelar la inscripción después de que inicia el evento.');
+            setErrorCancelacion(t('comun.noCancelarInscripcionIniciada'));
             setACancelar(inscripcion);
             return;
         }
@@ -88,7 +90,7 @@ export function useMisInscripciones() {
         const inscripcion = aCancelar;
         if (!inscripcion || cancelando) return;
         if (eventoYaIniciado(inscripcion.eventoFechaInicio)) {
-            setErrorCancelacion('No se puede cancelar la inscripción después de que inicia el evento.');
+            setErrorCancelacion(t('comun.noCancelarInscripcionIniciada'));
             return;
         }
 

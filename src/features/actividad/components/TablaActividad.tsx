@@ -1,4 +1,5 @@
 import { LockKeyhole } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import type { RegistroActividadItem } from '../../../types/actividad';
 import { formatearFechaHoraActividad, formatearTiempoRelativoActividad } from '../services/formatoFechaActividad';
 
@@ -13,17 +14,18 @@ function mostrarEntidad(registro: RegistroActividadItem) {
 }
 
 export function TablaActividad({ registros, mensajeVacio, filtrosAplicados }: TablaActividadProps) {
+    const { t } = useTranslation();
     return (
-        <section className="actividad-tabla-contenedor" aria-label="Registros de actividad">
+        <section className="actividad-tabla-contenedor" aria-label={t('actividad.tablaAria')}>
             <table className="actividad-tabla">
                 <thead className="actividad-tabla-encabezado">
                     <tr>
-                        <th scope="col">Fecha y hora</th>
-                        <th scope="col">Usuario</th>
-                        <th scope="col">Acción</th>
-                        <th scope="col">Entidad</th>
-                        <th scope="col">Resultado</th>
-                        <th scope="col">Motivo</th>
+                        <th scope="col">{t('actividad.fechaHora')}</th>
+                        <th scope="col">{t('actividad.usuario')}</th>
+                        <th scope="col">{t('actividad.accion')}</th>
+                        <th scope="col">{t('actividad.entidad')}</th>
+                        <th scope="col">{t('actividad.resultado')}</th>
+                        <th scope="col">{t('actividad.motivo')}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -33,7 +35,7 @@ export function TablaActividad({ registros, mensajeVacio, filtrosAplicados }: Ta
                                 className={`actividad-tabla-fila${filtrosAplicados ? ' actividad-tabla-fila--filtrada' : ''}`}
                                 key={registro.id}
                             >
-                                <td data-label="Fecha y hora">
+                                <td data-label={t('actividad.fechaHora')}>
                                     <time className="actividad-fecha" dateTime={registro.fecha}>
                                         {formatearTiempoRelativoActividad(registro.fecha)}
                                     </time>
@@ -45,7 +47,7 @@ export function TablaActividad({ registros, mensajeVacio, filtrosAplicados }: Ta
                                         {formatearFechaHoraActividad(registro.fecha)}
                                     </time>
                                 </td>
-                                <td data-label="Usuario">
+                                <td data-label={t('actividad.usuario')}>
                                     {registro.usuarioNombre ? (
                                         <span className="actividad-usuario">
                                             <span className="actividad-avatar" aria-hidden="true">
@@ -57,22 +59,22 @@ export function TablaActividad({ registros, mensajeVacio, filtrosAplicados }: Ta
                                             </span>
                                         </span>
                                     ) : (
-                                        <span className="actividad-sin-usuario">Sin usuario asociado</span>
+                                        <span className="actividad-sin-usuario">{t('actividad.sinUsuario')}</span>
                                     )}
                                 </td>
-                                <td data-label="Acción">
+                                <td data-label={t('actividad.accion')}>
                                     <strong>{registro.accion.replaceAll('_', ' ')}</strong>
                                     <span className="actividad-codigo">{registro.accion}</span>
                                 </td>
-                                <td data-label="Entidad">{mostrarEntidad(registro)}</td>
-                                <td data-label="Resultado">
+                                <td data-label={t('actividad.entidad')}>{mostrarEntidad(registro)}</td>
+                                <td data-label={t('actividad.resultado')}>
                                     <span
                                         className={`actividad-resultado${registro.resultado.toUpperCase() === 'FALLIDO' ? ' actividad-resultado--fallido' : ' actividad-resultado--exitoso'}`}
                                     >
                                         {registro.resultado}
                                     </span>
                                 </td>
-                                <td data-label="Motivo">{registro.motivo || '—'}</td>
+                                <td data-label={t('actividad.motivo')}>{registro.motivo || '—'}</td>
                             </tr>
                         );
                     })}
@@ -87,7 +89,7 @@ export function TablaActividad({ registros, mensajeVacio, filtrosAplicados }: Ta
             </table>
             <p className="actividad-solo-lectura">
                 <LockKeyhole aria-hidden="true" />
-                Solo lectura: los registros no se pueden editar ni eliminar.
+                {t('actividad.soloLectura')}
             </p>
         </section>
     );

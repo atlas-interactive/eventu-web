@@ -1,5 +1,6 @@
 import { CalendarDays, MapPin } from 'lucide-react';
 import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Evento } from '../../../types/evento';
 import { useAhoraBogota } from '../../../hooks/eventos/useAhoraBogota';
 import { obtenerEstadoTemporalEvento } from '../estadoTemporalEvento';
@@ -19,18 +20,19 @@ const porcentajeOcupado = (evento: Evento): number => {
 };
 
 export function TarjetaEvento({ evento, children }: TarjetaEventoProps) {
+    const { t } = useTranslation();
     const ahora = useAhoraBogota();
     const estaCancelado = evento.estado.toUpperCase() === 'CANCELADO';
     const estadoTemporal = !estaCancelado && evento.estado.toUpperCase() === 'PUBLICADO'
         ? obtenerEstadoTemporalEvento(evento.fechaInicio, ahora)
         : null;
     const etiquetaEstado = estadoTemporal === 'EN_CURSO'
-        ? 'En curso'
+        ? t('tarjetaEvento.enCurso')
         : estadoTemporal === 'FINALIZADO'
-            ? 'Evento finalizado'
+            ? t('tarjetaEvento.finalizado')
             : estaCancelado
-                ? 'Cancelado'
-                : 'Publicado';
+                ? t('tarjetaEvento.cancelado')
+                : t('tarjetaEvento.publicado');
     const ocupados = evento.cuposMaximos > 0
         ? Math.max(0, Math.min(evento.cuposMaximos, evento.cuposMaximos - evento.cuposDisponibles))
         : 0;
@@ -49,7 +51,7 @@ export function TarjetaEvento({ evento, children }: TarjetaEventoProps) {
                                 </span>
                             )}
                             {evento.certificable && (
-                                <span className="evento-card-certificable">Certificable</span>
+                                <span className="evento-card-certificable">{t('tarjetaEvento.certificable')}</span>
                             )}
                         </div>
                     )}
@@ -86,16 +88,16 @@ export function TarjetaEvento({ evento, children }: TarjetaEventoProps) {
 
                 <div className="evento-card-capacity">
                     <div className="evento-card-capacity-label">
-                        <span>Cupos ocupados</span>
+                        <span>{t('tarjetaEvento.cuposOcupados')}</span>
                         <strong>
                             {ocupados} / {evento.cuposMaximos}
-                            {estaLleno && <span> · Lleno</span>}
+                            {estaLleno && <span> · {t('tarjetaEvento.lleno')}</span>}
                         </strong>
                     </div>
                     <div
                         className="evento-card-capacity-track"
                         role="meter"
-                        aria-label={`Cupos ocupados de ${evento.titulo}`}
+                        aria-label={t('tarjetaEvento.cuposAria', { titulo: evento.titulo })}
                         aria-valuemin={0}
                         aria-valuemax={Math.max(1, evento.cuposMaximos)}
                         aria-valuenow={ocupados}

@@ -2,6 +2,8 @@ import { isAxiosError } from 'axios';
 import { Pencil, Plus, Power, PowerOff, Tags } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import type { SubmitEvent } from 'react';
+import { useTranslation } from 'react-i18next';
+import i18n from '../../i18n';
 import type { Categoria } from '../../types/categoria';
 import { IconoAviso } from '../../components/ui/IconoAviso';
 import { ModalAccesible } from '../../components/ui/ModalAccesible';
@@ -21,19 +23,18 @@ type ModalActivo =
     | { tipo: 'estado'; categoria: Categoria }
     | null;
 
-const MENSAJE_INESPERADO = 'Ocurrió un error inesperado al conectar con el servidor.';
-
 // Muestra el mensaje que envía el backend ({"error": "..."}), por ejemplo el 409 de nombre duplicado
 const mensajeDeError = (err: unknown): string => {
     if (isAxiosError<{ error?: string }>(err) && err.response?.data?.error) {
         return err.response.data.error;
     }
-    return MENSAJE_INESPERADO;
+    return i18n.t('comun.errorInesperado');
 };
 
-const textoEventos = (cantidad: number) => `${cantidad} ${cantidad === 1 ? 'evento' : 'eventos'}`;
+const textoEventos = (cantidad: number) => i18n.t('categorias.eventosCount', { count: cantidad });
 
 export function GestionCategorias() {
+    const { t } = useTranslation();
     const [categorias, setCategorias] = useState<Categoria[]>([]);
     const [cargando, setCargando] = useState(true);
     const [errorCarga, setErrorCarga] = useState('');
@@ -73,14 +74,14 @@ export function GestionCategorias() {
         <main className="workflow-page">
             <header className="gestion-category-header">
                 <div>
-                    <h1 className="workflow-title">Categorías de eventos</h1>
+                    <h1 className="workflow-title">{t('categorias.titulo')}</h1>
                     <p className="workflow-description">
-                        Clasifica los eventos y facilita su búsqueda a los usuarios.
+                        {t('categorias.descripcion')}
                     </p>
                 </div>
                 <button type="button" className="workflow-button workflow-button--primary gap-1.5" onClick={() => setModal({ tipo: 'crear' })}>
                     <Plus className="h-4 w-4 shrink-0" aria-hidden="true" />
-                    Nueva categoría
+                    {t('categorias.nueva')}
                 </button>
             </header>
 
@@ -106,16 +107,16 @@ export function GestionCategorias() {
 
             <div className="gestion-category-table-container">
                 {/* En móvil cada fila se muestra como tarjeta; desde md es una tabla */}
-                {cargando && <span role="status" className="sr-only">Cargando categorías</span>}
+                {cargando && <span role="status" className="sr-only">{t('categorias.cargando')}</span>}
                 <table className="gestion-category-table" aria-busy={cargando}>
-                    <caption className="sr-only">Listado de categorías de eventos</caption>
+                    <caption className="sr-only">{t('categorias.listadoAria')}</caption>
                     <thead>
                         <tr>
-                            <th scope="col">Nombre</th>
-                            <th scope="col">Eventos activos</th>
-                            <th scope="col">Estado</th>
+                            <th scope="col">{t('categorias.nombre')}</th>
+                            <th scope="col">{t('categorias.eventosActivos')}</th>
+                            <th scope="col">{t('categorias.estado')}</th>
                             <th scope="col">
-                                <span className="gestion-category-actions-heading">Acciones</span>
+                                <span className="gestion-category-actions-heading">{t('categorias.acciones')}</span>
                             </th>
                         </tr>
                     </thead>
@@ -126,10 +127,10 @@ export function GestionCategorias() {
                                     <th scope="row" className="gestion-category-name">
                                         <Skeleton className="h-5 w-2/3" />
                                     </th>
-                                    <td data-label="Eventos activos" className="gestion-category-cell">
+                                    <td data-label={t('categorias.eventosActivos')} className="gestion-category-cell">
                                         <Skeleton className="h-4 w-20" />
                                     </td>
-                                    <td data-label="Estado" className="gestion-category-cell">
+                                    <td data-label={t('categorias.estado')} className="gestion-category-cell">
                                         <Skeleton className="h-6 w-20 rounded-full" />
                                     </td>
                                     <td className="gestion-category-actions-cell">
@@ -142,7 +143,7 @@ export function GestionCategorias() {
                             <tr>
                                 <td colSpan={4} className="gestion-category-empty">
                                     <Tags className="mr-2 inline h-4 w-4 align-text-bottom" aria-hidden="true" />
-                                    Aún no hay categorías. Crea la primera con «Nueva categoría».
+                                    {t('categorias.vacio')}
                                 </td>
                             </tr>
                         )}
@@ -155,16 +156,16 @@ export function GestionCategorias() {
                                     {categoria.nombre}
                                 </th>
                                 <td
-                                    data-label="Eventos activos"
+                                    data-label={t('categorias.eventosActivos')}
                                     className="gestion-category-cell"
                                 >
                                     {textoEventos(categoria.eventosActivos)}
                                 </td>
-                                <td data-label="Estado" className="gestion-category-cell gestion-category-state-cell">
+                                <td data-label={t('categorias.estado')} className="gestion-category-cell gestion-category-state-cell">
                                     <span
                                         className={`gestion-category-state ${categoria.activo ? 'gestion-category-state--active' : 'gestion-category-state--inactive'}`}
                                     >
-                                        {categoria.activo ? 'Activa' : 'Inactiva'}
+                                        {categoria.activo ? t('categorias.activa') : t('categorias.inactiva')}
                                     </span>
                                 </td>
                                 <td className="gestion-category-actions-cell">
@@ -172,22 +173,24 @@ export function GestionCategorias() {
                                         <button
                                             type="button"
                                             className="gestion-category-action gestion-category-action--edit"
-                                            aria-label={`Editar categoría ${categoria.nombre}`}
+                                            aria-label={t('categorias.editarAria', { nombre: categoria.nombre })}
                                             onClick={() => setModal({ tipo: 'editar', categoria })}
                                         >
                                             <Pencil className="h-4 w-4 shrink-0" aria-hidden="true" />
-                                            Editar
+                                            {t('categorias.editar')}
                                         </button>
                                         <button
                                             type="button"
                                             className={`gestion-category-action ${categoria.activo ? 'gestion-category-action--deactivate' : 'gestion-category-action--activate'}`}
-                                            aria-label={`${categoria.activo ? 'Desactivar' : 'Activar'} categoría ${categoria.nombre}`}
+                                            aria-label={categoria.activo
+                                                ? t('categorias.desactivarAria', { nombre: categoria.nombre })
+                                                : t('categorias.activarAria', { nombre: categoria.nombre })}
                                             onClick={() => setModal({ tipo: 'estado', categoria })}
                                         >
                                             {categoria.activo
                                                 ? <PowerOff className="h-4 w-4 shrink-0" aria-hidden="true" />
                                                 : <Power className="h-4 w-4 shrink-0" aria-hidden="true" />}
-                                            {categoria.activo ? 'Desactivar' : 'Activar'}
+                                            {categoria.activo ? t('categorias.desactivar') : t('categorias.activar')}
                                         </button>
                                     </div>
                                 </td>
@@ -200,14 +203,14 @@ export function GestionCategorias() {
             {modal?.tipo === 'crear' && (
                 <FormularioCategoria
                     onCerrar={() => setModal(null)}
-                    onGuardado={() => alTerminarAccion('Categoría creada correctamente.')}
+                    onGuardado={() => alTerminarAccion(t('categorias.creada'))}
                 />
             )}
             {modal?.tipo === 'editar' && (
                 <FormularioCategoria
                     categoria={modal.categoria}
                     onCerrar={() => setModal(null)}
-                    onGuardado={() => alTerminarAccion('Categoría actualizada correctamente.')}
+                    onGuardado={() => alTerminarAccion(t('categorias.actualizada'))}
                 />
             )}
             {modal?.tipo === 'estado' && (
@@ -217,8 +220,8 @@ export function GestionCategorias() {
                     onConfirmado={() =>
                         alTerminarAccion(
                             modal.categoria.activo
-                                ? 'Categoría desactivada correctamente.'
-                                : 'Categoría activada correctamente.',
+                                ? t('categorias.desactivada')
+                                : t('categorias.activada'),
                         )
                     }
                 />
@@ -235,6 +238,7 @@ interface FormularioCategoriaProps {
 
 // Sirve para crear (sin categoria) y para editar el nombre (con categoria)
 function FormularioCategoria({ categoria, onCerrar, onGuardado }: FormularioCategoriaProps) {
+    const { t } = useTranslation();
     const [nombre, setNombre] = useState(categoria?.nombre ?? '');
     const [error, setError] = useState('');
     const [guardando, setGuardando] = useState(false);
@@ -243,7 +247,7 @@ function FormularioCategoria({ categoria, onCerrar, onGuardado }: FormularioCate
         evento.preventDefault();
         const nombreLimpio = nombre.trim();
         if (!nombreLimpio) {
-            setError('El nombre de la categoría es obligatorio.');
+            setError(t('categorias.errorNombre'));
             return;
         }
 
@@ -262,13 +266,13 @@ function FormularioCategoria({ categoria, onCerrar, onGuardado }: FormularioCate
         }
     };
 
-    const titulo = categoria ? 'Editar categoría' : 'Nueva categoría';
+    const titulo = categoria ? t('categorias.editarTitulo') : t('categorias.nuevaTitulo');
 
     return (
         <ModalAccesible titulo={titulo} idTitulo="titulo-formulario-categoria" onCerrar={onCerrar}>
             <form onSubmit={alEnviar} noValidate>
                 <label htmlFor="nombre-categoria" className="workflow-label">
-                    Nombre de la categoría
+                    {t('categorias.nombreCategoria')}
                 </label>
                 <input
                     id="nombre-categoria"
@@ -288,10 +292,10 @@ function FormularioCategoria({ categoria, onCerrar, onGuardado }: FormularioCate
                 )}
                 <div className="workflow-dialog-actions">
                     <button type="button" className="workflow-button workflow-button--secondary" onClick={onCerrar}>
-                        Cancelar
+                        {t('categorias.cancelar')}
                     </button>
                     <button type="submit" className="workflow-button workflow-button--primary" disabled={guardando}>
-                        {guardando ? 'Guardando…' : 'Guardar'}
+                        {guardando ? t('categorias.guardando') : t('categorias.guardar')}
                     </button>
                 </div>
             </form>
@@ -307,6 +311,7 @@ interface ConfirmarEstadoProps {
 
 // Activar o desactivar nunca elimina la categoría: los eventos que ya la usan la conservan
 function ConfirmarEstado({ categoria, onCerrar, onConfirmado }: ConfirmarEstadoProps) {
+    const { t } = useTranslation();
     const [error, setError] = useState('');
     const [procesando, setProcesando] = useState(false);
     const desactivando = categoria.activo;
@@ -326,18 +331,18 @@ function ConfirmarEstado({ categoria, onCerrar, onConfirmado }: ConfirmarEstadoP
 
     return (
         <ModalAccesible
-            titulo={desactivando ? 'Desactivar categoría' : 'Activar categoría'}
+            titulo={desactivando ? t('categorias.desactivarTitulo') : t('categorias.activarTitulo')}
             idTitulo="titulo-confirmar-estado"
             onCerrar={onCerrar}
         >
             <p className="gestion-confirmation-copy">
                 {desactivando
-                    ? `¿Desactivar la categoría «${categoria.nombre}»? Dejará de aparecer al crear eventos nuevos.`
-                    : `¿Activar la categoría «${categoria.nombre}»? Volverá a estar disponible al crear eventos.`}
+                    ? t('categorias.confirmarDesactivar', { nombre: categoria.nombre })
+                    : t('categorias.confirmarActivar', { nombre: categoria.nombre })}
             </p>
             {desactivando && categoria.eventosActivos > 0 && (
                 <p className="gestion-confirmation-note">
-                    Los {textoEventos(categoria.eventosActivos)} activos que ya la usan conservarán su categoría.
+                    {t('categorias.notaEventosActivos', { count: categoria.eventosActivos })}
                 </p>
             )}
             {error && (
@@ -347,10 +352,10 @@ function ConfirmarEstado({ categoria, onCerrar, onConfirmado }: ConfirmarEstadoP
             )}
             <div className="workflow-dialog-actions">
                 <button type="button" className="workflow-button workflow-button--secondary" onClick={onCerrar}>
-                    Cancelar
+                    {t('categorias.cancelar')}
                 </button>
                 <button type="button" className="workflow-button workflow-button--primary" onClick={confirmar} disabled={procesando}>
-                    {procesando ? 'Procesando…' : desactivando ? 'Desactivar' : 'Activar'}
+                    {procesando ? t('categorias.procesando') : desactivando ? t('categorias.desactivar') : t('categorias.activar')}
                 </button>
             </div>
         </ModalAccesible>
