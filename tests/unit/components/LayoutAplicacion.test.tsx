@@ -115,7 +115,7 @@ describe('LayoutAplicacion', () => {
             'true',
         );
         expect(screen.getByRole('navigation', { name: 'Principal' })).toHaveClass(
-            'max-[639px]:absolute',
+            'max-[769px]:absolute',
         );
 
         await user.keyboard('{Escape}');

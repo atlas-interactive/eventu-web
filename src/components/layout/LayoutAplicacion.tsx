@@ -93,13 +93,13 @@ export function LayoutAplicacion() {
             isActive
                 ? "relative font-semibold text-eventu-institutional-red after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:bg-eventu-institutional-red after:content-['']"
                 : 'text-eventu-main-ink hover:underline'
-        } max-[639px]:h-10 max-[639px]:w-full max-[639px]:justify-start max-[639px]:rounded-md max-[639px]:px-3`;
+        } max-[769px]:h-10 max-[769px]:w-full max-[769px]:justify-start max-[769px]:rounded-md max-[769px]:px-3`;
 
     return (
         <div className="min-h-screen bg-eventu-page-background">
             <header className="cabecera-aplicacion border-b border-eventu-border bg-eventu-white-surface">
-                <div className="relative mx-auto flex w-full flex-col gap-2 px-8 py-2 sm:min-h-[58px] sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-4 sm:gap-y-2 sm:px-10 sm:py-0 max-[639px]:flex-row max-[639px]:items-center max-[639px]:justify-between max-[639px]:gap-2 max-[639px]:px-3 max-[639px]:py-2">
-                    <div className="flex min-w-0 items-center justify-between gap-4 sm:flex-auto sm:justify-start sm:gap-x-8 max-[639px]:flex-1 max-[639px]:justify-start max-[639px]:gap-2">
+                <div className="relative mx-auto flex w-full flex-col gap-2 px-8 py-2 sm:min-h-[58px] sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-4 sm:gap-y-2 sm:px-10 sm:py-0 max-[769px]:flex-row max-[769px]:flex-nowrap max-[769px]:items-center max-[769px]:justify-between max-[769px]:gap-2 max-[769px]:px-3 max-[769px]:py-2">
+                    <div className="flex min-w-0 items-center justify-between gap-4 sm:flex-auto sm:justify-start sm:gap-x-8 max-[769px]:flex-1 max-[769px]:justify-start max-[769px]:gap-2">
                         {sesion && (
                             <button
                                 ref={botonNavegacionRef}
@@ -111,7 +111,7 @@ export function LayoutAplicacion() {
                                     setNavegacionAbierta((abierta) => !abierta);
                                     setMenuAbierto(false);
                                 }}
-                                className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-lg text-eventu-main-ink hover:bg-eventu-page-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red max-[639px]:inline-flex"
+                                className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-lg text-eventu-main-ink hover:bg-eventu-page-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eventu-institutional-red max-[769px]:inline-flex"
                             >
                                 {navegacionAbierta ? (
                                     <X className="h-5 w-5" aria-hidden="true" />
@@ -120,13 +120,13 @@ export function LayoutAplicacion() {
                                 )}
                             </button>
                         )}
-                        <div className="marca-eventu flex min-w-0 items-center gap-2 sm:gap-3 max-[639px]:absolute max-[639px]:left-1/2 max-[639px]:-translate-x-1/2 max-[639px]:gap-1.5">
+                        <div className="marca-eventu flex min-w-0 items-center gap-2 sm:gap-3 max-[769px]:absolute max-[769px]:left-1/2 max-[769px]:-translate-x-1/2 max-[769px]:gap-1.5">
                             <img
                                 src={iconoEventU}
                                 alt="EventU"
-                                className="h-8 w-8.5 flex-none max-[639px]:h-7 max-[639px]:w-7"
+                                className="h-8 w-8.5 flex-none max-[769px]:h-7 max-[769px]:w-7"
                             />
-                            <p className="marca-eventu-texto self-center whitespace-nowrap text-lg font-semibold text-eventu-main-ink max-[639px]:text-base">Event<span className="text-eventu-institutional-red">U</span></p>
+                            <p className="marca-eventu-texto self-center whitespace-nowrap text-lg font-semibold text-eventu-main-ink max-[769px]:text-base">Event<span className="text-eventu-institutional-red">U</span></p>
                         </div>
                         
                         {sesion && (
@@ -135,7 +135,7 @@ export function LayoutAplicacion() {
                                 id="navegacion-principal"
                                 aria-label="Principal"
                                 onClick={() => setNavegacionAbierta(false)}
-                                className={`flex min-w-0 flex-wrap items-center justify-end gap-x-3 gap-y-1 sm:justify-start sm:gap-x-4 sm:self-stretch max-[639px]:absolute max-[639px]:left-3 max-[639px]:right-3 max-[639px]:top-full max-[639px]:z-50 max-[639px]:flex-col max-[639px]:items-stretch max-[639px]:gap-1 max-[639px]:rounded-lg max-[639px]:border max-[639px]:border-eventu-border max-[639px]:bg-eventu-white-surface max-[639px]:p-2 max-[639px]:shadow-lg${navegacionAbierta ? '' : ' max-[639px]:hidden'}`}
+                                className={`flex min-w-0 flex-wrap items-center justify-end gap-x-3 gap-y-1 sm:justify-start sm:gap-x-4 sm:self-stretch max-[769px]:absolute max-[769px]:left-3 max-[769px]:right-3 max-[769px]:top-full max-[769px]:z-50 max-[769px]:flex-col max-[769px]:items-stretch max-[769px]:gap-1 max-[769px]:rounded-lg max-[769px]:border max-[769px]:border-eventu-border max-[769px]:bg-eventu-white-surface max-[769px]:p-2 max-[769px]:shadow-lg${navegacionAbierta ? '' : ' max-[769px]:hidden'}`}
                             >
                                 {esAdministrador(sesion) && (
                                     <>
