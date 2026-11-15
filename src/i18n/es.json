@@ -76,6 +76,10 @@
       "olvidasteContrasena": "¿Olvidaste tu contraseña?",
       "errorCorreo": "Debe ingresar un correo institucional válido.",
       "errorContrasena": "La contraseña debe tener entre 8 y 72 caracteres.",
+      "errorConfirmacion": "Debes confirmar tu correo antes de iniciar sesión.",
+      "reenviarConfirmacion": "Reenviar enlace",
+      "reenviandoConfirmacion": "Enviando enlace...",
+      "confirmacionReenviada": "Te enviamos un nuevo enlace de confirmación.",
       "cuentaReactivadaTitulo": "Cuenta reactivada",
       "cuentaReactivadaMensaje": "Tu cuenta ha sido reactivada correctamente. Puedes continuar a EventU.",
       "continuar": "Continuar"
@@ -95,7 +99,17 @@
       "iniciaSesion": "Inicia sesión",
       "errorCorreo": "Debe ingresar un correo institucional educativo válido.",
       "errorContrasena": "La contraseña debe tener entre 8 y 72 caracteres.",
+      "confirmacionPendiente": "Te enviamos un enlace de confirmación a {{correo}}. Revisa tu bandeja de entrada.",
       "exito": "Usuario registrado exitosamente."
+    },
+    "confirmacion": {
+      "titulo": "Confirma tu correo",
+      "subtitulo": "Estamos verificando tu dirección de correo electrónico.",
+      "procesando": "Confirmando tu correo...",
+      "exito": "Tu correo fue confirmado correctamente. Ya puedes iniciar sesión.",
+      "enlaceInvalidoTitulo": "Enlace no válido",
+      "enlaceInvalido": "El enlace para confirmar tu correo no es válido o ya venció.",
+      "volverLogin": "Ir a iniciar sesión"
     },
     "recuperacion": {
       "titulo": "Recupera tu contraseña",

@@ -4,6 +4,7 @@ import type {
     RegistroDTO, 
     RespuestaRegistro,
     RespuestaAutenticacion,
+    RespuestaConfirmacionCorreo,
     SolicitudRecuperacionContrasenaDTO,
     RestablecerContrasenaDTO,
     RespuestaRecuperacionContrasena,
@@ -18,6 +19,19 @@ export const autenticarUsuario = async(data: AutenticacionDTO): Promise<Respuest
     const response = await axiosClient.post<RespuestaAutenticacion>('/auth/login', data);
     return response.data;
 }
+
+export const confirmarCorreo = async (token: string): Promise<RespuestaConfirmacionCorreo> => {
+    const response = await axiosClient.post<RespuestaConfirmacionCorreo>('/auth/confirmar-correo', { token });
+    return response.data;
+};
+
+export const reenviarConfirmacion = async (correo: string): Promise<RespuestaConfirmacionCorreo> => {
+    const response = await axiosClient.post<RespuestaConfirmacionCorreo>(
+        '/auth/reenviar-confirmacion',
+        { correo },
+    );
+    return response.data;
+};
 
 export const solicitarRecuperacionContrasena = async (
     data: SolicitudRecuperacionContrasenaDTO,

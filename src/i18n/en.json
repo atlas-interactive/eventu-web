@@ -76,6 +76,10 @@
       "olvidasteContrasena": "Forgot your password?",
       "errorCorreo": "You must enter a valid institutional email.",
       "errorContrasena": "The password must be between 8 and 72 characters.",
+      "errorConfirmacion": "You must confirm your email before signing in.",
+      "reenviarConfirmacion": "Resend link",
+      "reenviandoConfirmacion": "Sending link...",
+      "confirmacionReenviada": "We sent you a new confirmation link.",
       "cuentaReactivadaTitulo": "Account reactivated",
       "cuentaReactivadaMensaje": "Your account has been successfully reactivated. You can continue to EventU.",
       "continuar": "Continue"
@@ -95,7 +99,17 @@
       "iniciaSesion": "Sign in",
       "errorCorreo": "You must enter a valid institutional educational email.",
       "errorContrasena": "The password must be between 8 and 72 characters.",
+      "confirmacionPendiente": "We sent a confirmation link to {{correo}}. Check your inbox.",
       "exito": "User registered successfully."
+    },
+    "confirmacion": {
+      "titulo": "Confirm your email",
+      "subtitulo": "We are verifying your email address.",
+      "procesando": "Confirming your email...",
+      "exito": "Your email has been confirmed. You can now sign in.",
+      "enlaceInvalidoTitulo": "Invalid link",
+      "enlaceInvalido": "The email confirmation link is invalid or has expired.",
+      "volverLogin": "Go to sign in"
     },
     "recuperacion": {
       "titulo": "Recover your password",
