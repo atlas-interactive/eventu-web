@@ -67,6 +67,7 @@ const crearEvento = (id: number, estado = 'PUBLICADO'): Evento => ({
     cuposMaximos: 10,
     cuposDisponibles: 10,
     estado,
+    certificable: false,
     organizadorId: 1,
     organizadorNombre: 'Organizador',
     categoriaId: 1,

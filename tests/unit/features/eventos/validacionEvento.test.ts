@@ -11,6 +11,7 @@ const validos: CamposEvento = {
     ubicacion: 'Auditorio principal',
     cuposMaximos: '50',
     categoriaId: '2',
+    certificable: false,
 };
 
 describe('validarEvento', () => {
@@ -21,7 +22,15 @@ describe('validarEvento', () => {
 
     it('exige título, descripción, ubicación, categoría y fecha', () => {
         const errores = validarEvento(
-            { titulo: '  ', descripcion: '', fechaInicio: '', ubicacion: ' ', cuposMaximos: '5', categoriaId: '' },
+            {
+                titulo: '  ',
+                descripcion: '',
+                fechaInicio: '',
+                ubicacion: ' ',
+                cuposMaximos: '5',
+                categoriaId: '',
+                certificable: false,
+            },
             { ahora: AHORA },
         );
 

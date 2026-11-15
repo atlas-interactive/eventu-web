@@ -27,6 +27,7 @@ const evento: Evento = {
     cuposMaximos: 120,
     cuposDisponibles: 38,
     estado: 'PUBLICADO',
+    certificable: false,
     organizadorId: 2,
     organizadorNombre: 'Laura',
     categoriaId: 4,
@@ -55,6 +56,7 @@ describe('CatalogoEventos (HU-08)', () => {
 
         expect(await screen.findByRole('heading', { name: 'Eventos en campus' })).toBeInTheDocument();
         expect(await screen.findByRole('heading', { name: 'Feria de proyectos' })).toBeInTheDocument();
+        expect(screen.queryByText('Certificable')).not.toBeInTheDocument();
         expect(listarCategoriasMock).toHaveBeenCalledWith(true);
         expect(screen.getByRole('button', { name: 'Académico' })).toBeInTheDocument();
         expect(screen.getByRole('meter', { name: 'Cupos ocupados de Feria de proyectos' })).toHaveAttribute(
@@ -65,6 +67,17 @@ describe('CatalogoEventos (HU-08)', () => {
             'href',
             '/eventos/5',
         );
+    });
+
+    it('muestra la etiqueta Certificable solo si el evento tiene certificación habilitada', async () => {
+        listarEventosMock.mockResolvedValue([{ ...evento, certificable: true }]);
+        render(
+            <MemoryRouter>
+                <CatalogoEventos />
+            </MemoryRouter>,
+        );
+
+        expect(await screen.findByText('Certificable')).toBeInTheDocument();
     });
 
     it('envía al backend la categoría elegida en los filtros del catálogo', async () => {

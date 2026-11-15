@@ -36,6 +36,7 @@ const evento = (id: number, titulo: string, organizadorId = 3): Evento => ({
     cuposMaximos: 50,
     cuposDisponibles: 30,
     estado: 'PUBLICADO',
+    certificable: false,
     organizadorId,
     organizadorNombre: 'Laura',
     categoriaId: 2,

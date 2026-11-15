@@ -1,4 +1,5 @@
 import { axiosClient } from '../../../api';
+import { convertirErrorBlob } from '../../../api/descargas';
 import type { Inscripcion, RespuestaCancelacionInscripcion } from '../../../types/inscripcion';
 
 export interface RespuestaInscripcion {
@@ -52,6 +53,18 @@ export const obtenerInscripcionActiva = async (eventoId: number): Promise<Inscri
     return inscripciones.find(
         (inscripcion) => inscripcion.eventoId === eventoId && inscripcion.estado === 'ACTIVA',
     ) ?? null;
+};
+
+export const descargarCertificadoEvento = async (eventoId: number): Promise<Blob> => {
+    try {
+        return (
+            await axiosClient.get<Blob>(`/certificados/evento/${eventoId}`, {
+                responseType: 'blob',
+            })
+        ).data;
+    } catch (err: unknown) {
+        throw await convertirErrorBlob(err);
+    }
 };
 
 export const cancelarInscripcion = async (

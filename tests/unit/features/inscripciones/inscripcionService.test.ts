@@ -5,6 +5,7 @@ import {
     obtenerInscripcionActiva,
     listarMisInscripciones,
     cancelarInscripcion,
+    descargarCertificadoEvento,
 } from '../../../../src/features/inscripciones/services/inscripcionService';
 
 vi.mock('../../../../src/api', () => ({
@@ -70,6 +71,28 @@ describe('inscripcionService', () => {
         });
 
         await expect(obtenerInscripcionActiva(5)).resolves.toBeNull();
+    });
+
+    it('descarga el certificado del evento como PDF', async () => {
+        const pdf = new Blob(['%PDF-1.7'], { type: 'application/pdf' });
+        getMock.mockResolvedValue({ data: pdf });
+
+        await expect(descargarCertificadoEvento(5)).resolves.toBe(pdf);
+        expect(getMock).toHaveBeenCalledWith('/certificados/evento/5', { responseType: 'blob' });
+    });
+
+    it('convierte a JSON el error de certificado recibido como Blob', async () => {
+        const cuerpo = new Blob(
+            [JSON.stringify({ error: 'No se puede generar el certificado sin asistencia verificada.' })],
+            { type: 'application/json' },
+        );
+        getMock.mockRejectedValue({ isAxiosError: true, response: { status: 409, data: cuerpo } });
+
+        await expect(descargarCertificadoEvento(5)).rejects.toMatchObject({
+            response: {
+                data: { error: 'No se puede generar el certificado sin asistencia verificada.' },
+            },
+        });
     });
 
     it('rechaza una respuesta inválida del endpoint de inscripciones', async () => {

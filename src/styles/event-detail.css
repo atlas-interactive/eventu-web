@@ -121,6 +121,11 @@
   color: var(--color-eventu-secondary-text);
 }
 
+.detalle-evento-estado--certificable {
+  background-color: var(--color-eventu-green-background);
+  color: var(--color-eventu-success);
+}
+
 .detalle-evento-titulo {
   margin-top: 0.5rem;
   color: var(--color-eventu-main-ink);
@@ -279,6 +284,20 @@
   border-bottom-color: var(--color-eventu-border);
   background-color: var(--color-eventu-disabled-button);
   color: var(--color-eventu-secondary-text);
+}
+
+.detalle-evento-certificado {
+  border-top: 1px solid var(--color-eventu-border);
+  padding: 0.75rem 1rem;
+}
+
+.detalle-evento-certificado .detalle-evento-calendario {
+  margin-top: 0;
+}
+
+.detalle-evento-certificado .detalle-evento-calendario:disabled {
+  cursor: wait;
+  opacity: 0.7;
 }
 
 .detalle-evento-entrada-qr {

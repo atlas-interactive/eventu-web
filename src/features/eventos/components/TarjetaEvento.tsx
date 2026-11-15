@@ -41,10 +41,17 @@ export function TarjetaEvento({ evento, children }: TarjetaEventoProps) {
         <li className="evento-card">
             <div className="evento-card-content">
                 <div className="evento-card-heading">
-                    {evento.categoriaNombre && (
-                        <span className="evento-card-category">
-                            {evento.categoriaNombre}
-                        </span>
+                    {(evento.categoriaNombre || evento.certificable) && (
+                        <div className="evento-card-labels">
+                            {evento.categoriaNombre && (
+                                <span className="evento-card-category">
+                                    {evento.categoriaNombre}
+                                </span>
+                            )}
+                            {evento.certificable && (
+                                <span className="evento-card-certificable">Certificable</span>
+                            )}
+                        </div>
                     )}
                     <span
                         className={`evento-card-status ${
