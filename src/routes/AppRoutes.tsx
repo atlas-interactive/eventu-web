@@ -28,6 +28,9 @@ const FormularioRestablecerContrasena = lazy(() =>
         default: modulo.FormularioRestablecerContrasena,
     })),
 );
+const ConfirmarCorreo = lazy(() =>
+    import('../features/auth/ConfirmarCorreo').then((modulo) => ({ default: modulo.ConfirmarCorreo })),
+);
 const GestionCategorias = lazy(() =>
     import('../features/categorias/GestionCategorias').then((modulo) => ({ default: modulo.GestionCategorias })),
 );
@@ -85,6 +88,10 @@ export function AppRoutes() {
             <Route element={<LayoutAutenticacion />}>
                 <Route path="/login" element={pantallaDiferida(<RutaLogin />, <SkeletonAutenticacion />)} />
                 <Route path="/registro" element={pantallaDiferida(<FormularioRegistro />, <SkeletonAutenticacion />)} />
+                <Route
+                    path="/confirmar-correo"
+                    element={pantallaDiferida(<ConfirmarCorreo />, <SkeletonAutenticacion />)}
+                />
                 <Route
                     path="/recuperar-contrasena"
                     element={pantallaDiferida(<FormularioRecuperacionContrasena />, <SkeletonAutenticacion />)}

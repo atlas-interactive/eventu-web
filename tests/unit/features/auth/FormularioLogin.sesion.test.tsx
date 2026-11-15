@@ -3,11 +3,12 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { FormularioLogin } from '../../../../src/features/auth/FormularioLogin';
-import { autenticarUsuario } from '../../../../src/features/auth/services/authService';
+import { autenticarUsuario, reenviarConfirmacion } from '../../../../src/features/auth/services/authService';
 import { obtenerSesion } from '../../../../src/features/sesion/sesion';
 
 vi.mock('../../../../src/features/auth/services/authService', () => ({
     autenticarUsuario: vi.fn(),
+    reenviarConfirmacion: vi.fn(),
 }));
 
 vi.mock('../../../../src/features/categorias/services/categoriaService', () => ({
@@ -19,6 +20,7 @@ vi.mock('../../../../src/features/eventos/services/eventoService', () => ({
 }));
 
 const autenticarMock = vi.mocked(autenticarUsuario);
+const reenviarConfirmacionMock = vi.mocked(reenviarConfirmacion);
 
 const renderizar = () =>
     render(
@@ -44,6 +46,7 @@ describe('FormularioLogin: sesión y redirección', () => {
     beforeEach(() => {
         localStorage.clear();
         autenticarMock.mockReset();
+        reenviarConfirmacionMock.mockReset();
     });
     afterEach(cleanup);
 
@@ -151,6 +154,27 @@ describe('FormularioLogin: sesión y redirección', () => {
             'Ocurrió un error inesperado al conectar con el servidor.',
         );
         expect(localStorage.getItem('auth_token')).toBeNull();
+        expect(obtenerSesion()).toBeNull();
+    });
+
+    it('permite reenviar la confirmación cuando el login responde 403', async () => {
+        autenticarMock.mockRejectedValue({
+            isAxiosError: true,
+            response: { status: 403, data: { error: 'Confirma tu correo para continuar.' } },
+        });
+        reenviarConfirmacionMock.mockResolvedValue({ mensaje: 'Enlace enviado nuevamente.' });
+        renderizar();
+
+        const user = userEvent.setup();
+        await user.type(screen.getByLabelText('Correo institucional'), 'admin@unillanos.edu.co');
+        await user.type(screen.getByLabelText('Contraseña'), 'password-segura');
+        await user.click(screen.getByRole('button', { name: 'Iniciar sesión' }));
+
+        expect(await screen.findByRole('alert')).toHaveTextContent('Confirma tu correo para continuar.');
+        await user.click(screen.getByRole('button', { name: 'Reenviar enlace' }));
+
+        expect(await screen.findByText('Enlace enviado nuevamente.')).toBeInTheDocument();
+        expect(reenviarConfirmacionMock).toHaveBeenCalledWith('admin@unillanos.edu.co');
         expect(obtenerSesion()).toBeNull();
     });
 

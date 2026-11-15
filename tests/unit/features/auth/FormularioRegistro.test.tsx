@@ -117,6 +117,26 @@ describe('FormularioRegistro', () => {
         });
     });
 
+    it('informa que la cuenta requiere confirmar el correo y no inicia sesión', async () => {
+        const user = userEvent.setup();
+        registrarUsuarioMock.mockResolvedValue({
+            mensaje: 'Registro creado.',
+            usuarioId: 1n,
+            correo: 'laura@unillanos.edu.co',
+            rol: 'USUARIO',
+            confirmacionPendiente: true,
+        });
+        renderFormulario();
+        await completarFormulario(user);
+
+        await user.click(screen.getByRole('button', { name: 'Crear cuenta' }));
+
+        expect(await screen.findByRole('status')).toHaveTextContent(
+            'Te enviamos un enlace de confirmación a laura@unillanos.edu.co.',
+        );
+        expect(screen.getByRole('heading', { name: 'Crea tu cuenta' })).toBeInTheDocument();
+    });
+
     it('muestra un mensaje cuando el servicio falla inesperadamente', async () => {
         const user = userEvent.setup();
         registrarUsuarioMock.mockRejectedValue(new Error('Fallo de red'));
