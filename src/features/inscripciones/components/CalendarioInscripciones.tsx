@@ -171,11 +171,11 @@ export function CalendarioInscripciones({ inscripciones, onCancelar }: Calendari
                                                 </div>
                                                 <div className="inscripciones-evento-acciones">
                                                     <span
-                                                        className={`inscripcion-estado${activa ? ' inscripcion-estado--activa' : ' inscripcion-estado--cancelada'}`}
+                                                        className={`inscripcion-estado${diaEventoTerminado ? ' inscripcion-estado--finalizado' : activa ? ' inscripcion-estado--activa' : ' inscripcion-estado--cancelada'}`}
                                                     >
                                                         {activa
                                                             ? diaEventoTerminado
-                                                                ? 'Estás inscrito'
+                                                                ? 'Evento finalizado'
                                                                 : 'Inscripción activa'
                                                             : 'Inscripción cancelada'}
                                                     </span>

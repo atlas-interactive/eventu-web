@@ -6,6 +6,7 @@ import { mensajeDeError } from '../../../api/mensajeDeError';
 import { IconoAviso } from '../../../components/ui/IconoAviso';
 import { Skeleton, SkeletonEstado } from '../../../components/ui/Skeleton';
 import { useParticipantesEvento } from '../../../hooks/eventos/useParticipantesEvento';
+import { eventoYaIniciado } from '../estadoTemporalEvento';
 import { descargarReporteEvento } from '../services/eventoService';
 import type { InscritoEvento } from '../../../types/evento';
 import '../../../styles/event-participants.css';
@@ -121,13 +122,15 @@ export function ParticipantesEvento() {
                                 <Download aria-hidden="true" />
                                 {descargando ? 'Generando…' : 'Reporte PDF'}
                             </button>
-                            <Link
-                                to={`/organizador/eventos/${consulta.evento.id}/editar`}
-                                className="participantes-accion"
-                            >
-                                <Pencil aria-hidden="true" />
-                                Editar evento
-                            </Link>
+                            {!eventoYaIniciado(consulta.evento.fechaInicio) && (
+                                <Link
+                                    to={`/organizador/eventos/${consulta.evento.id}/editar`}
+                                    className="participantes-accion"
+                                >
+                                    <Pencil aria-hidden="true" />
+                                    Editar evento
+                                </Link>
+                            )}
                         </div>
                     </header>
 

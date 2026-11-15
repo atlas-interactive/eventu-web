@@ -275,6 +275,12 @@
   height: 1rem;
 }
 
+.detalle-evento-inscrito--finalizado {
+  border-bottom-color: var(--color-eventu-border);
+  background-color: var(--color-eventu-disabled-button);
+  color: var(--color-eventu-secondary-text);
+}
+
 .detalle-evento-entrada-qr {
   display: flex;
   flex-direction: column;
@@ -526,6 +532,10 @@
     color: var(--color-eventu-success);
     font-size: 0.8125rem;
     font-weight: 700;
+  }
+
+  .detalle-evento-entrada-movil > .detalle-evento-entrada-movil-estado--finalizado {
+    color: var(--color-eventu-secondary-text);
   }
 
   .detalle-evento-entrada-movil svg {

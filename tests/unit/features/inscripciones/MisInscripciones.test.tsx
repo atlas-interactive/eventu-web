@@ -279,7 +279,7 @@ describe('MisInscripciones', () => {
         renderizar();
 
         expect(await screen.findByRole('heading', { name: 'Evento finalizado' })).toBeInTheDocument();
-        expect(screen.getByText('Estás inscrito')).toBeInTheDocument();
+        expect(screen.getByText('Evento finalizado', { selector: 'span.inscripcion-estado' })).toBeInTheDocument();
         expect(screen.queryByRole('button', { name: 'Ver QR de Evento finalizado' })).not.toBeInTheDocument();
         expect(screen.queryByRole('button', { name: 'Cancelar inscripción a Evento finalizado' })).not.toBeInTheDocument();
     });

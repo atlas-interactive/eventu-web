@@ -87,4 +87,17 @@ describe('EditarEvento (HU-06)', () => {
         expect(screen.queryByRole('form')).not.toBeInTheDocument();
         expect(listarCategoriasMock).not.toHaveBeenCalled();
     });
+
+    it('impide editar directamente un evento que ya inició', async () => {
+        listarMisEventosMock.mockResolvedValue([
+            { ...evento, fechaInicio: '2020-10-20T14:30:00' },
+        ]);
+        renderizar();
+
+        expect(await screen.findByRole('alert')).toHaveTextContent(
+            'No se puede editar un evento que ya inició.',
+        );
+        expect(screen.queryByRole('form')).not.toBeInTheDocument();
+        expect(listarCategoriasMock).not.toHaveBeenCalled();
+    });
 });

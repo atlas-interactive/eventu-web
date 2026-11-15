@@ -92,7 +92,7 @@ describe('GestionEventos (HU-07)', () => {
         ]);
         renderizar();
 
-        expect(await screen.findByText('Finalizado')).toBeInTheDocument();
+        expect(await screen.findByText('Evento finalizado')).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Ver inscritos y asistencias de Feria cultural' })).toBeInTheDocument();
         expect(screen.queryByRole('link', { name: 'Editar evento Feria cultural' })).not.toBeInTheDocument();
         expect(screen.queryByRole('button', { name: 'Cancelar evento Feria cultural' })).not.toBeInTheDocument();

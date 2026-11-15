@@ -27,7 +27,7 @@ export function TarjetaEvento({ evento, children }: TarjetaEventoProps) {
     const etiquetaEstado = estadoTemporal === 'EN_CURSO'
         ? 'En curso'
         : estadoTemporal === 'FINALIZADO'
-            ? 'Finalizado'
+            ? 'Evento finalizado'
             : estaCancelado
                 ? 'Cancelado'
                 : 'Publicado';

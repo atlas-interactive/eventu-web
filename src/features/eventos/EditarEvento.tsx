@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import type { Evento } from '../../types/evento';
 import { Skeleton, SkeletonEstado } from '../../components/ui/Skeleton';
 import { FormularioEvento } from './FormularioEvento';
+import { eventoYaIniciado } from './estadoTemporalEvento';
 import { esAdministrador, obtenerSesion } from '../sesion/sesion';
 import { listarEventos, listarMisEventos } from './services/eventoService';
 import '../../styles/events.css';
@@ -23,7 +24,9 @@ export function EditarEvento() {
             .then((eventos) => {
                 if (!vigente) return;
                 const encontrado = eventos.find((e) => String(e.id) === id);
-                if (encontrado) setEvento(encontrado);
+                if (encontrado && eventoYaIniciado(encontrado.fechaInicio)) {
+                    setError('No se puede editar un evento que ya inició.');
+                } else if (encontrado) setEvento(encontrado);
                 else setError('No se encontró el evento, o ya no se puede editar.');
             })
             .catch((err: unknown) => {

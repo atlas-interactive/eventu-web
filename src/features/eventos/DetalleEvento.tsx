@@ -244,7 +244,7 @@ export function DetalleEvento() {
                         )}
                         {estadoTemporal === 'FINALIZADO' && !cancelado && (
                             <span className="detalle-evento-estado detalle-evento-estado--finalizado">
-                                Finalizado
+                                Evento finalizado
                             </span>
                         )}
                         {agotado && !cancelado && !eventoIniciado && (
@@ -297,9 +297,11 @@ export function DetalleEvento() {
                 >
                     {inscripcion.yaInscrito ? (
                         <>
-                            <div className="detalle-evento-inscrito">
-                                <Check aria-hidden="true" />
-                                Estás inscrito
+                            <div
+                                className={`detalle-evento-inscrito${estadoTemporal === 'FINALIZADO' ? ' detalle-evento-inscrito--finalizado' : ''}`}
+                            >
+                                {estadoTemporal !== 'FINALIZADO' && <Check aria-hidden="true" />}
+                                {estadoTemporal === 'FINALIZADO' ? 'Evento finalizado' : 'Estás inscrito'}
                             </div>
                             {qrDisponible && (
                                 <>
@@ -407,7 +409,12 @@ export function DetalleEvento() {
 
             {inscripcion.yaInscrito && (
                 <div className="detalle-evento-entrada-movil">
-                    <span><Check aria-hidden="true" /> Estás inscrito</span>
+                    <span
+                        className={estadoTemporal === 'FINALIZADO' ? 'detalle-evento-entrada-movil-estado--finalizado' : undefined}
+                    >
+                        {estadoTemporal !== 'FINALIZADO' && <Check aria-hidden="true" />}
+                        {estadoTemporal === 'FINALIZADO' ? 'Evento finalizado' : 'Estás inscrito'}
+                    </span>
                     {qrDisponible && (
                         <button type="button" onClick={() => setEntradaAbierta(true)}>
                             Ver mi entrada

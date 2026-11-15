@@ -169,8 +169,9 @@ describe('DetalleEvento', () => {
         });
         renderDetalle();
 
-        expect(await screen.findByText('Finalizado')).toBeInTheDocument();
-        expect(screen.getAllByText('Estás inscrito').length).toBeGreaterThan(0);
+        expect(await screen.findByText('Evento finalizado', { selector: 'div.detalle-evento-inscrito' })).toBeInTheDocument();
+        expect(screen.getByText('Evento finalizado', { selector: 'span.detalle-evento-entrada-movil-estado--finalizado' })).toBeInTheDocument();
+        expect(screen.queryByText('Estás inscrito')).not.toBeInTheDocument();
         expect(screen.queryByText('QR-EXPIRADO')).not.toBeInTheDocument();
         expect(screen.queryByRole('heading', { name: 'Tu entrada' })).not.toBeInTheDocument();
         expect(screen.queryByRole('button', { name: 'Cancelar mi inscripción' })).not.toBeInTheDocument();
