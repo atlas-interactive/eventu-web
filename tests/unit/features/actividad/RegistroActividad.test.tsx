@@ -63,6 +63,11 @@ describe('RegistroActividad', () => {
         );
 
         expect(await screen.findByText('Laura Gómez')).toBeInTheDocument();
+        for (const etiqueta of ['Acción', 'Entidad', 'Resultado']) {
+            const selector = screen.getByLabelText(etiqueta);
+            expect(selector.parentElement).toHaveClass('selector-con-chevron');
+            expect(selector.parentElement?.querySelector('svg')).toBeInTheDocument();
+        }
         await user.selectOptions(screen.getByLabelText('Acción'), 'LOGIN');
 
         await waitFor(() => {

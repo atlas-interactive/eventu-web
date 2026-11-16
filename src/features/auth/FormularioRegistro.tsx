@@ -63,7 +63,11 @@ export const FormularioRegistro: React.FC = () => {
 
         try {
             const response = await registrarUsuario(formData);
-            setMensajeExito(response.mensaje || t('auth.registro.exito'));
+            setMensajeExito(
+                response.confirmacionPendiente
+                    ? t('auth.registro.confirmacionPendiente', { correo: formData.correo })
+                    : response.mensaje || t('auth.registro.exito'),
+            );
             setFormData({ nombre: '', correo: '', password: '' });
         } catch (err: unknown) {
             setMensajeError(mensajeDeError(err));

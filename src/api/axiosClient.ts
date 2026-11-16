@@ -26,14 +26,19 @@ axiosClient.interceptors.response.use(
     (response) => response,
     (error) => {
         const status = error.response?.status;
+        const esEndpointAutenticacion = error.config?.url?.includes('/auth/');
 
-        if (status === 401) {
+        if (status === 401 && !esEndpointAutenticacion) {
             localStorage.removeItem('auth_token');
             localStorage.removeItem('auth_usuario');
             if (window.location.pathname !== '/login') {
                 window.location.href = '/login';
             }
-        } else if (status === 403 && window.location.pathname !== '/no-autorizado') {
+        } else if (
+            status === 403 &&
+            !esEndpointAutenticacion &&
+            window.location.pathname !== '/no-autorizado'
+        ) {
             window.location.href = '/no-autorizado';
         }
         return Promise.reject(error);

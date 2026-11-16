@@ -93,5 +93,8 @@ describe('CatalogoEventos (HU-08)', () => {
 
         await vi.waitFor(() => expect(listarEventosMock).toHaveBeenCalledTimes(2));
         expect(listarEventosMock).toHaveBeenLastCalledWith({ categoriaId: 4 });
+        const orden = screen.getByRole('combobox', { name: 'Ordenar eventos' });
+        expect(orden.parentElement).toHaveClass('selector-con-chevron--compact');
+        expect(orden.parentElement?.querySelector('svg')).toBeInTheDocument();
     });
 });

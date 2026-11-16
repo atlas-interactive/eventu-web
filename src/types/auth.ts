@@ -11,6 +11,11 @@ export interface RespuestaRegistro {
     usuarioId: bigint;
     correo: string;
     rol: string;
+    confirmacionPendiente?: boolean;
+}
+
+export interface RespuestaConfirmacionCorreo {
+    mensaje: string;
 }
 
 //Data transfer object a enviar para autenticar un usuario

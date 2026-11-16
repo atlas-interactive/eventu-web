@@ -47,4 +47,20 @@ describe('axiosClient', () => {
 
         expect(ubicacion.href).toBe('/no-autorizado');
     });
+
+    it('deja que las pantallas de autenticación manejen sus respuestas 403', async () => {
+        const ubicacion = { pathname: '/confirmar-correo', href: '/confirmar-correo' };
+        vi.stubGlobal('window', { location: ubicacion });
+        server.use(
+            http.post('*/auth/confirmar-correo', () =>
+                HttpResponse.json({ error: 'El enlace no es válido.' }, { status: 403 }),
+            ),
+        );
+
+        await expect(axiosClient.post('/auth/confirmar-correo', { token: 'token-invalido' })).rejects.toMatchObject({
+            response: { status: 403 },
+        });
+
+        expect(ubicacion.href).toBe('/confirmar-correo');
+    });
 });

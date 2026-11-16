@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import type { ChangeEvent, SubmitEvent } from 'react';
+import { isAxiosError } from 'axios';
 import { useTranslation } from 'react-i18next';
 import { IconoAviso } from '../../components/ui/IconoAviso';
 import '../../styles/auth.css';
 import { mensajeDeError } from '../../api/mensajeDeError';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import iconoEventU from '../../assets/icons/iconoEventU.png';
-import { autenticarUsuario } from './services/authService';
+import { autenticarUsuario, reenviarConfirmacion } from './services/authService';
 import { obtenerRutaInicio, guardarSesion } from '../sesion/sesion';
 import { ModalAccesible } from '../../components/ui/ModalAccesible';
 import type { AutenticacionDTO, RespuestaAutenticacion } from '../../types/auth';
@@ -42,6 +43,8 @@ export const FormularioLogin: React.FC = () => {
     const [mensajeError, setMensajeError] = useState<string | null>(null);
     const [mensajeExito, setMensajeExito] = useState<string | null>(mensajeNavegacion);
     const [respuestaPendiente, setRespuestaPendiente] = useState<RespuestaAutenticacion | null>(null);
+    const [mostrarReenvioConfirmacion, setMostrarReenvioConfirmacion] = useState(false);
+    const [reenviandoConfirmacion, setReenviandoConfirmacion] = useState(false);
 
     useEffect(() => {
         if (mensajeNavegacion) {
@@ -66,6 +69,29 @@ export const FormularioLogin: React.FC = () => {
             ...prev,
             [name]: value,
         }));
+        if (name === 'correo') {
+            setMostrarReenvioConfirmacion(false);
+            setMensajeExito(null);
+        }
+    };
+
+    const handleReenviarConfirmacion = async () => {
+        setMensajeError(null);
+        setMensajeExito(null);
+        if (!correoInstitucionalRegex.test(formData.correo)) {
+            setMensajeError(t('auth.login.errorCorreo'));
+            return;
+        }
+
+        setReenviandoConfirmacion(true);
+        try {
+            const respuesta = await reenviarConfirmacion(formData.correo);
+            setMensajeExito(respuesta.mensaje || t('auth.login.confirmacionReenviada'));
+        } catch (error: unknown) {
+            setMensajeError(mensajeDeError(error));
+        } finally {
+            setReenviandoConfirmacion(false);
+        }
     };
 
     const continuarConSesion = (response: RespuestaAutenticacion) => {
@@ -85,6 +111,7 @@ export const FormularioLogin: React.FC = () => {
         e.preventDefault();
         setMensajeError(null);
         setMensajeExito(null);
+        setMostrarReenvioConfirmacion(false);
 
         if (!correoInstitucionalRegex.test(formData.correo)) {
             setMensajeError(t('auth.login.errorCorreo'));
@@ -107,7 +134,12 @@ export const FormularioLogin: React.FC = () => {
             }
 
         } catch (err: unknown) {
-            setMensajeError(mensajeDeError(err));
+            if (isAxiosError<{ error?: string }>(err) && err.response?.status === 403) {
+                setMensajeError(err.response.data?.error || t('auth.login.errorConfirmacion'));
+                setMostrarReenvioConfirmacion(true);
+            } else {
+                setMensajeError(mensajeDeError(err));
+            }
         } finally {
             setLoading(false);
         }
@@ -175,12 +207,25 @@ export const FormularioLogin: React.FC = () => {
 
                 <button
                     type="submit"
-                    disabled={loading}
+                    disabled={loading || reenviandoConfirmacion}
                     className="register-submit mt-1 h-11 w-full rounded-md text-base font-normal leading-6 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
                 >
                     {loading ? t('auth.login.validando') : t('auth.login.iniciarSesion')}
                 </button>
             </form>
+
+            {mostrarReenvioConfirmacion && (
+                <button
+                    type="button"
+                    disabled={reenviandoConfirmacion || loading}
+                    onClick={handleReenviarConfirmacion}
+                    className="register-submit mt-3 h-11 w-full rounded-md text-base font-normal leading-6 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                    {reenviandoConfirmacion
+                        ? t('auth.login.reenviandoConfirmacion')
+                        : t('auth.login.reenviarConfirmacion')}
+                </button>
+            )}
 
             <p className="register-login-link mt-2 text-center text-sm leading-5">
                 {t('auth.login.sinCuenta')}{' '}
