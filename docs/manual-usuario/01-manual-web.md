@@ -7,21 +7,31 @@
 **Dirigido a:** personas que aún no tienen cuenta.
 
 1. Abra la web y seleccione **Regístrate** en el inicio de sesión.
-2. Ingrese su **Nombre completo**, **Correo institucional** y **Contraseña**.
+2. Ingrese su **Nombre completo**, **Correo institucional** y **Contraseña**. El botón de ojo permite mostrarla u ocultarla.
 3. Use un correo terminado en **@unillanos.edu.co** y una contraseña de **8 a 72 caracteres**.
 4. Seleccione **Crear cuenta** y revise el mensaje de resultado.
-5. Si se solicita confirmar el correo, abra el mensaje recibido y siga el enlace de confirmación.
+5. Abra el mensaje recibido en su correo institucional y siga el enlace de confirmación.
 6. Cuando aparezca la confirmación correcta, seleccione **Ir a iniciar sesión**.
 
 **Resultado:** obtiene una cuenta con rol Usuario. Si el correo ya está registrado, utilice el inicio de sesión o la recuperación de contraseña. Una cuenta desactivada se reactiva iniciando sesión, en lugar de registrarse nuevamente.
 
-<!-- CAPTURA: W-01-registro.png; W-02-confirmacion-pendiente.png; W-03-correo-confirmado.png -->
+![Formulario de registro con los campos de nombre, correo y contraseña](imagenes/web/W-01-registro.png)
+
+**Figura 1.** Registro de una cuenta institucional.
+
+![Aviso de envío del enlace de confirmación al correo institucional](imagenes/web/W-02-confirmacion-pendiente.png)
+
+**Figura 2.** Solicitud de confirmación del correo después del registro.
+
+![Confirmación correcta del correo y enlace para iniciar sesión](imagenes/web/W-03-correo-confirmado.png)
+
+**Figura 3.** Correo confirmado y acceso al inicio de sesión.
 
 ## 2.2. Iniciar sesión y reenviar la confirmación
 
 **Dirigido a:** todos los roles.
 
-1. Ingrese su correo institucional y contraseña.
+1. Ingrese su correo institucional y contraseña. Use el botón de ojo si necesita mostrarla u ocultarla.
 2. Seleccione **Iniciar sesión**.
 3. Si se indica que falta confirmar el correo, seleccione **Reenviar enlace**, revise su correo y complete la confirmación antes de volver a entrar.
 
@@ -29,7 +39,9 @@
 
 Si el sistema informa que reactivó su cuenta, lea el aviso y seleccione **Continuar**. Las inscripciones canceladas al desactivar la cuenta no se recuperan mediante ese aviso; consulte sus inscripciones y vuelva a inscribirse si aún es posible.
 
-<!-- CAPTURA: W-04-login.png; W-05-reenviar-confirmacion.png; W-18-cuenta-reactivada.png -->
+![Inicio de sesión con correo, contraseña y enlaces de registro y recuperación](imagenes/web/W-04-login.png)
+
+**Figura 4.** Inicio de sesión con la cuenta institucional.
 
 ## 2.3. Recuperar la contraseña
 
@@ -44,7 +56,6 @@ Si el sistema informa que reactivó su cuenta, lea el aviso y seleccione **Conti
 
 **Resultado:** la contraseña se actualiza, se cierran las sesiones abiertas y se envía un correo avisando del cambio. Si el enlace venció o ya se utilizó, solicite uno nuevo.
 
-<!-- CAPTURA: W-06-recuperar-contrasena.png; W-07-restablecer-contrasena.png -->
 
 ## 2.4. Reconocer la navegación
 
@@ -58,7 +69,9 @@ Después de iniciar sesión, use la barra superior para cambiar de módulo. En p
 
 Los controles **Volver a eventos** o **Volver a mis eventos** llevan al listado indicado. Para cerrar sesión, abra el menú de perfil y seleccione **Cerrar sesión**; se mostrará el inicio de sesión.
 
-<!-- CAPTURA: W-20-menu-perfil.png -->
+![Menú de perfil con opciones de tema, accesibilidad, idioma y cierre de sesión](imagenes/web/W-11-menu-perfil.png)
+
+**Figura 5.** Opciones disponibles en el menú de perfil.
 
 ## 2.5. Buscar eventos y consultar su detalle
 
@@ -73,7 +86,13 @@ Los controles **Volver a eventos** o **Volver a mis eventos** llevan al listado 
 
 **Resultado:** encuentra eventos que cumplen los filtros y consulta sus condiciones antes de inscribirse. La exploración ordinaria muestra eventos disponibles; la gestión y el historial permiten consultar otros estados. Si no hay coincidencias, use **Limpiar filtros**.
 
-<!-- CAPTURA: W-08-catalogo.png; W-09-filtros-eventos.png; W-10-detalle-evento.png -->
+![Catálogo con búsqueda, fechas, categorías y tarjetas de eventos](imagenes/web/W-05-catalogo-eventos.png)
+
+**Figura 6.** Catálogo de eventos y controles de búsqueda y filtrado.
+
+![Detalle de Club de lectura con información del evento y botón de inscripción](imagenes/web/W-06-detalle-evento.png)
+
+**Figura 7.** Información del evento antes de inscribirse.
 
 ## 2.6. Inscribirse y consultar la entrada
 
@@ -83,7 +102,7 @@ Los controles **Volver a eventos** o **Volver a mis eventos** llevan al listado 
 
 1. Abra el detalle y seleccione **Inscribirme al evento**.
 2. Espere el resultado. La pantalla debe indicar **Estás inscrito** y ofrecer el acceso a la entrada.
-3. Seleccione **Ver mi entrada** para mostrar el QR. También puede consultarlo desde **Mis inscripciones**.
+3. Consulte el QR en el panel **Tu entrada**. En las vistas que ofrecen **Ver mi entrada**, seleccione ese botón para abrirlo. También puede consultarlo desde **Mis inscripciones**.
 4. En la entrada, utilice **Descargar entrada** si necesita guardar una copia.
 5. Si desea incorporar la actividad a su agenda personal, seleccione **Añadir al calendario** en el detalle y abra el archivo descargado con su aplicación de calendario.
 
@@ -91,7 +110,9 @@ Los controles **Volver a eventos** o **Volver a mis eventos** llevan al listado 
 
 El QR puede presentarse desde la web o la aplicación móvil. Su escaneo y validación se realizan en la aplicación móvil del organizador.
 
-<!-- CAPTURA: W-11-inscripcion-entrada.png -->
+![Evento con estado Estás inscrito, entrada QR y opciones de descarga y calendario](imagenes/web/W-07-inscripcion-entrada.png)
+
+**Figura 8.** Inscripción realizada y entrada QR del evento.
 
 ## 2.7. Consultar las inscripciones y cancelar una reserva
 
@@ -107,7 +128,13 @@ El QR puede presentarse desde la web o la aplicación móvil. Su escaneo y valid
 
 Si cambia de decisión, puede volver a inscribirse cuando el evento siga publicado, aún no inicie y tenga cupos. La nueva inscripción genera su entrada correspondiente. El QR deja de ofrecerse cuando termina el día del evento o se cancela la inscripción.
 
-<!-- CAPTURA: W-12-mis-inscripciones.png; W-13-cancelar-inscripcion.png -->
+![Mis inscripciones con reserva activa, calendario y acciones de QR y cancelación](imagenes/web/W-08-mis-inscripciones.png)
+
+**Figura 9.** Agenda personal y acciones de la inscripción activa.
+
+![Diálogo para confirmar la cancelación de la inscripción a Club de lectura](imagenes/web/W-09-cancelar-inscripcion.png)
+
+**Figura 10.** Confirmación antes de liberar el cupo reservado.
 
 ## 2.8. Descargar el certificado de asistencia
 
@@ -119,7 +146,9 @@ Si cambia de decisión, puede volver a inscribirse cuando el evento siga publica
 
 **Resultado:** obtiene el certificado con su nombre y los datos del evento **cuando la asistencia ya fue verificada**. Que aparezca el botón no confirma por sí mismo esa verificación; si está pendiente, solicite al organizador que registre su asistencia desde el móvil.
 
-<!-- CAPTURA: W-14-certificado.png -->
+![Ejemplo de certificado de asistencia con participante, evento y fecha de emisión](imagenes/web/W-10-certificado.jpeg)
+
+**Figura 11.** Ejemplo de certificado de asistencia. Corresponde a un evento y participante distintos de los utilizados en las figuras anteriores.
 
 ## 2.9. Consultar y editar el perfil
 
@@ -132,17 +161,15 @@ Si cambia de decisión, puede volver a inscribirse cuando el evento siga publica
 
 **Resultado:** el nombre actualizado aparece en el perfil y la sesión. El nombre es obligatorio y admite hasta **100 caracteres**. El correo institucional es de solo lectura y el rol se administra desde el módulo de Organizadores.
 
-<!-- CAPTURA: W-15-editar-perfil.png -->
 
 ### 2.9.1. Cambiar la contraseña
 
 1. En **Mi perfil**, ubique **Cambiar contraseña**.
-2. Ingrese la contraseña actual, una nueva de **8 a 72 caracteres** y su confirmación.
+2. Ingrese la contraseña actual, una nueva de **8 a 72 caracteres** y su confirmación. Cada campo dispone de un botón de ojo independiente para mostrar u ocultar su contenido.
 3. Seleccione **Actualizar contraseña** y revise el resultado.
 
 **Resultado:** cambia su contraseña, se cierran las demás sesiones y se envía un aviso al correo. La sesión desde la que realiza el cambio se conserva.
 
-<!-- CAPTURA: W-16-cambiar-contrasena.png -->
 
 ### 2.9.2. Desactivar y reactivar la cuenta
 
@@ -154,7 +181,6 @@ Si cambia de decisión, puede volver a inscribirse cuando el evento siga publica
 
 El único Administrador activo no puede desactivarse. Un Organizador con eventos publicados pendientes debe cancelarlos o esperar a que finalicen. Para reactivar la cuenta, inicie sesión con las credenciales correctas y acepte el aviso de reactivación.
 
-<!-- CAPTURA: W-17-desactivar-cuenta.png -->
 
 ## 2.10. Ajustar accesibilidad, tema e idioma
 
@@ -168,7 +194,9 @@ El único Administrador activo no puede desactivarse. Un Organizador con eventos
 
 **Resultado:** adapta la presentación. Las preferencias visuales se guardan en el navegador y pueden ser diferentes en otro dispositivo. Puede recorrer los controles con **Tab**, activar botones con **Enter** o **Espacio**, y cerrar menús o diálogos con **Escape**.
 
-<!-- CAPTURA: W-19-accesibilidad.png; W-20-menu-perfil.png -->
+![Panel de accesibilidad con tamaño de fuente, contraste y tipografía](imagenes/web/W-12-accesibilidad.png)
+
+**Figura 12.** Ajustes de accesibilidad de la aplicación web.
 
 ## 2.11. Crear un evento
 
@@ -193,7 +221,13 @@ El único Administrador activo no puede desactivarse. Un Organizador con eventos
 
 En la gestión, el Organizador consulta sus eventos y el Administrador consulta todos los eventos. Utilice búsqueda, categoría, fechas y el filtro **Estado** para elegir **Todos**, **Publicados** o **Cancelados**. Los eventos cancelados se conservan como historial.
 
-<!-- CAPTURA: W-21-gestion-eventos.png; W-22-crear-evento.png -->
+![Gestión de eventos propios con filtros, Crear evento y acceso a inscritos](imagenes/web/W-13-gestion-eventos.png)
+
+**Figura 13.** Panel Mis eventos del Organizador. Los ejemplos mostrados ya finalizaron; las acciones de edición y cancelación se ofrecen para eventos que aún no han iniciado.
+
+![Formulario de creación con título, descripción, categoría, cupo, fecha, lugar y certificación](imagenes/web/W-14-formulario-evento.png)
+
+**Figura 14.** Datos para publicar un evento certificable.
 
 ## 2.12. Editar un evento
 
@@ -206,7 +240,6 @@ En la gestión, el Organizador consulta sus eventos y el Administrador consulta 
 
 **Resultado:** se actualiza la información y se recalculan los cupos disponibles conservando los inscritos. No se editan eventos cancelados ni eventos que ya iniciaron. Otro Organizador no puede editar sus eventos.
 
-<!-- CAPTURA: W-23-editar-evento.png -->
 
 ## 2.13. Cancelar un evento
 
@@ -218,7 +251,6 @@ En la gestión, el Organizador consulta sus eventos y el Administrador consulta 
 
 **Resultado:** el evento queda Cancelado, sus inscripciones activas pasan a Cancelada y no se permiten nuevas reservas. Se conserva el historial y se notifica por correo a los participantes afectados. No es posible cancelar nuevamente un evento cancelado ni cancelarlo después de su inicio.
 
-<!-- CAPTURA: W-24-cancelar-evento.png -->
 
 ## 2.14. Consultar participantes y exportar el reporte
 
@@ -233,7 +265,9 @@ En la gestión, el Organizador consulta sus eventos y el Administrador consulta 
 
 Para registrar una asistencia, utilice **Inscritos y asistencia** en la aplicación móvil; la tabla web permite consultar los resultados.
 
-<!-- CAPTURA: W-25-participantes.png; W-26-reporte-pdf.png -->
+![Listado de participantes con asistencias registradas, resumen y botón Reporte PDF](imagenes/web/W-15-participantes-reporte.png)
+
+**Figura 15.** Consulta de inscritos y acceso a la exportación del reporte PDF.
 
 ## 2.15. Consultar estadísticas
 
@@ -245,7 +279,13 @@ Para registrar una asistencia, utilice **Inscritos y asistencia** en la aplicaci
 
 **Resultado:** el Organizador ve información de sus propios eventos; el Administrador ve los datos globales. El porcentaje se calcula como asistentes divididos entre inscripciones activas, multiplicado por cien. Un panel sin participación puede mostrar ceros o un mensaje sin datos.
 
-<!-- CAPTURA: W-27-estadisticas-organizador.png; W-35-estadisticas-admin.png -->
+![Estadísticas del Organizador con inscripciones activas, asistentes y porcentaje de asistencia](imagenes/web/W-16-estadisticas-organizador.png)
+
+**Figura 16.** Indicadores de participación en los eventos del Organizador.
+
+![Estadísticas del Administrador con indicadores globales y rankings de categorías y eventos](imagenes/web/W-19-estadisticas-admin.png)
+
+**Figura 17.** Vista global de participación y encabezados de los rankings para el Administrador.
 
 ## 2.16. Asignar y revocar organizadores
 
@@ -258,7 +298,9 @@ Para registrar una asistencia, utilice **Inscritos y asistencia** en la aplicaci
 
 **Resultado:** la cuenta conserva su acceso y pasa a Organizador o Usuario. Revocar el rol conserva los eventos creados; desde ese momento, su gestión corresponde al Administrador. No es necesario crear otra cuenta para cambiar el rol.
 
-<!-- CAPTURA: W-28-buscar-usuario.png; W-29-organizador-asignado.png; W-30-revocar-rol.png -->
+![Gestión de organizadores con buscador de cuentas y listado de organizadores actuales](imagenes/web/W-17-organizadores.png)
+
+**Figura 18.** Búsqueda de cuentas y acceso a la revocación del rol de Organizador.
 
 ## 2.17. Gestionar categorías
 
@@ -272,7 +314,9 @@ Para registrar una asistencia, utilice **Inscritos y asistencia** en la aplicaci
 
 **Resultado:** una categoría nueva queda activa. Los nombres no pueden estar vacíos ni duplicar otra categoría, aunque cambie el uso de mayúsculas. Cambiar el nombre se refleja en los eventos asociados. Desactivar una categoría conserva esos eventos y su clasificación; la categoría deja de estar disponible al crear eventos nuevos.
 
-<!-- CAPTURA: W-31-nueva-categoria.png; W-32-editar-categoria.png; W-33-desactivar-categoria.png; W-34-activar-categoria.png -->
+![Gestión de categorías con Nueva categoría, estado activo y acciones Editar y Desactivar](imagenes/web/W-18-categorias.png)
+
+**Figura 19.** Creación y administración de las categorías de eventos.
 
 ## 2.18. Consultar el registro de actividad
 
@@ -286,4 +330,6 @@ Para registrar una asistencia, utilice **Inscritos y asistencia** en la aplicaci
 
 **Resultado:** identifica operaciones exitosas o fallidas y sus motivos. Un registro puede indicar **Sin usuario asociado**. Los registros son de solo lectura: no se editan ni eliminan desde este módulo.
 
-<!-- CAPTURA: W-36-registro-actividad.png -->
+![Registro de actividad con filtros, operaciones recientes y resultados](imagenes/web/W-20-actividad.png)
+
+**Figura 20.** Consulta de actividad de la plataforma, disponible para el Administrador.
