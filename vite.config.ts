@@ -25,6 +25,8 @@ export default defineConfig({
         controlFlowFlattening: true,
         controlFlowFlatteningThreshold: 0.75,
         identifierNamesGenerator: 'hexadecimal',
+        // Vite necesita rutas literales para resolver los imports dinámicos.
+        reservedStrings: ['^\\.{1,2}/'],
         stringArrayRotate: true,
         // Vite transforma y minifica el código después de este plugin.
         selfDefending: false,
