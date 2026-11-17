@@ -1,7 +1,8 @@
+import { EnlaceVolver } from '../../components/ui/EnlaceVolver';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { IconoAviso } from '../../components/ui/IconoAviso';
 import { mensajeDeError } from '../../api/mensajeDeError';
 import '../../styles/auth.css';
@@ -66,9 +67,9 @@ export function FormularioRestablecerContrasena() {
                     <span>{t('auth.restablecer.enlaceInvalido')}</span>
                 </div>
                 <p className="register-login-link text-center text-sm leading-5">
-                    <Link to="/recuperar-contrasena" className="font-medium hover:underline">
+                    <EnlaceVolver to="/recuperar-contrasena">
                         {t('auth.restablecer.solicitarOtroCorreo')}
-                    </Link>
+                    </EnlaceVolver>
                 </p>
             </section>
         );
@@ -140,9 +141,9 @@ export function FormularioRestablecerContrasena() {
 
             {mensajeError && (
                 <p className="register-login-link mt-2 text-center text-sm leading-5">
-                    <Link to="/recuperar-contrasena" className="font-medium hover:underline">
+                    <EnlaceVolver to="/recuperar-contrasena">
                         {t('auth.restablecer.solicitarOtroCorreo')}
-                    </Link>
+                    </EnlaceVolver>
                 </p>
             )}
         </section>

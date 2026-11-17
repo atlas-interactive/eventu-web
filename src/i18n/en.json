@@ -317,7 +317,7 @@
     "categoriaObligatoria": "Category is required."
   },
   "participantes": {
-    "volver": "← My events",
+    "volver": "Back to my events",
     "cargando": "Loading event attendees",
     "generando": "Generating…",
     "reporte": "PDF report",

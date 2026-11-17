@@ -1,7 +1,7 @@
+import { EnlaceVolver } from '../../components/ui/EnlaceVolver';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
 import { IconoAviso } from '../../components/ui/IconoAviso';
 import { mensajeDeError } from '../../api/mensajeDeError';
 import '../../styles/auth.css';
@@ -93,9 +93,9 @@ export function FormularioRecuperacionContrasena() {
             </form>
 
             <p className="register-login-link mt-2 text-center text-sm leading-5">
-                <Link to="/login" className="font-medium hover:underline">
+                <EnlaceVolver to="/login">
                     {t('auth.recuperacion.volverLogin')}
-                </Link>
+                </EnlaceVolver>
             </p>
         </section>
     );

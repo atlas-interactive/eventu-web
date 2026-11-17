@@ -9,32 +9,6 @@
   padding-bottom: 6rem;
 }
 
-.detalle-evento-volver {
-  display: inline-flex;
-  min-height: 2.75rem;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  border: 1px solid var(--color-eventu-field-border);
-  border-radius: 0.4375rem;
-  background-color: var(--color-eventu-white-surface);
-  padding: 0.625rem 1rem;
-  color: var(--color-eventu-main-ink);
-  font-size: 0.875rem;
-  font-weight: 500;
-  line-height: 1.25rem;
-  text-decoration: none;
-}
-
-.detalle-evento-volver:hover {
-  background-color: var(--color-eventu-page-background);
-}
-
-.detalle-evento-volver:focus-visible {
-  outline: 2px solid var(--color-eventu-institutional-red);
-  outline-offset: 2px;
-}
-
 .detalle-evento-layout {
   display: grid;
   gap: 1rem;

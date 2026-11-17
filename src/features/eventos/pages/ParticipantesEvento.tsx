@@ -1,3 +1,4 @@
+import { EnlaceVolver } from '../../../components/ui/EnlaceVolver';
 import { useDocumentTitle } from '../../../hooks/useDocumentTitle';
 import { useMemo, useState } from 'react';
 import { CalendarDays, Check, Download, MapPin, Pencil, Search, Users } from 'lucide-react';
@@ -77,9 +78,9 @@ export function ParticipantesEvento() {
 
     return (
         <main className="participantes-page">
-            <Link to="/organizador/eventos" className="participantes-volver">
+            <EnlaceVolver to="/organizador/eventos">
                 {t('participantes.volver')}
-            </Link>
+            </EnlaceVolver>
 
             {consulta.cargando && (
                 <SkeletonEstado etiqueta={t('participantes.cargando')}>

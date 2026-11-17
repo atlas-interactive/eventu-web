@@ -212,15 +212,6 @@
   line-height: 1.25rem;
 }
 
-.evento-back-link {
-  display: inline-block;
-  margin-top: 0.5rem;
-  color: var(--color-eventu-institutional-red);
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-  text-decoration: underline;
-}
-
 .evento-list-header {
   display: flex;
   flex-direction: column;

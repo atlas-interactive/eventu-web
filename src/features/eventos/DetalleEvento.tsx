@@ -1,8 +1,8 @@
+import { EnlaceVolver } from '../../components/ui/EnlaceVolver';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import { useEffect, useState } from 'react';
 import { isAxiosError } from 'axios';
 import {
-    ArrowLeft,
     CalendarDays,
     CalendarPlus,
     Check,
@@ -12,7 +12,7 @@ import {
     Users,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { guardarArchivo } from '../../api/descargas';
 import { mensajeDeError } from '../../api/mensajeDeError';
 import { ModalAccesible } from '../../components/ui/ModalAccesible';
@@ -148,10 +148,9 @@ export function DetalleEvento() {
     if (noEncontrado || error || !evento) {
         return (
             <main className="detalle-evento-page">
-                <Link to="/eventos" className="detalle-evento-volver">
-                    <ArrowLeft aria-hidden="true" className="h-4 w-4 shrink-0" />
+                <EnlaceVolver to="/eventos">
                     {t('detalle.volver')}
-                </Link>
+                </EnlaceVolver>
                 <p role="alert" className="detalle-evento-error">
                     {noEncontrado ? t('detalle.noEncontrado') : error || t('detalle.errorCarga')}
                 </p>
@@ -246,10 +245,9 @@ export function DetalleEvento() {
 
     return (
         <main className={`detalle-evento-page${inscripcion.yaInscrito ? ' detalle-evento-page--inscrito' : ''}`}>
-            <Link to="/eventos" className="detalle-evento-volver">
-                <ArrowLeft aria-hidden="true" className="h-4 w-4 shrink-0" />
+            <EnlaceVolver to="/eventos">
                 {t('detalle.volver')}
-            </Link>
+            </EnlaceVolver>
             {inscripcion.inscripcionRealizada && <ConfirmacionInscripcion evento={evento} />}
 
             <div className="detalle-evento-layout">
