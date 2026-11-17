@@ -1,4 +1,7 @@
 {
+  "titulos": {
+    "detalleEvento": "Detalle del evento"
+  },
   "comun": {
     "roles": {
       "admin": "Administrador",
@@ -18,6 +21,9 @@
     "noCancelarInscripcionIniciada": "No se puede cancelar la inscripción después de que inicia el evento."
   },
   "layout": {
+    "preferenciasVisuales": "Preferencias visuales",
+    "activarTemaClaro": "Activar tema claro",
+    "activarTemaOscuro": "Activar tema oscuro",
     "abrirNavegacion": "Abrir navegación",
     "cerrarNavegacion": "Cerrar navegación",
     "navegacionPrincipal": "Principal",
@@ -197,7 +203,7 @@
     "cuposAria": "Cupos ocupados de {{titulo}}"
   },
   "detalle": {
-    "volver": "← Volver a eventos",
+    "volver": "Volver a eventos",
     "cargando": "Cargando detalle del evento",
     "noEncontrado": "No se encontró el evento solicitado.",
     "errorCarga": "No se pudo cargar el evento.",
@@ -314,7 +320,7 @@
     "categoriaObligatoria": "La categoría es obligatoria."
   },
   "participantes": {
-    "volver": "← Mis eventos",
+    "volver": "Volver a mis eventos",
     "cargando": "Cargando inscritos del evento",
     "generando": "Generando…",
     "reporte": "Reporte PDF",

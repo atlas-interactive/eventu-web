@@ -165,7 +165,7 @@ describe('ParticipantesEvento', () => {
     it('ofrece volver a la gestión de eventos', async () => {
         renderizar();
 
-        const volver = await screen.findByRole('link', { name: /Mis eventos/ });
+        const volver = await screen.findByRole('link', { name: /Volver a mis eventos/ });
         expect(volver).toHaveAttribute('href', '/organizador/eventos');
     });
 

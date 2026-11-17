@@ -1,3 +1,4 @@
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import { lazy, Suspense, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Routes, Route, Navigate } from 'react-router-dom';
@@ -80,8 +81,21 @@ export function RutaLogin() {
     return <FormularioLogin />;
 }
 
-export function AppRoutes() {
+function PaginaSinPermiso() {
     const { t } = useTranslation();
+    useDocumentTitle(`${t('comun.sinPermiso')} | EventU`);
+
+    return (
+        <main className="mx-auto w-full max-w-[70rem] px-4 py-8 sm:px-8">
+            <h1 className="text-[1.375rem] font-semibold text-eventu-main-ink">{t('comun.sinPermiso')}</h1>
+            <p className="mt-1 text-sm text-eventu-secondary-text">
+                {t('comun.sinPermisoDetalle')}
+            </p>
+        </main>
+    );
+}
+
+export function AppRoutes() {
     return (
         <AccesibilidadProvider>
           <Routes>
@@ -145,17 +159,7 @@ export function AppRoutes() {
             </Route>
 
             <Route element={<LayoutAplicacion />}>
-                <Route
-                    path="/no-autorizado"
-                    element={
-                        <main className="mx-auto w-full max-w-[70rem] px-4 py-8 sm:px-8">
-                            <h1 className="text-[1.375rem] font-semibold text-eventu-main-ink">{t('comun.sinPermiso')}</h1>
-                            <p className="mt-1 text-sm text-eventu-secondary-text">
-                                {t('comun.sinPermisoDetalle')}
-                            </p>
-                        </main>
-                    }
-                />
+                <Route path="/no-autorizado" element={<PaginaSinPermiso />} />
             </Route>
 
             <Route path="*" element={<Navigate to="/login" replace />} />

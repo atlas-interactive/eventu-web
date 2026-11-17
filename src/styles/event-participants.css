@@ -5,18 +5,6 @@
   padding: 1.5rem 1rem 2rem;
 }
 
-.participantes-volver {
-  color: var(--color-eventu-institutional-red);
-  font-size: 0.8125rem;
-  line-height: 1rem;
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.participantes-volver:hover {
-  text-decoration: underline;
-}
-
 .participantes-header {
   display: flex;
   flex-direction: column;

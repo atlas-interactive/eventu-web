@@ -1,6 +1,8 @@
+import { EnlaceVolver } from '../../components/ui/EnlaceVolver';
+import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import type { Evento } from '../../types/evento';
 import { Skeleton, SkeletonEstado } from '../../components/ui/Skeleton';
 import { FormularioEvento } from './FormularioEvento';
@@ -12,6 +14,7 @@ import '../../styles/events.css';
 // HU-06: el organizador dueño (o un administrador) edita un evento publicado
 export function EditarEvento() {
     const { t } = useTranslation();
+    useDocumentTitle(`${t('editarEvento.titulo')} | EventU`);
     const { id } = useParams();
     const navigate = useNavigate();
     const [evento, setEvento] = useState<Evento | null>(null);
@@ -69,9 +72,9 @@ export function EditarEvento() {
                     <p role="alert" className="evento-page-error">
                         {error}
                     </p>
-                    <Link to="/organizador/eventos" className="evento-back-link">
+                    <EnlaceVolver to="/organizador/eventos" className="mt-2">
                         {t('editarEvento.volver')}
-                    </Link>
+                    </EnlaceVolver>
                 </div>
             )}
             {evento && (

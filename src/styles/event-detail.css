@@ -9,17 +9,6 @@
   padding-bottom: 6rem;
 }
 
-.detalle-evento-volver {
-  display: inline-block;
-  color: var(--color-eventu-institutional-red);
-  font-size: 0.8125rem;
-  text-decoration: none;
-}
-
-.detalle-evento-volver:hover {
-  text-decoration: underline;
-}
-
 .detalle-evento-layout {
   display: grid;
   gap: 1rem;

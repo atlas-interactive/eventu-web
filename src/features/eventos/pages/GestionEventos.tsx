@@ -1,3 +1,4 @@
+import { useDocumentTitle } from '../../../hooks/useDocumentTitle';
 import { useState } from 'react';
 import { CalendarPlus, CircleX, Pencil, Plus, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -15,6 +16,7 @@ import '../../../styles/events.css';
 
 export function GestionEventos() {
     const { t } = useTranslation();
+    useDocumentTitle(`${t('layout.misEventos')} | EventU`);
     const ahora = useAhoraBogota();
     const location = useLocation();
     const mensajeNavegacion = (location.state as { mensaje?: string } | null)?.mensaje ?? '';

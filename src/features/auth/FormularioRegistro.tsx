@@ -1,3 +1,4 @@
+import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import React, { useState } from 'react';
 import type { ChangeEvent, SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -12,6 +13,7 @@ import type { RegistroDTO } from '../../types/auth';
 
 export const FormularioRegistro: React.FC = () => {
     const { t } = useTranslation();
+    useDocumentTitle(`${t('auth.registro.titulo')} | EventU`);
     const [formData, setFormData] = useState<RegistroDTO>({
         nombre: '',
         correo: '',

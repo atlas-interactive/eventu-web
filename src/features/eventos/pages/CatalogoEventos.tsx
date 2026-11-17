@@ -1,3 +1,4 @@
+import { useDocumentTitle } from '../../../hooks/useDocumentTitle';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -10,6 +11,7 @@ import '../../../styles/event-catalog.css';
 
 export function CatalogoEventos() {
     const { t } = useTranslation();
+    useDocumentTitle(`${t('catalogo.titulo')} | EventU`);
     const catalogo = useCatalogoEventos();
     const [orden, setOrden] = useState<OrdenEventos>('fecha-proxima');
     const eventosOrdenados = ordenarEventos(catalogo.eventos, orden);

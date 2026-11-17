@@ -502,7 +502,7 @@ describe('DetalleEvento', () => {
         renderDetalle();
 
         expect(await screen.findByRole('alert')).toHaveTextContent('No se encontró el evento solicitado.');
-        expect(screen.getByRole('link', { name: '← Volver a eventos' })).toHaveAttribute('href', '/eventos');
+        expect(screen.getByRole('link', { name: 'Volver a eventos' })).toHaveAttribute('href', '/eventos');
     });
 
     it('no consulta cuando el id de la ruta no es válido', async () => {

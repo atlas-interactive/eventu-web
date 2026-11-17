@@ -1,3 +1,5 @@
+import { EnlaceVolver } from '../../../components/ui/EnlaceVolver';
+import { useDocumentTitle } from '../../../hooks/useDocumentTitle';
 import { useMemo, useState } from 'react';
 import { CalendarDays, Check, Download, MapPin, Pencil, Search, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -39,6 +41,7 @@ const iniciales = (nombre: string) =>
 
 export function ParticipantesEvento() {
     const { t } = useTranslation();
+    useDocumentTitle(`${t('participantes.listadoAria')} | EventU`);
     const { id } = useParams();
     const consulta = useParticipantesEvento(Number(id));
     const [busqueda, setBusqueda] = useState('');
@@ -75,9 +78,9 @@ export function ParticipantesEvento() {
 
     return (
         <main className="participantes-page">
-            <Link to="/organizador/eventos" className="participantes-volver">
+            <EnlaceVolver to="/organizador/eventos">
                 {t('participantes.volver')}
-            </Link>
+            </EnlaceVolver>
 
             {consulta.cargando && (
                 <SkeletonEstado etiqueta={t('participantes.cargando')}>

@@ -1,6 +1,7 @@
+import { Link } from 'react-router-dom';
+import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
 import { IconoAviso } from '../../components/ui/IconoAviso';
 import { mensajeDeError } from '../../api/mensajeDeError';
 import '../../styles/auth.css';
@@ -10,6 +11,7 @@ import { solicitarRecuperacionContrasena } from './services/authService';
 
 export function FormularioRecuperacionContrasena() {
     const { t } = useTranslation();
+    useDocumentTitle(`${t('auth.recuperacion.titulo')} | EventU`);
     const [correo, setCorreo] = useState('');
     const [loading, setLoading] = useState(false);
     const [mensajeError, setMensajeError] = useState<string | null>(null);
@@ -91,7 +93,7 @@ export function FormularioRecuperacionContrasena() {
             </form>
 
             <p className="register-login-link mt-2 text-center text-sm leading-5">
-                <Link to="/login" className="font-medium hover:underline">
+                <Link to="/login" className="link_form">
                     {t('auth.recuperacion.volverLogin')}
                 </Link>
             </p>
