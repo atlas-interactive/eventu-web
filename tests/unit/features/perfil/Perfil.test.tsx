@@ -166,6 +166,39 @@ describe('Perfil', () => {
         expect(screen.getByLabelText('Confirmar nueva contraseña')).toHaveValue('');
     });
 
+    it('muestra y oculta cada contraseña de forma independiente sin enviar el cambio', async () => {
+        const user = userEvent.setup();
+        renderizar();
+        const campos = [
+            await screen.findByLabelText('Contraseña actual'),
+            screen.getByLabelText('Nueva contraseña'),
+            screen.getByLabelText('Confirmar nueva contraseña'),
+        ];
+        for (const campo of campos) {
+            await user.type(campo, 'clave-segura-123');
+            expect(campo).toHaveAttribute('type', 'password');
+        }
+
+        for (const campo of campos) {
+            await user.click(campo);
+            await user.tab();
+            const boton = within(campo.parentElement!).getByRole('button', { name: 'Mostrar contraseña' });
+            expect(boton).toHaveFocus();
+            expect(boton).toHaveAttribute('aria-controls', campo.id);
+            await user.keyboard(' ');
+            expect(campo).toHaveAttribute('type', 'text');
+            expect(campo).toHaveValue('clave-segura-123');
+            campos.filter((otro) => otro !== campo).forEach((otro) => {
+                expect(otro).toHaveAttribute('type', 'password');
+            });
+            expect(boton).toHaveAccessibleName('Ocultar contraseña');
+            await user.keyboard('{Enter}');
+            expect(campo).toHaveAttribute('type', 'password');
+        }
+
+        expect(cambiarContrasenaMock).not.toHaveBeenCalled();
+    });
+
     it('valida la longitud y confirmación de contraseña antes de llamar al servicio', async () => {
         const user = userEvent.setup();
         renderizar();

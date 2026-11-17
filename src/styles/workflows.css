@@ -51,6 +51,10 @@
   margin-top: 1.5rem;
 }
 
+.workflow-dialog-actions .workflow-button {
+  min-height: 2.75rem;
+}
+
 .workflow-dialog-copy {
   color: var(--color-eventu-main-ink);
   font-size: 0.875rem;

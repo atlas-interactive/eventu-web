@@ -7,6 +7,7 @@ import i18n from '../../i18n';
 import { useNavigate } from 'react-router-dom';
 import { mensajeDeError } from '../../api/mensajeDeError';
 import { ModalAccesible } from '../../components/ui/ModalAccesible';
+import { InputContrasena } from '../../components/ui/InputContrasena';
 import { Skeleton, SkeletonEstado } from '../../components/ui/Skeleton';
 import { actualizarNombreSesion, actualizarTokenSesion, cerrarSesion } from '../sesion/sesion';
 import {
@@ -381,10 +382,9 @@ export function Perfil() {
                                     <label htmlFor="password-actual" className="perfil-label">
                                         {t('perfil.contrasenaActual')}
                                     </label>
-                                    <input
+                                    <InputContrasena
                                         id="password-actual"
                                         name="passwordActual"
-                                        type="password"
                                         autoComplete="current-password"
                                         value={passwordActual}
                                         onChange={(evento) => setPasswordActual(evento.target.value)}
@@ -397,10 +397,9 @@ export function Perfil() {
                                     <label htmlFor="password-nueva" className="perfil-label">
                                         {t('perfil.nuevaContrasena')}
                                     </label>
-                                    <input
+                                    <InputContrasena
                                         id="password-nueva"
                                         name="passwordNueva"
-                                        type="password"
                                         autoComplete="new-password"
                                         value={passwordNueva}
                                         onChange={(evento) => setPasswordNueva(evento.target.value)}
@@ -415,10 +414,9 @@ export function Perfil() {
                                     <label htmlFor="password-confirmacion" className="perfil-label">
                                         {t('perfil.confirmarNuevaContrasena')}
                                     </label>
-                                    <input
+                                    <InputContrasena
                                         id="password-confirmacion"
                                         name="confirmacionContrasena"
-                                        type="password"
                                         autoComplete="new-password"
                                         value={confirmacionContrasena}
                                         onChange={(evento) => setConfirmacionContrasena(evento.target.value)}

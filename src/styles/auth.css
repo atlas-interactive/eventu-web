@@ -50,38 +50,6 @@
   color: var(--color-eventu-secondary-text);
 }
 
-.register-input-password {
-  padding-right: 3rem;
-}
-
-.register-password-toggle {
-  position: absolute;
-  top: 0.25rem;
-  right: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.75rem;
-  height: 2.75rem;
-  border-radius: 0.375rem;
-  color: var(--color-eventu-secondary-text);
-  cursor: pointer;
-}
-
-.register-password-toggle:hover {
-  color: var(--color-eventu-main-ink);
-}
-
-.register-password-toggle:focus-visible {
-  outline: 0.125rem solid var(--color-eventu-institutional-red);
-  outline-offset: -0.25rem;
-}
-
-.register-password-toggle:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
 .register-input:focus {
   border-color: var(--color-eventu-border);
   outline: none;
