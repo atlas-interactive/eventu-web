@@ -68,6 +68,10 @@
     "advertenciaInvalida": "Las preferencias guardadas no eran válidas; se restablecieron los valores iniciales."
   },
   "auth": {
+    "campos": {
+      "mostrarContrasena": "Mostrar contraseña",
+      "ocultarContrasena": "Ocultar contraseña"
+    },
     "login": {
       "titulo": "Inicia sesión",
       "subtitulo": "Ingresa con tu correo institucional",
