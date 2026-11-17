@@ -50,6 +50,7 @@ export function ParticipantesEvento() {
     const [errorReporte, setErrorReporte] = useState('');
     const asistentes = consulta.inscritos.filter((inscrito) => inscrito.asistio).length;
     const pendientes = consulta.inscritos.length - asistentes;
+    const eventoEncabezado = !consulta.cargando && !consulta.error ? consulta.evento : null;
     const inscritosVisibles = useMemo(
         () =>
             consulta.inscritos.filter((inscrito) => {
@@ -82,6 +83,46 @@ export function ParticipantesEvento() {
                 {t('participantes.volver')}
             </EnlaceVolver>
 
+            <header className="participantes-header">
+                <div className="participantes-evento-identidad">
+                    <h1 className="participantes-titulo">{eventoEncabezado?.titulo || t('participantes.listadoAria')}</h1>
+                    {eventoEncabezado && (
+                        <div className="participantes-evento-detalles">
+                            <span>
+                                <CalendarDays aria-hidden="true" />
+                                {formatoFecha.format(new Date(eventoEncabezado.fechaInicio))},{' '}
+                                {formatoHora.format(new Date(eventoEncabezado.fechaInicio))}
+                            </span>
+                            <span><MapPin aria-hidden="true" />{eventoEncabezado.ubicacion}</span>
+                            <span className="participantes-categoria">{eventoEncabezado.categoriaNombre}</span>
+                        </div>
+                    )}
+                </div>
+                {eventoEncabezado && (
+                    <div className="participantes-header-acciones">
+                        <button
+                            type="button"
+                            className="participantes-accion"
+                            onClick={descargarReporte}
+                            disabled={descargando}
+                            aria-busy={descargando}
+                        >
+                            <Download aria-hidden="true" />
+                            {descargando ? t('participantes.generando') : t('participantes.reporte')}
+                        </button>
+                        {!eventoYaIniciado(eventoEncabezado.fechaInicio) && (
+                            <Link
+                                to={`/organizador/eventos/${eventoEncabezado.id}/editar`}
+                                className="participantes-accion"
+                            >
+                                <Pencil aria-hidden="true" />
+                                {t('participantes.editar')}
+                            </Link>
+                        )}
+                    </div>
+                )}
+            </header>
+
             {consulta.cargando && (
                 <SkeletonEstado etiqueta={t('participantes.cargando')}>
                     <Skeleton className="mt-4 h-7 w-56" />
@@ -103,42 +144,6 @@ export function ParticipantesEvento() {
 
             {!consulta.cargando && !consulta.error && consulta.evento && (
                 <>
-                    <header className="participantes-header">
-                        <div className="participantes-evento-identidad">
-                            <h1 className="participantes-titulo">{consulta.evento.titulo}</h1>
-                            <div className="participantes-evento-detalles">
-                                <span>
-                                    <CalendarDays aria-hidden="true" />
-                                    {formatoFecha.format(new Date(consulta.evento.fechaInicio))},{' '}
-                                    {formatoHora.format(new Date(consulta.evento.fechaInicio))}
-                                </span>
-                                <span><MapPin aria-hidden="true" />{consulta.evento.ubicacion}</span>
-                                <span className="participantes-categoria">{consulta.evento.categoriaNombre}</span>
-                            </div>
-                        </div>
-                        <div className="participantes-header-acciones">
-                            <button
-                                type="button"
-                                className="participantes-accion"
-                                onClick={descargarReporte}
-                                disabled={descargando}
-                                aria-busy={descargando}
-                            >
-                                <Download aria-hidden="true" />
-                                {descargando ? t('participantes.generando') : t('participantes.reporte')}
-                            </button>
-                            {!eventoYaIniciado(consulta.evento.fechaInicio) && (
-                                <Link
-                                    to={`/organizador/eventos/${consulta.evento.id}/editar`}
-                                    className="participantes-accion"
-                                >
-                                    <Pencil aria-hidden="true" />
-                                    {t('participantes.editar')}
-                                </Link>
-                            )}
-                        </div>
-                    </header>
-
                     {errorReporte && (
                         <p role="alert" className="participantes-error">{errorReporte}</p>
                     )}

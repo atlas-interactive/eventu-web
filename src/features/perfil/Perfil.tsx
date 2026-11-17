@@ -250,11 +250,9 @@ export function Perfil() {
                                         {inicialesNombre(perfil.nombre)}
                                     </div>
                                     <div className="perfil-identity">
-                                        {!editando && (
-                                            <h2 className="perfil-name">
-                                                {perfil.nombre}
-                                            </h2>
-                                        )}
+                                        <h2 className={editando ? 'sr-only' : 'perfil-name'}>
+                                            {perfil.nombre}
+                                        </h2>
                                         <span className="perfil-role">
                                             {CLAVE_ROL[perfil.rol.toUpperCase()]
                                                 ? t(CLAVE_ROL[perfil.rol.toUpperCase()])

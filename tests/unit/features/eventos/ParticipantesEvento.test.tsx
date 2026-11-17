@@ -82,7 +82,9 @@ describe('ParticipantesEvento', () => {
     it('muestra los datos del evento, métricas e inscritos con su asistencia', async () => {
         renderizar();
 
-        expect(await screen.findByRole('heading', { name: 'Feria de proyectos' })).toBeInTheDocument();
+        const encabezado = screen.getByRole('heading', { level: 1, name: 'Participantes' });
+        expect(await screen.findByRole('heading', { name: 'Feria de proyectos' })).toBe(encabezado);
+        expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
         expect(screen.getByRole('link', { name: 'Editar evento' })).toHaveAttribute(
             'href',
             '/organizador/eventos/5/editar',
@@ -159,6 +161,7 @@ describe('ParticipantesEvento', () => {
         expect(await screen.findByRole('alert')).toHaveTextContent(
             'No tienes permiso para consultar este evento.',
         );
+        expect(screen.getByRole('heading', { level: 1, name: 'Participantes' })).toBeInTheDocument();
         errorConsola.mockRestore();
     });
 

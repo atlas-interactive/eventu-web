@@ -60,6 +60,9 @@ describe('GestionOrganizadores (HU-03)', () => {
         buscarMock.mockResolvedValue([usuario(4, 'Laura Gomez', 'USUARIO')]);
         render(<GestionOrganizadores />);
 
+        expect(screen.getByRole('region', { name: 'Buscar usuarios' })).toContainElement(
+            screen.getByRole('heading', { level: 2, name: 'Buscar usuarios' }),
+        );
         await buscar('laura');
 
         expect(await screen.findByText('Laura Gomez')).toBeInTheDocument();

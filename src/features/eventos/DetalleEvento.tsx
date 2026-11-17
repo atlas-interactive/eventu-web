@@ -135,6 +135,7 @@ export function DetalleEvento() {
     if (cargando) {
         return (
             <main className="detalle-evento-page">
+                <h1 className="sr-only">{t('titulos.detalleEvento')}</h1>
                 <SkeletonEstado etiqueta={t('detalle.cargando')} className="detalle-evento-skeleton">
                     <Skeleton className="h-4 w-28" />
                     <Skeleton className="mt-6 h-32 w-full rounded-xl" />
@@ -151,6 +152,7 @@ export function DetalleEvento() {
                 <EnlaceVolver to="/eventos">
                     {t('detalle.volver')}
                 </EnlaceVolver>
+                <h1 className="detalle-evento-titulo">{t('titulos.detalleEvento')}</h1>
                 <p role="alert" className="detalle-evento-error">
                     {noEncontrado ? t('detalle.noEncontrado') : error || t('detalle.errorCarga')}
                 </p>

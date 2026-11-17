@@ -104,7 +104,9 @@ describe('DetalleEvento', () => {
     it('consulta el evento y permite iniciar la inscripción', async () => {
         renderDetalle();
 
+        expect(screen.getByRole('heading', { level: 1, name: 'Detalle del evento' })).toBeInTheDocument();
         expect(await screen.findByRole('heading', { name: 'Feria de proyectos' })).toBeInTheDocument();
+        expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
         expect(obtenerEventoMock).toHaveBeenCalledWith(5);
         expect(screen.getByText('Espacio para la presentación de proyectos innovadores.')).toBeInTheDocument();
         expect(screen.getByText('38 de 120 disponibles')).toBeInTheDocument();
@@ -502,6 +504,7 @@ describe('DetalleEvento', () => {
         renderDetalle();
 
         expect(await screen.findByRole('alert')).toHaveTextContent('No se encontró el evento solicitado.');
+        expect(screen.getByRole('heading', { level: 1, name: 'Detalle del evento' })).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Volver a eventos' })).toHaveAttribute('href', '/eventos');
     });
 

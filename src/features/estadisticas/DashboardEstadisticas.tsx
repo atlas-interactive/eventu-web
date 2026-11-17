@@ -64,7 +64,7 @@ export function DashboardEstadisticas() {
             {cargando && (
                 <SkeletonEstado etiqueta={t('estadisticas.cargando')} className="space-y-4">
                     <div className="grid gap-4 lg:grid-cols-3">
-                        <section className="rounded-xl border border-eventu-border bg-eventu-white-surface p-5 sm:p-6 lg:col-span-2">
+                        <div className="rounded-xl border border-eventu-border bg-eventu-white-surface p-5 sm:p-6 lg:col-span-2">
                             <Skeleton className="h-5 w-32" />
                             <Skeleton className="mt-2 h-4 w-64 max-w-full" />
                             <div className="mt-6 flex flex-col items-center gap-6 sm:flex-row sm:gap-8">
@@ -74,7 +74,7 @@ export function DashboardEstadisticas() {
                                     <Skeleton className="h-4 w-full" />
                                 </div>
                             </div>
-                        </section>
+                        </div>
                         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
                             <Skeleton className="h-36 rounded-xl" />
                             <Skeleton className="h-36 rounded-xl" />

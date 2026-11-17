@@ -163,7 +163,8 @@ export function GestionOrganizadores() {
                 </p>
             </header>
 
-            <section className="gestion-panel">
+            <section aria-labelledby="titulo-buscar-usuarios" className="gestion-panel">
+                <h2 id="titulo-buscar-usuarios" className="sr-only">{t('organizadores.buscarTitulo')}</h2>
                 <div className="gestion-search">
                     <label htmlFor="criterio" className="workflow-label">
                         {t('organizadores.buscarLabel')}

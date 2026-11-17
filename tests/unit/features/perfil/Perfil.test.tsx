@@ -92,6 +92,7 @@ describe('Perfil', () => {
         renderizar();
 
         await user.click(await screen.findByRole('button', { name: 'Editar información' }));
+        expect(screen.getByRole('heading', { level: 2, name: 'Laura Gomez' })).toBeInTheDocument();
         const nombre = screen.getByRole('textbox', { name: 'Nombre completo' });
         await user.clear(nombre);
         await user.type(nombre, '  Laura Gomez Ruiz  ');
