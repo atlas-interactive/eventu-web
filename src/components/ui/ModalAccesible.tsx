@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import type { ReactNode } from 'react';
+import '../../styles/workflows.css';
 
 interface ModalAccesibleProps {
     titulo: string;
