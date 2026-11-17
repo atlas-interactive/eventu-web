@@ -1,3 +1,5 @@
+import { CampoAutenticacion } from './components/CampoAutenticacion';
+import { CabeceraAutenticacion } from './components/CabeceraAutenticacion';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import React, { useState } from 'react';
 import type { ChangeEvent, SubmitEvent } from 'react';
@@ -7,7 +9,6 @@ import '../../styles/auth.css';
 import { mensajeDeError } from '../../api/mensajeDeError';
 import { validarCorreoInstitucional, validarLongitudContrasena } from './validacionAuth';
 import { Link } from 'react-router-dom';
-import iconoEventU from '../../assets/icons/iconoEventU.png';
 import { registrarUsuario } from './services/authService';
 import type { RegistroDTO } from '../../types/auth';
 
@@ -80,12 +81,11 @@ export const FormularioRegistro: React.FC = () => {
 
     return (
         <section className="register-form w-full max-w-[34rem] border-[0.125rem] px-5 py-6 sm:px-8">
-            <header className="mb-3 text-center">
-                <img src={iconoEventU} alt="" aria-hidden="true" className="mx-auto mb-2 h-9 w-9" />
-                <p className="text-2xl font-semibold leading-5">Event<span className="text-eventu-institutional-red">U</span> </p>
-                <h1 className="mt-2 text-base font-semibold leading-7">{t('auth.registro.titulo')}</h1>
-                <p className="register-subtitle mt-0.5 text-sm leading-7">{t('auth.registro.subtitulo')}</p>
-            </header>
+            <CabeceraAutenticacion
+                titulo={t('auth.registro.titulo')}
+                subtitulo={t('auth.registro.subtitulo')}
+                claseSubtitulo="leading-7"
+            />
 
             {/* Alerta visual de Error */}
             {mensajeError && (
@@ -104,52 +104,43 @@ export const FormularioRegistro: React.FC = () => {
             )}
 
             <form onSubmit={handleSubmit} className="space-y-1">
-                <div>
-                    <label htmlFor="nombre" className="register-label block text-sm font-medium leading-5">{t('auth.registro.nombre')}</label>
-                    <input
-                        type="text"
-                        id="nombre"
-                        name="nombre"
-                        value={formData.nombre}
-                        onChange={handleChange}
-                        aria-invalid={mostrarCampoInvalido('nombre') || undefined}
-                        className={`register-input mt-1 h-11 w-full rounded-md border px-2.5 text-base leading-6 outline-none${mostrarCampoInvalido('nombre') ? ' register-input-invalid' : ''}`}
-                        placeholder={t('auth.registro.placeholderNombre')}
-                        required
-                    />
-                </div>
+                <CampoAutenticacion
+                    etiqueta={t('auth.registro.nombre')}
+                    autoComplete="name"
+                    type="text"
+                    name="nombre"
+                    value={formData.nombre}
+                    onChange={handleChange}
+                    aria-invalid={mostrarCampoInvalido('nombre') || undefined}
+                    placeholder={t('auth.registro.placeholderNombre')}
+                    required
+                />
 
-                <div>
-                    <label htmlFor="correo" className="register-label block text-sm font-medium leading-5">{t('auth.registro.correo')}</label>
-                    <input
-                        type="email"
-                        id="correo"
-                        name="correo"
-                        value={formData.correo}
-                        onChange={handleChange}
-                        aria-invalid={mostrarCampoInvalido('correo') || undefined}
-                        className={`register-input mt-1 h-11 w-full rounded-md border px-2.5 text-base leading-6 outline-none${mostrarCampoInvalido('correo') ? ' register-input-invalid' : ''}`}
-                        placeholder={t('auth.registro.placeholderCorreo')}
-                        required
-                    />
-                </div>
+                <CampoAutenticacion
+                    etiqueta={t('auth.registro.correo')}
+                    autoComplete="email"
+                    type="email"
+                    name="correo"
+                    value={formData.correo}
+                    onChange={handleChange}
+                    aria-invalid={mostrarCampoInvalido('correo') || undefined}
+                    placeholder={t('auth.registro.placeholderCorreo')}
+                    required
+                />
 
-                <div>
-                    <label htmlFor="password" className="register-label block text-sm font-medium leading-5">{t('auth.registro.contrasena')}</label>
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        aria-invalid={mostrarCampoInvalido('password') || undefined}
-                        className={`register-input mt-1 h-11 w-full rounded-md border px-2.5 text-base leading-6 outline-none${mostrarCampoInvalido('password') ? ' register-input-invalid' : ''}`}
-                        placeholder={t('auth.registro.placeholderContrasena')}
-                        minLength={8}
-                        maxLength={72}
-                        required
-                    />
-                </div>
+                <CampoAutenticacion
+                    etiqueta={t('auth.registro.contrasena')}
+                    autoComplete="new-password"
+                    type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    aria-invalid={mostrarCampoInvalido('password') || undefined}
+                    placeholder={t('auth.registro.placeholderContrasena')}
+                    minLength={8}
+                    maxLength={72}
+                    required
+                />
 
                 <button
                     type="submit"

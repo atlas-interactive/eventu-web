@@ -479,6 +479,7 @@
     "procesando": "Processing…"
   },
   "organizadores": {
+    "buscarTitulo": "Search users",
     "titulo": "Organizer management",
     "descripcion": "Search for an already registered user and assign them the organizer role.",
     "buscarLabel": "Search by name or institutional email",

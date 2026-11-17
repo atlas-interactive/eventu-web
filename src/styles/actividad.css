@@ -113,6 +113,14 @@
 
 .actividad-campo-fecha {
   width: min(100%, 20rem);
+  margin: 0;
+  border: 0;
+  padding: 0;
+}
+
+.actividad-campo-fecha > legend {
+  margin-bottom: 0.35rem;
+  padding: 0;
 }
 
 .actividad-rango-fechas {

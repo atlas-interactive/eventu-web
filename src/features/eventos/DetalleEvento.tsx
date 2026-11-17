@@ -135,6 +135,7 @@ export function DetalleEvento() {
     if (cargando) {
         return (
             <main className="detalle-evento-page">
+                <h1 className="sr-only">{t('titulos.detalleEvento')}</h1>
                 <SkeletonEstado etiqueta={t('detalle.cargando')} className="detalle-evento-skeleton">
                     <Skeleton className="h-4 w-28" />
                     <Skeleton className="mt-6 h-32 w-full rounded-xl" />
@@ -151,6 +152,7 @@ export function DetalleEvento() {
                 <EnlaceVolver to="/eventos">
                     {t('detalle.volver')}
                 </EnlaceVolver>
+                <h1 className="detalle-evento-titulo">{t('titulos.detalleEvento')}</h1>
                 <p role="alert" className="detalle-evento-error">
                     {noEncontrado ? t('detalle.noEncontrado') : error || t('detalle.errorCarga')}
                 </p>
@@ -293,22 +295,31 @@ export function DetalleEvento() {
                     <section className="detalle-evento-informacion" aria-label={t('detalle.infoAria')}>
                         <div className="detalle-evento-info-card">
                             <span className="detalle-evento-info-icono"><CalendarDays aria-hidden="true" /></span>
-                            <span><small>{t('detalle.fecha')}</small><strong>{formatoFecha.format(fechaInicio)}</strong></span>
+                            <dl>
+                                <dt>{t('detalle.fecha')}</dt>
+                                <dd><time dateTime={evento.fechaInicio}>{formatoFecha.format(fechaInicio)}</time></dd>
+                            </dl>
                         </div>
                         <div className="detalle-evento-info-card">
                             <span className="detalle-evento-info-icono"><Clock3 aria-hidden="true" /></span>
-                            <span><small>{t('detalle.hora')}</small><strong>{formatoHora.format(fechaInicio)}</strong></span>
+                            <dl>
+                                <dt>{t('detalle.hora')}</dt>
+                                <dd><time dateTime={evento.fechaInicio}>{formatoHora.format(fechaInicio)}</time></dd>
+                            </dl>
                         </div>
                         <div className="detalle-evento-info-card">
                             <span className="detalle-evento-info-icono"><MapPin aria-hidden="true" /></span>
-                            <span><small>{t('detalle.lugar')}</small><strong>{evento.ubicacion}</strong></span>
+                            <dl>
+                                <dt>{t('detalle.lugar')}</dt>
+                                <dd>{evento.ubicacion}</dd>
+                            </dl>
                         </div>
                         <div className="detalle-evento-info-card">
                             <span className="detalle-evento-info-icono"><Users aria-hidden="true" /></span>
-                            <span>
-                                <small>{t('detalle.cupos')}</small>
-                                <strong>{t('detalle.disponibles', { disponibles: evento.cuposDisponibles, maximos: evento.cuposMaximos })}</strong>
-                            </span>
+                            <dl>
+                                <dt>{t('detalle.cupos')}</dt>
+                                <dd>{t('detalle.disponibles', { disponibles: evento.cuposDisponibles, maximos: evento.cuposMaximos })}</dd>
+                            </dl>
                         </div>
                     </section>
 
@@ -321,7 +332,10 @@ export function DetalleEvento() {
                         <span className="detalle-evento-organiza-avatar" aria-hidden="true">
                             {evento.organizadorNombre.split(/\s+/).slice(0, 2).map((parte) => parte[0]).join('').toUpperCase()}
                         </span>
-                        <div><small>{t('detalle.organiza')}</small><strong>{evento.organizadorNombre}</strong></div>
+                        <dl>
+                            <dt>{t('detalle.organiza')}</dt>
+                            <dd>{evento.organizadorNombre}</dd>
+                        </dl>
                     </div>
                 </article>
 

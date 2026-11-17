@@ -39,7 +39,8 @@ const claveFecha = (fecha: Date) =>
 const fechaDeInscripcion = (inscripcion: Inscripcion) => new Date(inscripcion.eventoFechaInicio);
 
 export function CalendarioInscripciones({ inscripciones, onCancelar }: CalendarioInscripcionesProps) {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
+    const formatoDiaSemana = new Intl.DateTimeFormat(i18n.resolvedLanguage ?? 'es', { weekday: 'long' });
     const ahora = useAhoraBogota();
     const [mesVisible, setMesVisible] = useState(() => {
         const hoy = new Date();
@@ -80,6 +81,10 @@ export function CalendarioInscripciones({ inscripciones, onCancelar }: Calendari
         while (dias.length % 7 !== 0) dias.push(null);
         return dias;
     }, [mesVisible]);
+    const semanasDelMes = Array.from(
+        { length: fechasDelMes.length / 7 },
+        (_, indice) => fechasDelMes.slice(indice * 7, indice * 7 + 7),
+    );
 
     const eventosDelMes = useMemo(
         () =>
@@ -136,7 +141,7 @@ export function CalendarioInscripciones({ inscripciones, onCancelar }: Calendari
                                 className="inscripciones-agenda-grupo"
                             >
                                 <h2 className="inscripciones-agenda-fecha">
-                                    {formatoDiaAgenda.format(fecha)}
+                                    <time dateTime={clave}>{formatoDiaAgenda.format(fecha)}</time>
                                     {clave === claveHoy && <span className="inscripciones-agenda-hoy">{t('calendario.hoy')}</span>}
                                     {eventos.length > 1 && (
                                         <span className="inscripciones-agenda-conteo">
@@ -233,48 +238,65 @@ export function CalendarioInscripciones({ inscripciones, onCancelar }: Calendari
                         </button>
                     </div>
                 </header>
-                <div className="inscripciones-mini-calendario-grid" role="grid" aria-label={formatoMes.format(mesVisible)}>
-                    {diasSemana.map((dia, indice) => (
-                        <span className="inscripciones-mini-dia-semana" role="columnheader" key={`${dia}-${indice}`}>
-                            {dia}
-                        </span>
-                    ))}
-                    {fechasDelMes.map((fecha, indice) => {
-                        if (!fecha) {
-                            return <span className="inscripciones-mini-dia-vacio" role="gridcell" key={`vacio-${indice}`} />;
-                        }
-                        const clave = claveFecha(fecha);
-                        const eventos = eventosPorDia.get(clave) ?? [];
-                        return (
-                            <button
-                                type="button"
-                                role="gridcell"
-                                className={`inscripciones-mini-dia${clave === claveHoy ? ' inscripciones-mini-dia--hoy' : ''}${clave === fechaSeleccionada ? ' inscripciones-mini-dia--seleccionado' : ''}`}
-                                aria-label={eventos.length
-                                    ? t('calendario.diaAriaConEventos', {
-                                        fecha: formatoDiaAgenda.format(fecha),
-                                        cantidad: eventos.length,
-                                    })
-                                    : t('calendario.diaAria', { fecha: formatoDiaAgenda.format(fecha) })}
-                                aria-pressed={clave === fechaSeleccionada}
-                                onClick={() => seleccionarFecha(clave)}
-                                key={clave}
-                            >
-                                {fecha.getDate()}
-                                {eventos.length > 0 && (
-                                    <span className="inscripciones-mini-puntos" aria-hidden="true">
-                                        {eventos.slice(0, 3).map((evento) => (
-                                            <i
-                                                key={evento.id}
-                                                className={evento.estado === 'ACTIVA' ? '' : 'inscripciones-mini-punto--cancelado'}
-                                            />
-                                        ))}
-                                    </span>
-                                )}
-                            </button>
-                        );
-                    })}
-                </div>
+                <table className="inscripciones-mini-calendario-tabla">
+                    <caption className="sr-only">{formatoMes.format(mesVisible)}</caption>
+                    <thead>
+                        <tr>
+                            {diasSemana.map((dia, indice) => (
+                                <th
+                                    scope="col"
+                                    className="inscripciones-mini-dia-semana"
+                                    aria-label={formatoDiaSemana.format(new Date(2024, 0, 1 + indice))}
+                                    key={`${dia}-${indice}`}
+                                >
+                                    {dia}
+                                </th>
+                            ))}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {semanasDelMes.map((semana, indiceSemana) => (
+                            <tr key={indiceSemana}>
+                                {semana.map((fecha, indice) => {
+                                    if (!fecha) {
+                                        return <td className="inscripciones-mini-dia-vacio" key={`vacio-${indice}`} />;
+                                    }
+                                    const clave = claveFecha(fecha);
+                                    const eventos = eventosPorDia.get(clave) ?? [];
+                                    return (
+                                        <td key={clave}>
+                                            <button
+                                                type="button"
+                                                className={`inscripciones-mini-dia${clave === claveHoy ? ' inscripciones-mini-dia--hoy' : ''}${clave === fechaSeleccionada ? ' inscripciones-mini-dia--seleccionado' : ''}`}
+                                                aria-label={eventos.length
+                                                    ? t('calendario.diaAriaConEventos', {
+                                                        fecha: formatoDiaAgenda.format(fecha),
+                                                        cantidad: eventos.length,
+                                                    })
+                                                    : t('calendario.diaAria', { fecha: formatoDiaAgenda.format(fecha) })}
+                                                aria-pressed={clave === fechaSeleccionada}
+                                                aria-current={clave === claveHoy ? 'date' : undefined}
+                                                onClick={() => seleccionarFecha(clave)}
+                                            >
+                                                {fecha.getDate()}
+                                                {eventos.length > 0 && (
+                                                    <span className="inscripciones-mini-puntos" aria-hidden="true">
+                                                        {eventos.slice(0, 3).map((evento) => (
+                                                            <i
+                                                                key={evento.id}
+                                                                className={evento.estado === 'ACTIVA' ? '' : 'inscripciones-mini-punto--cancelado'}
+                                                            />
+                                                        ))}
+                                                    </span>
+                                                )}
+                                            </button>
+                                        </td>
+                                    );
+                                })}
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
                 <div className="inscripciones-mini-leyenda">
                     <span><i /> {t('calendario.leyendaActiva')}</span>
                     <span><i className="inscripciones-mini-leyenda-cancelada" /> {t('calendario.leyendaCancelada')}</span>

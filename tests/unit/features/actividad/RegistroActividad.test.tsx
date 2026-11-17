@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
@@ -63,6 +63,10 @@ describe('RegistroActividad', () => {
         );
 
         expect(await screen.findByText('Laura Gómez')).toBeInTheDocument();
+        expect(screen.getByRole('table', { name: 'Registros de actividad' })).toBeInTheDocument();
+        const fechas = screen.getByRole('group', { name: 'Fecha' });
+        expect(within(fechas).getByLabelText('Fecha desde')).toBeInTheDocument();
+        expect(within(fechas).getByLabelText('Fecha hasta')).toBeInTheDocument();
         for (const etiqueta of ['Acción', 'Entidad', 'Resultado']) {
             const selector = screen.getByLabelText(etiqueta);
             expect(selector.parentElement).toHaveClass('selector-con-chevron');
@@ -76,6 +80,8 @@ describe('RegistroActividad', () => {
             expect(consultas.at(-1)?.get('tamano')).toBe('20');
         });
         expect(screen.getByRole('button', { name: 'Quitar filtro: LOGIN' })).toBeInTheDocument();
+        expect(within(screen.getByRole('group', { name: 'Filtros aplicados' }))
+            .getByRole('button', { name: 'Quitar filtro: LOGIN' })).toBeInTheDocument();
         expect(screen.getByRole('row', { name: /Laura Gómez/ })).toHaveClass('actividad-tabla-fila--filtrada');
     });
 

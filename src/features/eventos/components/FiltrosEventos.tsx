@@ -123,7 +123,8 @@ export function FiltrosEventos({
         );
 
     const renderFechas = (sufijo: string) => (
-        <div className="filtros-eventos-fechas">
+        <fieldset className="filtros-eventos-fechas">
+            <legend className="sr-only">{t('filtros.fechaEtiqueta')}</legend>
             <label className="filtros-eventos-fecha-campo" htmlFor={`eventos-fecha-desde-${sufijo}`}>
                 <span className="filtros-eventos-etiqueta">{t('filtros.desde')}</span>
                 <input
@@ -148,13 +149,13 @@ export function FiltrosEventos({
                     onChange={(evento) => onChange({ ...filtros, fechaHasta: evento.target.value || undefined })}
                 />
             </label>
-        </div>
+        </fieldset>
     );
 
     const renderPeriodos = () => (
         <div className="filtros-eventos-periodos-grupo">
             <span className="filtros-eventos-etiqueta">{t('filtros.fechaEtiqueta')}</span>
-            <div className="filtros-eventos-periodos" aria-label={t('filtros.rangosRapidos')}>
+            <div className="filtros-eventos-periodos" role="group" aria-label={t('filtros.rangosRapidos')}>
                 {periodos.map(({ valor, clave }) => {
                     const rango = obtenerRangoPeriodo(valor);
                     const activo = mismoRango(filtros, rango);
@@ -212,7 +213,7 @@ export function FiltrosEventos({
             <div className="filtros-eventos-secundarios">
                 <div className="filtros-eventos-periodos-escritorio">{renderPeriodos()}</div>
                 <div role="separator" className="filtros-eventos-separator" aria-orientation="vertical"/>
-                <div className="filtros-eventos-categorias" aria-label={t('filtros.filtrarPorCategoria')}>
+                <div className="filtros-eventos-categorias" role="group" aria-label={t('filtros.filtrarPorCategoria')}>
                     <span className="filtros-eventos-etiqueta">{t('filtros.categoriaEtiqueta')}</span>
                     <button
                         type="button"

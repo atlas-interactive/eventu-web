@@ -114,8 +114,8 @@ export function FiltrosActividad({
             </div>
 
             <div className="actividad-filtros-fecha">
-                <div className="actividad-campo actividad-campo-fecha">
-                    <span>{t('actividad.fecha')}</span>
+                <fieldset className="actividad-campo actividad-campo-fecha">
+                    <legend>{t('actividad.fecha')}</legend>
                     <div className="actividad-rango-fechas">
                         <label>
                             <span className="sr-only">{t('actividad.desde')}</span>
@@ -144,7 +144,7 @@ export function FiltrosActividad({
                             />
                         </label>
                     </div>
-                </div>
+                </fieldset>
                 <div className="actividad-periodos" role="group" aria-label={t('actividad.periodosAria')}>
                     {periodos.map(({ clave, dias }) => {
                         const rango = rangoPeriodo(dias);

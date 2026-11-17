@@ -479,6 +479,7 @@
     "procesando": "Procesando…"
   },
   "organizadores": {
+    "buscarTitulo": "Buscar usuarios",
     "titulo": "Gestión de organizadores",
     "descripcion": "Busca un usuario ya registrado y asígnale el rol de organizador.",
     "buscarLabel": "Buscar por nombre o correo institucional",

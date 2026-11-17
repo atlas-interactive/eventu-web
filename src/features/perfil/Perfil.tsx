@@ -250,11 +250,9 @@ export function Perfil() {
                                         {inicialesNombre(perfil.nombre)}
                                     </div>
                                     <div className="perfil-identity">
-                                        {!editando && (
-                                            <h2 className="perfil-name">
-                                                {perfil.nombre}
-                                            </h2>
-                                        )}
+                                        <h2 className={editando ? 'sr-only' : 'perfil-name'}>
+                                            {perfil.nombre}
+                                        </h2>
                                         <span className="perfil-role">
                                             {CLAVE_ROL[perfil.rol.toUpperCase()]
                                                 ? t(CLAVE_ROL[perfil.rol.toUpperCase()])
@@ -304,24 +302,26 @@ export function Perfil() {
                                     </form>
                                 ) : (
                                     <>
-                                        <div className="perfil-details">
+                                        <dl className="perfil-details">
                                             <div className="perfil-detail">
-                                                <p className="perfil-detail-label">
+                                                <dt className="perfil-detail-label">
                                                     <Mail className="perfil-detail-icon" aria-hidden="true" />
                                                     {t('perfil.correo')}
-                                                </p>
-                                                <p className="perfil-detail-value perfil-detail-value--email">{perfil.correo}</p>
+                                                </dt>
+                                                <dd className="perfil-detail-value perfil-detail-value--email">{perfil.correo}</dd>
                                             </div>
                                             <div className="perfil-detail">
-                                                <p className="perfil-detail-label">
+                                                <dt className="perfil-detail-label">
                                                     <CalendarDays className="perfil-detail-icon" aria-hidden="true" />
                                                     {t('perfil.miembroDesde')}
-                                                </p>
-                                                <p className="perfil-detail-value">
-                                                    {fechaRegistro(perfil.creadoEn)}
-                                                </p>
+                                                </dt>
+                                                <dd className="perfil-detail-value">
+                                                    {perfil.creadoEn && !Number.isNaN(new Date(perfil.creadoEn).getTime()) ? (
+                                                        <time dateTime={perfil.creadoEn}>{fechaRegistro(perfil.creadoEn)}</time>
+                                                    ) : fechaRegistro(perfil.creadoEn)}
+                                                </dd>
                                             </div>
-                                        </div>
+                                        </dl>
                                         <button
                                             type="button"
                                             onClick={iniciarEdicion}

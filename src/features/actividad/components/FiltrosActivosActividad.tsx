@@ -34,7 +34,7 @@ export function FiltrosActivosActividad({ filtros, onQuitar }: FiltrosActivosAct
     if (activos.length === 0) return null;
 
     return (
-        <div className="actividad-filtros-activos" aria-label={t('actividad.filtrosActivosAria')}>
+        <div className="actividad-filtros-activos" role="group" aria-label={t('actividad.filtrosActivosAria')}>
             <span>{t('actividad.con')}</span>
             {activos.map(({ campo, etiqueta }) => (
                 <button

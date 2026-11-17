@@ -1,3 +1,5 @@
+import { CampoAutenticacion } from './components/CampoAutenticacion';
+import { CabeceraAutenticacion } from './components/CabeceraAutenticacion';
 import { EnlaceVolver } from '../../components/ui/EnlaceVolver';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import { useState, type SubmitEvent } from 'react';
@@ -6,7 +8,6 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { IconoAviso } from '../../components/ui/IconoAviso';
 import { mensajeDeError } from '../../api/mensajeDeError';
 import '../../styles/auth.css';
-import iconoEventU from '../../assets/icons/iconoEventU.png';
 import { restablecerContrasena } from './services/authService';
 import { validarLongitudContrasena } from './validacionAuth';
 
@@ -57,11 +58,7 @@ export function FormularioRestablecerContrasena() {
     if (!token) {
         return (
             <section className="register-form w-full max-w-[34rem] border-[0.125rem] px-5 py-6 sm:px-8">
-                <header className="mb-3 text-center">
-                    <img src={iconoEventU} alt="" aria-hidden="true" className="mx-auto mb-2 h-9 w-9" />
-                    <p className="text-2xl font-semibold leading-5">Event<span className="text-eventu-institutional-red">U</span> </p>
-                    <h1 className="mt-2 text-base font-semibold leading-7">{t('auth.restablecer.enlaceInvalidoTitulo')}</h1>
-                </header>
+                <CabeceraAutenticacion titulo={t('auth.restablecer.enlaceInvalidoTitulo')} />
                 <div role="alert" className="register-alert-error mb-2 flex items-start gap-2 rounded border p-2 text-sm">
                     <IconoAviso tipo="error" className="mt-0.5 h-4 w-4" />
                     <span>{t('auth.restablecer.enlaceInvalido')}</span>
@@ -77,14 +74,10 @@ export function FormularioRestablecerContrasena() {
 
     return (
         <section className="register-form w-full max-w-[34rem] border-[0.125rem] px-5 py-6 sm:px-8">
-            <header className="mb-3 text-center">
-                <img src={iconoEventU} alt="" aria-hidden="true" className="mx-auto mb-2 h-9 w-9" />
-                <p className="text-2xl font-semibold leading-5">EventU</p>
-                <h1 className="mt-2 text-base font-semibold leading-7">{t('auth.restablecer.titulo')}</h1>
-                <p className="register-subtitle mt-0.5 text-sm leading-5">
-                    {t('auth.restablecer.subtitulo')}
-                </p>
-            </header>
+            <CabeceraAutenticacion
+                titulo={t('auth.restablecer.titulo')}
+                subtitulo={t('auth.restablecer.subtitulo')}
+            />
 
             {mensajeError && (
                 <div role="alert" className="register-alert-error mb-2 flex items-start gap-2 rounded border p-2 text-sm">
@@ -94,41 +87,31 @@ export function FormularioRestablecerContrasena() {
             )}
 
             <form onSubmit={handleSubmit} className="space-y-1">
-                <div>
-                    <label htmlFor="password" className="register-label block text-sm font-medium leading-5">
-                        {t('auth.restablecer.nuevaContrasena')}
-                    </label>
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        value={password}
-                        onChange={(event) => setPassword(event.target.value)}
-                        aria-invalid={passwordInvalida || undefined}
-                        className={`register-input mt-1 h-11 w-full rounded-md border px-2.5 text-base leading-6 outline-none${passwordInvalida ? ' register-input-invalid' : ''}`}
-                        minLength={8}
-                        maxLength={72}
-                        required
-                    />
-                </div>
+                <CampoAutenticacion
+                    etiqueta={t('auth.restablecer.nuevaContrasena')}
+                    autoComplete="new-password"
+                    type="password"
+                    name="password"
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                    aria-invalid={passwordInvalida || undefined}
+                    minLength={8}
+                    maxLength={72}
+                    required
+                />
 
-                <div>
-                    <label htmlFor="confirmacion" className="register-label block text-sm font-medium leading-5">
-                        {t('auth.restablecer.confirmarContrasena')}
-                    </label>
-                    <input
-                        type="password"
-                        id="confirmacion"
-                        name="confirmacion"
-                        value={confirmacion}
-                        onChange={(event) => setConfirmacion(event.target.value)}
-                        aria-invalid={confirmacionInvalida || undefined}
-                        className={`register-input mt-1 h-11 w-full rounded-md border px-2.5 text-base leading-6 outline-none${confirmacionInvalida ? ' register-input-invalid' : ''}`}
-                        minLength={8}
-                        maxLength={72}
-                        required
-                    />
-                </div>
+                <CampoAutenticacion
+                    etiqueta={t('auth.restablecer.confirmarContrasena')}
+                    autoComplete="new-password"
+                    type="password"
+                    name="confirmacion"
+                    value={confirmacion}
+                    onChange={(event) => setConfirmacion(event.target.value)}
+                    aria-invalid={confirmacionInvalida || undefined}
+                    minLength={8}
+                    maxLength={72}
+                    required
+                />
 
                 <button
                     type="submit"

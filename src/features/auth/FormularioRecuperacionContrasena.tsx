@@ -1,3 +1,5 @@
+import { CampoAutenticacion } from './components/CampoAutenticacion';
+import { CabeceraAutenticacion } from './components/CabeceraAutenticacion';
 import { Link } from 'react-router-dom';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import { useState, type SubmitEvent } from 'react';
@@ -5,7 +7,6 @@ import { useTranslation } from 'react-i18next';
 import { IconoAviso } from '../../components/ui/IconoAviso';
 import { mensajeDeError } from '../../api/mensajeDeError';
 import '../../styles/auth.css';
-import iconoEventU from '../../assets/icons/iconoEventU.png';
 import { validarCorreoInstitucional } from './validacionAuth';
 import { solicitarRecuperacionContrasena } from './services/authService';
 
@@ -42,14 +43,10 @@ export function FormularioRecuperacionContrasena() {
 
     return (
         <section className="register-form w-full max-w-[34rem] border-[0.125rem] px-5 py-6 sm:px-8">
-            <header className="mb-3 text-center">
-                <img src={iconoEventU} alt="" aria-hidden="true" className="mx-auto mb-2 h-9 w-9" />
-                <p className="text-2xl font-semibold leading-5">Event<span className="text-eventu-institutional-red">U</span> </p>
-                <h1 className="mt-2 text-base font-semibold leading-7">{t('auth.recuperacion.titulo')}</h1>
-                <p className="register-subtitle mt-0.5 text-sm leading-5">
-                    {t('auth.recuperacion.subtitulo')}
-                </p>
-            </header>
+            <CabeceraAutenticacion
+                titulo={t('auth.recuperacion.titulo')}
+                subtitulo={t('auth.recuperacion.subtitulo')}
+            />
 
             {mensajeError && (
                 <div role="alert" className="register-alert-error mb-2 flex items-start gap-2 rounded border p-2 text-sm">
@@ -66,22 +63,17 @@ export function FormularioRecuperacionContrasena() {
             )}
 
             <form onSubmit={handleSubmit} className="space-y-1">
-                <div>
-                    <label htmlFor="correo" className="register-label block text-sm font-medium leading-5">
-                        {t('auth.recuperacion.correo')}
-                    </label>
-                    <input
-                        type="email"
-                        id="correo"
-                        name="correo"
-                        value={correo}
-                        onChange={(event) => setCorreo(event.target.value)}
-                        aria-invalid={correoInvalido || undefined}
-                        className={`register-input mt-1 h-11 w-full rounded-md border px-2.5 text-base leading-6 outline-none${correoInvalido ? ' register-input-invalid' : ''}`}
-                        placeholder={t('auth.recuperacion.placeholderCorreo')}
-                        required
-                    />
-                </div>
+                <CampoAutenticacion
+                    etiqueta={t('auth.recuperacion.correo')}
+                    autoComplete="email"
+                    type="email"
+                    name="correo"
+                    value={correo}
+                    onChange={(event) => setCorreo(event.target.value)}
+                    aria-invalid={correoInvalido || undefined}
+                    placeholder={t('auth.recuperacion.placeholderCorreo')}
+                    required
+                />
 
                 <button
                     type="submit"

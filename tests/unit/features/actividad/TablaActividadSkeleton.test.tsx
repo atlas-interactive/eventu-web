@@ -5,6 +5,7 @@ import { TablaActividadSkeleton } from '../../../../src/features/actividad/compo
 describe('TablaActividadSkeleton', () => {
     it('muestra filas de carga con las columnas del registro de actividad', () => {
         render(<TablaActividadSkeleton />);
+        expect(screen.getByRole('table', { name: 'Registros de actividad' })).toBeInTheDocument();
 
         expect(screen.getByRole('status', { name: 'Cargando registros de actividad' })).toHaveAttribute(
             'aria-busy',

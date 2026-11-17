@@ -104,10 +104,17 @@ describe('DetalleEvento', () => {
     it('consulta el evento y permite iniciar la inscripción', async () => {
         renderDetalle();
 
+        expect(screen.getByRole('heading', { level: 1, name: 'Detalle del evento' })).toBeInTheDocument();
         expect(await screen.findByRole('heading', { name: 'Feria de proyectos' })).toBeInTheDocument();
+        expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
         expect(obtenerEventoMock).toHaveBeenCalledWith(5);
         expect(screen.getByText('Espacio para la presentación de proyectos innovadores.')).toBeInTheDocument();
         expect(screen.getByText('38 de 120 disponibles')).toBeInTheDocument();
+        expect(screen.getAllByRole('definition').some((elemento) => elemento.textContent === evento.ubicacion)).toBe(true);
+        expect(screen.getAllByRole('definition').some((elemento) => elemento.textContent === '38 de 120 disponibles')).toBe(true);
+        const fechas = screen.getByRole('region', { name: 'Información del evento' }).querySelectorAll('time');
+        expect(fechas).toHaveLength(2);
+        for (const fecha of fechas) expect(fecha).toHaveAttribute('datetime', evento.fechaInicio);
         expect(screen.queryByText('Certificable')).not.toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Inscribirme al evento' })).toBeEnabled();
         expect(obtenerInscripcionActivaMock).toHaveBeenCalledWith(5);
@@ -502,6 +509,7 @@ describe('DetalleEvento', () => {
         renderDetalle();
 
         expect(await screen.findByRole('alert')).toHaveTextContent('No se encontró el evento solicitado.');
+        expect(screen.getByRole('heading', { level: 1, name: 'Detalle del evento' })).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Volver a eventos' })).toHaveAttribute('href', '/eventos');
     });
 

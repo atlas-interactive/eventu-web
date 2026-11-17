@@ -46,11 +46,11 @@ export function LayoutAutenticacion() {
                     <span aria-hidden="true" className={estiloAyuda}>{etiquetaTema}</span>
                 </button>
             </div>
-            <div className="flex flex-1 items-center justify-center py-4">
+            <main className="flex flex-1 items-center justify-center py-4">
                 <div className="w-full min-w-0 max-w-[34rem]">
                     <Outlet />
                 </div>
-            </div>
+            </main>
             {accesibilidadAbierta && (
                 <PanelAccesibilidad
                     onCerrar={() => setAccesibilidadAbierta(false)}
