@@ -28,4 +28,6 @@ dist-ssr
 .env.*.local
 
 .history/
-coverage/*
+
+# Reporte de cobertura de Vitest
+coverage
