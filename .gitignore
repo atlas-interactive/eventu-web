@@ -31,3 +31,5 @@ dist-ssr
 
 # Reporte de cobertura de Vitest
 coverage
+
+tmp/*
