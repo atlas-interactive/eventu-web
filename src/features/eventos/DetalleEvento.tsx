@@ -2,6 +2,7 @@ import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import { useEffect, useState } from 'react';
 import { isAxiosError } from 'axios';
 import {
+    ArrowLeft,
     CalendarDays,
     CalendarPlus,
     Check,
@@ -69,7 +70,6 @@ const descargarCalendario = (evento: Evento) => {
 
 export function DetalleEvento() {
     const { t } = useTranslation();
-    useDocumentTitle(`${t('titulos.detalleEvento')} | EventU`);
     const { id } = useParams();
     const idEvento = Number(id);
     const ahora = useAhoraBogota();
@@ -88,6 +88,7 @@ export function DetalleEvento() {
     const identificadorValido = Number.isSafeInteger(idEvento) && idEvento > 0;
     const resultadoActual = resultadoEvento?.id === idEvento ? resultadoEvento : null;
     const evento = resultadoActual?.evento ?? null;
+    useDocumentTitle(`${evento?.titulo || t('titulos.detalleEvento')} | EventU`);
     const error = resultadoActual?.error ?? '';
     const noEncontrado = !identificadorValido || Boolean(resultadoActual?.noEncontrado);
     const cargando = identificadorValido && !resultadoActual;
@@ -148,6 +149,7 @@ export function DetalleEvento() {
         return (
             <main className="detalle-evento-page">
                 <Link to="/eventos" className="detalle-evento-volver">
+                    <ArrowLeft aria-hidden="true" className="h-4 w-4 shrink-0" />
                     {t('detalle.volver')}
                 </Link>
                 <p role="alert" className="detalle-evento-error">
@@ -245,6 +247,7 @@ export function DetalleEvento() {
     return (
         <main className={`detalle-evento-page${inscripcion.yaInscrito ? ' detalle-evento-page--inscrito' : ''}`}>
             <Link to="/eventos" className="detalle-evento-volver">
+                <ArrowLeft aria-hidden="true" className="h-4 w-4 shrink-0" />
                 {t('detalle.volver')}
             </Link>
             {inscripcion.inscripcionRealizada && <ConfirmacionInscripcion evento={evento} />}

@@ -200,7 +200,7 @@
     "cuposAria": "Cupos ocupados de {{titulo}}"
   },
   "detalle": {
-    "volver": "← Volver a eventos",
+    "volver": "Volver a eventos",
     "cargando": "Cargando detalle del evento",
     "noEncontrado": "No se encontró el evento solicitado.",
     "errorCarga": "No se pudo cargar el evento.",

@@ -200,7 +200,7 @@
     "cuposAria": "Seats taken for {{titulo}}"
   },
   "detalle": {
-    "volver": "← Back to events",
+    "volver": "Back to events",
     "cargando": "Loading event details",
     "noEncontrado": "The requested event was not found.",
     "errorCarga": "The event could not be loaded.",
