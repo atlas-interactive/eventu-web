@@ -14,7 +14,17 @@
 
 **Resultado:** EventU aparece entre las aplicaciones del teléfono. No necesita instalar herramientas de desarrollo para utilizar esta APK.
 
-<!-- CAPTURA: M-01-descarga-apk.png; M-02-instalacion.png -->
+<img src="imagenes/movil/M-1-descarga-apk-pt1.jpg" alt="Repositorio móvil con acceso a la release EventU Mobile v1.0.0" width="320">
+
+**Figura 21.** Acceso a la release desde el repositorio en GitHub.
+
+<img src="imagenes/movil/M-1-descarga-apk-pt2.jpg" alt="Release v1.0.0 con el archivo APK en Assets" width="320">
+
+**Figura 22.** Archivo EventU-v1.0.0.apk disponible para descargar.
+
+<img src="imagenes/movil/M-2-instalacion-apk.jpg" alt="Instalador Android durante la instalación de EventU" width="320">
+
+**Figura 23.** Instalación de EventU en Android.
 
 ## 3.2. Iniciar sesión y reconocer las pestañas
 
@@ -35,7 +45,13 @@
 
 El rol Administrador no puede iniciar sesión en la APK: la pantalla indica que debe ingresar desde el panel web. Los procedimientos de administración, creación de eventos, reportes y estadísticas se realizan en la web. Este capítulo explica el uso de la APK por el participante y el organizador durante los eventos.
 
-<!-- CAPTURA: M-03-login.png; M-04-catalogo.png -->
+<img src="imagenes/movil/M-3-login.jpg" alt="Inicio de sesión móvil con contraseña oculta" width="320">
+
+**Figura 24.** Acceso con la cuenta institucional.
+
+<img src="imagenes/movil/M-4-catalogo-eventos.jpg" alt="Catálogo móvil y pestañas Eventos, Inscripciones y Perfil" width="320">
+
+**Figura 25.** Catálogo y navegación principal de la aplicación.
 
 ## 3.3. Buscar eventos y consultar información
 
@@ -49,7 +65,13 @@ El rol Administrador no puede iniciar sesión en la APK: la pantalla indica que 
 
 **Resultado:** puede evaluar el evento antes de inscribirse. Si los filtros no devuelven resultados, límpielos o cambie el rango. La consulta ordinaria no ofrece eventos cancelados ni los que ya iniciaron como nuevas actividades disponibles para inscripción.
 
-<!-- CAPTURA: M-05-filtros.png; M-06-detalle-evento.png -->
+<img src="imagenes/movil/M-5-filtros-eventos.jpg" alt="Panel móvil de filtros por fecha y orden de eventos" width="320">
+
+**Figura 26.** Filtros de fecha y opciones para ordenar el catálogo.
+
+<img src="imagenes/movil/M-6-ver-detalle-evento.jpg" alt="Detalle de Mercado social antes de inscribirse" width="320">
+
+**Figura 27.** Información del evento y botón de inscripción.
 
 ## 3.4. Inscribirse
 
@@ -62,7 +84,9 @@ El rol Administrador no puede iniciar sesión en la APK: la pantalla indica que 
 
 **Resultado:** su inscripción reserva un cupo y queda disponible también desde la web. No puede duplicar una inscripción activa ni inscribirse en un evento propio. El Administrador no puede reservar cupos como asistente.
 
-<!-- CAPTURA: M-07-inscripcion-realizada.png -->
+<img src="imagenes/movil/M-7-vista-detalle-cuando-esta-inscrito.jpg" alt="Evento con estado Estás inscrito y botón Ver mi entrada" width="320">
+
+**Figura 28.** Detalle del evento después de inscribirse.
 
 ## 3.5. Consultar la agenda y presentar el QR
 
@@ -79,7 +103,13 @@ El rol Administrador no puede iniciar sesión en la APK: la pantalla indica que 
 
 Una inscripción cancelada no ofrece un QR vigente. La aplicación deja de mostrar la entrada cuando termina el día del evento. Un Organizador presenta su QR como cualquier participante cuando está inscrito en la actividad de otro organizador.
 
-<!-- CAPTURA: M-08-agenda.png; M-09-entrada-qr.png -->
+<img src="imagenes/movil/M-9-calendario.jpg" alt="Agenda de inscripciones con calendario y eventos" width="320">
+
+**Figura 29.** Calendario personal y consulta de inscripciones.
+
+<img src="imagenes/movil/M-8-ver-qr-inscripcion.jpg" alt="Entrada de Mercado social con QR y código escrito" width="320">
+
+**Figura 30.** Entrada QR para presentar al organizador.
 
 ## 3.6. Cancelar una inscripción
 
@@ -91,7 +121,9 @@ Una inscripción cancelada no ofrece un QR vigente. La aplicación deja de mostr
 
 **Resultado:** se libera el cupo y la inscripción se conserva como Cancelada. No puede cancelar una inscripción ajena, ya cancelada, con asistencia registrada o cuyo evento ya inició. Puede volver a inscribirse si el evento sigue disponible y tiene cupos.
 
-<!-- CAPTURA: M-10-cancelar-inscripcion.png -->
+<img src="imagenes/movil/M-10-cancelar-inscripcion.jpg" alt="Diálogo para confirmar la cancelación de una inscripción" width="320">
+
+**Figura 31.** Confirmación antes de cancelar la reserva y liberar el cupo.
 
 ## 3.7. Consultar los inscritos de un evento propio
 
@@ -105,7 +137,13 @@ Una inscripción cancelada no ofrece un QR vigente. La aplicación deja de mostr
 
 **Resultado:** dispone del listado para controlar el acceso. Si aún no tiene eventos, créelos desde la web. La vista de eventos propios excluye los cancelados, que ya no requieren registrar asistencia.
 
-<!-- CAPTURA: M-12-eventos-propios.png; M-13-inscritos.png -->
+<img src="imagenes/movil/M-12-mis-eventos-organizador.jpg" alt="Catálogo del Organizador con Solo mis eventos seleccionado" width="320">
+
+**Figura 32.** Consulta de eventos propios del Organizador.
+
+<img src="imagenes/movil/M-13-inscritos-a-evento-organizador.jpg" alt="Participantes del evento y botón Escanear QR de entrada" width="320">
+
+**Figura 33.** Inscritos, asistencias registradas y acceso al escáner.
 
 ## 3.8. Escanear un QR y registrar asistencia
 
@@ -124,7 +162,13 @@ Una inscripción cancelada no ofrece un QR vigente. La aplicación deja de mostr
 
 Si presenta un código de otro de sus eventos, el resultado identifica ese evento y puede mostrar un aviso al respecto. Compruebe siempre que corresponde a la actividad a la que está dando acceso.
 
-<!-- CAPTURA: M-14-permiso-camara.png; M-15-escaner.png; M-16-asistencia-registrada.png -->
+<img src="imagenes/movil/M-14-permiso-camara-pt1.jpg" alt="Pantalla del escáner solicitando el permiso de cámara" width="320">
+
+**Figura 34.** Solicitud de acceso a la cámara y campo para ingreso manual del código.
+
+<img src="imagenes/movil/M-14-permiso-camara-pt2.jpg" alt="Diálogo de Android para autorizar el uso de la cámara por EventU" width="320">
+
+**Figura 35.** Autorización de cámara desde Android. El diálogo del sistema aparece en inglés en este dispositivo; **While using the app** permite el acceso mientras se utiliza la aplicación.
 
 ### 3.8.1. Ingresar el código manualmente
 
@@ -134,7 +178,7 @@ Si presenta un código de otro de sus eventos, el resultado identifica ese event
 
 **Resultado:** el sistema realiza la misma validación y registra la asistencia si corresponde. Es una alternativa cuando no puede utilizar la cámara; también requiere internet.
 
-<!-- CAPTURA: M-17-validacion-manual.png -->
+El campo para escribir el código y el botón **Validar** se muestran en la figura 34.
 
 ### 3.8.2. Resolver una validación rechazada
 
@@ -147,7 +191,6 @@ Si presenta un código de otro de sus eventos, el resultado identifica ese event
 | Sin permiso | Compruebe que inició sesión con la cuenta organizadora correspondiente. |
 | Error de conexión | Restablezca internet y consulte el listado antes de repetir la validación, para comprobar si la operación llegó a registrarse. |
 
-<!-- CAPTURA: M-18-asistencia-duplicada.png -->
 
 ## 3.9. Obtener el certificado de asistencia
 
@@ -159,7 +202,9 @@ Si presenta un código de otro de sus eventos, el resultado identifica ese event
 
 **Resultado:** obtiene el PDF con su nombre y los datos del evento cuando tiene inscripción activa y asistencia verificada. Si aparece **Disponible cuando se verifique tu asistencia**, consulte al organizador. El botón no se ofrece antes del inicio ni en eventos no certificables.
 
-<!-- CAPTURA: M-11-certificado.png -->
+<img src="imagenes/movil/M-11-descargar-certificado.jpg" alt="Evento certificable con botón Descargar certificado PDF" width="320">
+
+**Figura 36.** Acceso a la descarga del certificado en un evento certificable que ya finalizó. La imagen muestra el botón de descarga, no el PDF generado.
 
 ## 3.10. Consultar y modificar el perfil
 
@@ -171,7 +216,9 @@ Si presenta un código de otro de sus eventos, el resultado identifica ese event
 
 **Resultado:** se actualiza el nombre de la cuenta. El nombre es obligatorio y admite hasta **100 caracteres**. El correo no se modifica y el rol se administra desde la web.
 
-<!-- CAPTURA: M-19-perfil.png; M-20-editar-perfil.png -->
+<img src="imagenes/movil/M-15-mi-perfil.jpg" alt="Perfil del Organizador con datos de cuenta y Editar información" width="320">
+
+**Figura 37.** Consulta del perfil y acceso a la edición de información.
 
 ### 3.10.1. Cambiar la contraseña
 
@@ -181,7 +228,9 @@ Si presenta un código de otro de sus eventos, el resultado identifica ese event
 
 **Resultado:** se actualiza la contraseña, se cierran las demás sesiones y se envía un aviso por correo. Si la olvidó, abra la recuperación en la web.
 
-<!-- CAPTURA: M-21-cambiar-contrasena.png -->
+<img src="imagenes/movil/M-16-cambiar-contraseña.jpg" alt="Formulario de cambio de contraseña con sus tres campos" width="320">
+
+**Figura 38.** Cambio de contraseña desde el perfil móvil.
 
 ### 3.10.2. Desactivar la cuenta y cerrar sesión
 
@@ -189,7 +238,7 @@ Para desactivar la cuenta, lea las condiciones en **Perfil**, pulse **Desactivar
 
 Para salir sin desactivar su cuenta, pulse el control **Cerrar sesión** en el encabezado de **Perfil**. Volverá al inicio de sesión y conservará sus inscripciones.
 
-<!-- CAPTURA: M-22-desactivar-cuenta.png; M-03-login.png -->
+El acceso a **Cerrar sesión** se muestra en la figura 37; las condiciones y el botón **Desactivar mi cuenta** aparecen en la figura 39.
 
 ## 3.11. Ajustar accesibilidad y apariencia
 
@@ -202,4 +251,6 @@ Para salir sin desactivar su cuenta, pulse el control **Cerrar sesión** en el e
 
 **Resultado:** las preferencias se aplican y se guardan en ese teléfono. La apariencia clara u oscura sigue la configuración de tema del dispositivo. Estos ajustes son independientes de los guardados en el navegador web.
 
-<!-- CAPTURA: M-23-accesibilidad.png -->
+<img src="imagenes/movil/M-17-accesibilidad.jpg" alt="Accesibilidad móvil y sección de desactivación de cuenta" width="320">
+
+**Figura 39.** Preferencias de accesibilidad y condiciones para desactivar la cuenta.

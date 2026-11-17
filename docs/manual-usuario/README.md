@@ -19,7 +19,7 @@ Para entregar cada manual por separado, acompañar el capítulo correspondiente 
 
 ## Estado de esta edición
 
-El texto se preparó a partir de los criterios de aceptación y del código disponible el 17 de noviembre de 2026. Se revisaron y se integraron las 20 capturas web entregadas por el responsable, correspondientes a Usuario, Organizador y Administrador. Las figuras están numeradas del 1 al 20 y conservan los nombres de archivo recibidos. Las imágenes móviles siguen pendientes.
+El texto se preparó a partir de los criterios de aceptación y del código disponible el 17 de noviembre de 2026. Se revisaron y se integraron las 20 capturas web y las 19 capturas móviles entregadas por el responsable. Las figuras están numeradas de forma continua: 1–20 en web y 21–39 en móvil, conservando los nombres de archivo recibidos. Las imágenes móviles se muestran con ancho de 320 píxeles y sus proporciones originales.
 
 Las capturas permiten contrastar los textos y controles visibles, pero no prueban por sí solas el funcionamiento completo de cada procedimiento. La revisión interactiva y la revisión del documento exportado siguen pendientes.
 
