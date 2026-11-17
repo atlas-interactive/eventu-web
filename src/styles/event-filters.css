@@ -253,6 +253,10 @@
 
 .filtros-eventos-fechas {
   display: grid;
+  min-width: 0;
+  margin: 0;
+  border: 0;
+  padding: 0;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.5rem;
 }

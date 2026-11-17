@@ -110,6 +110,11 @@ describe('DetalleEvento', () => {
         expect(obtenerEventoMock).toHaveBeenCalledWith(5);
         expect(screen.getByText('Espacio para la presentación de proyectos innovadores.')).toBeInTheDocument();
         expect(screen.getByText('38 de 120 disponibles')).toBeInTheDocument();
+        expect(screen.getAllByRole('definition').some((elemento) => elemento.textContent === evento.ubicacion)).toBe(true);
+        expect(screen.getAllByRole('definition').some((elemento) => elemento.textContent === '38 de 120 disponibles')).toBe(true);
+        const fechas = screen.getByRole('region', { name: 'Información del evento' }).querySelectorAll('time');
+        expect(fechas).toHaveLength(2);
+        for (const fecha of fechas) expect(fecha).toHaveAttribute('datetime', evento.fechaInicio);
         expect(screen.queryByText('Certificable')).not.toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Inscribirme al evento' })).toBeEnabled();
         expect(obtenerInscripcionActivaMock).toHaveBeenCalledWith(5);

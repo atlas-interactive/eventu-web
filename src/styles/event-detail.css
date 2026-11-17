@@ -156,20 +156,20 @@
   height: 1rem;
 }
 
-.detalle-evento-info-card > span:last-child {
+.detalle-evento-info-card > dl {
   display: grid;
   min-width: 0;
   gap: 0.125rem;
 }
 
-.detalle-evento-info-card small,
-.detalle-evento-organiza small {
+.detalle-evento-info-card dt,
+.detalle-evento-organiza dt {
   color: var(--color-eventu-secondary-text);
   font-size: 0.6875rem;
   line-height: 0.875rem;
 }
 
-.detalle-evento-info-card strong {
+.detalle-evento-info-card dd {
   overflow-wrap: anywhere;
   color: var(--color-eventu-main-ink);
   font-size: 0.8125rem;
@@ -218,14 +218,15 @@
   font-weight: 700;
 }
 
-.detalle-evento-organiza > div {
+.detalle-evento-organiza > dl {
   display: grid;
 }
 
-.detalle-evento-organiza strong {
+.detalle-evento-organiza dd {
   color: var(--color-eventu-main-ink);
   font-size: 0.875rem;
   line-height: 1.25rem;
+  font-weight: 700;
 }
 
 .detalle-evento-panel {

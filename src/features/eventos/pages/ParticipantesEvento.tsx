@@ -90,8 +90,10 @@ export function ParticipantesEvento() {
                         <div className="participantes-evento-detalles">
                             <span>
                                 <CalendarDays aria-hidden="true" />
-                                {formatoFecha.format(new Date(eventoEncabezado.fechaInicio))},{' '}
-                                {formatoHora.format(new Date(eventoEncabezado.fechaInicio))}
+                                <time dateTime={eventoEncabezado.fechaInicio}>
+                                    {formatoFecha.format(new Date(eventoEncabezado.fechaInicio))},{' '}
+                                    {formatoHora.format(new Date(eventoEncabezado.fechaInicio))}
+                                </time>
                             </span>
                             <span><MapPin aria-hidden="true" />{eventoEncabezado.ubicacion}</span>
                             <span className="participantes-categoria">{eventoEncabezado.categoriaNombre}</span>
@@ -221,6 +223,7 @@ export function ParticipantesEvento() {
                                 <>
                                     <div className="participantes-tabla-contenedor">
                                         <table className="participantes-tabla">
+                                            <caption className="sr-only">{t('participantes.listadoAria')}</caption>
                                             <thead>
                                                 <tr>
                                                     <th scope="col">{t('participantes.participante')}</th>

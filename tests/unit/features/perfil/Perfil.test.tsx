@@ -78,6 +78,8 @@ describe('Perfil', () => {
         expect(screen.getByText('laura.gomez@unillanos.edu.co')).toBeInTheDocument();
         expect(screen.getByText('Usuario')).toBeInTheDocument();
         expect(screen.getByText('Miembro desde')).toBeInTheDocument();
+        expect(screen.getAllByRole('definition').some((elemento) => elemento.textContent === perfil.correo)).toBe(true);
+        expect(document.querySelector('.perfil-details time')).toHaveAttribute('datetime', perfil.creadoEn);
         expect(screen.queryByText('16001234')).not.toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Desactivar mi cuenta' })).toBeEnabled();
         expect(screen.getByRole('button', { name: 'Actualizar contraseña' })).toBeEnabled();

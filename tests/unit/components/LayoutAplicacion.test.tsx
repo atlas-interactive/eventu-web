@@ -6,6 +6,7 @@ import { LayoutAplicacion } from '../../../src/components/layout/LayoutAplicacio
 import { AccesibilidadProvider } from '../../../src/features/accesibilidad/AccesibilidadProvider';
 import { CLAVE_PREFERENCIAS_ACCESIBILIDAD } from '../../../src/features/accesibilidad/preferenciasAccesibilidad';
 import { guardarSesion } from '../../../src/features/sesion/sesion';
+import i18n from '../../../src/i18n';
 
 const renderizar = () =>
     render(
@@ -162,8 +163,8 @@ describe('LayoutAplicacion', () => {
 
         await user.click(screen.getByRole('button', { name: 'Menú de perfil de Ana Gómez' }));
 
-        expect(screen.getByRole('menu', { name: 'Opciones de perfil' })).toBeInTheDocument();
-        await user.click(screen.getByRole('menuitem', { name: 'Perfil' }));
+        expect(screen.getByRole('group', { name: 'Opciones de perfil' })).toBeInTheDocument();
+        await user.click(screen.getByRole('link', { name: 'Perfil' }));
         expect(await screen.findByText('Pantalla de perfil')).toBeInTheDocument();
     });
 
@@ -179,11 +180,45 @@ describe('LayoutAplicacion', () => {
         renderizar();
 
         await user.click(screen.getByRole('button', { name: 'Menú de perfil de Ana Gómez' }));
-        await user.click(screen.getByRole('menuitem', { name: 'Cerrar sesión' }));
+        await user.click(screen.getByRole('button', { name: 'Cerrar sesión' }));
 
         expect(await screen.findByText('Pantalla de login')).toBeInTheDocument();
         expect(localStorage.getItem('auth_token')).toBeNull();
         expect(localStorage.getItem('auth_usuario')).toBeNull();
+    });
+
+    it('permite abrir con teclado, recorrer las opciones con Tab y cerrar con Escape', async () => {
+        guardarSesion({ token: 't', usuarioId: 1, nombre: 'Ana', correo: 'ana@unillanos.edu.co', rol: 'USUARIO' });
+        const user = userEvent.setup();
+        renderizar();
+        const boton = screen.getByRole('button', { name: 'Menú de perfil de Ana' });
+        boton.focus();
+
+        await user.keyboard('{Enter}');
+        expect(boton).toHaveAttribute('aria-expanded', 'true');
+        await user.tab();
+        expect(screen.getByRole('link', { name: 'Perfil' })).toHaveFocus();
+        await user.tab();
+        expect(screen.getByRole('button', { name: 'Modo oscuro' })).toHaveFocus();
+        await user.keyboard('{Escape}');
+
+        expect(screen.queryByRole('group', { name: 'Opciones de perfil' })).not.toBeInTheDocument();
+        expect(boton).toHaveAttribute('aria-expanded', 'false');
+        expect(boton).toHaveFocus();
+    });
+
+    it('cierra el desplegable al salir con Tab o pulsar fuera', async () => {
+        guardarSesion({ token: 't', usuarioId: 1, nombre: 'Ana', correo: 'ana@unillanos.edu.co', rol: 'USUARIO' });
+        const user = userEvent.setup();
+        renderizar();
+        const boton = screen.getByRole('button', { name: 'Menú de perfil de Ana' });
+        await user.click(boton);
+        await user.tab({ shift: true });
+        expect(boton).toHaveAttribute('aria-expanded', 'false');
+
+        await user.click(boton);
+        await user.click(screen.getByText('Contenido'));
+        expect(boton).toHaveAttribute('aria-expanded', 'false');
     });
 
     it('abre el panel desde el menú de perfil y restaura el foco al cerrarlo', async () => {
@@ -199,10 +234,10 @@ describe('LayoutAplicacion', () => {
 
         const botonPerfil = screen.getByRole('button', { name: 'Menú de perfil de Ana Gómez' });
         await user.click(botonPerfil);
-        await user.click(screen.getByRole('menuitem', { name: 'Accesibilidad' }));
+        await user.click(screen.getByRole('button', { name: 'Accesibilidad' }));
 
         expect(screen.getByRole('dialog', { name: 'Opciones de accesibilidad' })).toBeInTheDocument();
-        expect(screen.queryByRole('menu', { name: 'Opciones de perfil' })).not.toBeInTheDocument();
+        expect(screen.queryByRole('group', { name: 'Opciones de perfil' })).not.toBeInTheDocument();
         await user.keyboard('{Escape}');
         expect(botonPerfil).toHaveFocus();
     });
@@ -228,11 +263,11 @@ describe('LayoutAplicacion', () => {
         renderizar();
 
         await user.click(screen.getByRole('button', { name: 'Menú de perfil de Ana Gómez' }));
-        const modoOscuro = screen.getByRole('menuitemcheckbox', { name: 'Modo oscuro' });
-        expect(modoOscuro).toHaveAttribute('aria-checked', 'false');
+        const modoOscuro = screen.getByRole('button', { name: 'Modo oscuro' });
+        expect(modoOscuro).toHaveAttribute('aria-pressed', 'false');
 
         await user.click(modoOscuro);
-        expect(modoOscuro).toHaveAttribute('aria-checked', 'true');
+        expect(modoOscuro).toHaveAttribute('aria-pressed', 'true');
         expect(document.documentElement).toHaveAttribute('data-accesibilidad-tema', 'oscuro');
         expect(document.documentElement).toHaveAttribute('data-accesibilidad-contraste', 'alto');
         expect(JSON.parse(localStorage.getItem(CLAVE_PREFERENCIAS_ACCESIBILIDAD) ?? '{}')).toMatchObject({
@@ -241,7 +276,24 @@ describe('LayoutAplicacion', () => {
         });
 
         await user.click(modoOscuro);
-        expect(modoOscuro).toHaveAttribute('aria-checked', 'false');
+        expect(modoOscuro).toHaveAttribute('aria-pressed', 'false');
         expect(document.documentElement).toHaveAttribute('data-accesibilidad-contraste', 'alto');
+    });
+
+    it('conserva la selección de idioma con botones nativos', async () => {
+        guardarSesion({ token: 't', usuarioId: 1, nombre: 'Ana', correo: 'ana@unillanos.edu.co', rol: 'USUARIO' });
+        const user = userEvent.setup();
+        renderizar();
+        await user.click(screen.getByRole('button', { name: 'Menú de perfil de Ana' }));
+        const ingles = screen.getByRole('button', { name: 'English' });
+        try {
+            expect(ingles).toHaveAttribute('aria-pressed', 'false');
+            await user.click(ingles);
+            expect(ingles).toHaveAttribute('aria-pressed', 'true');
+            expect(document.documentElement).toHaveAttribute('lang', 'en');
+            expect(screen.getByRole('link', { name: 'Profile' })).toHaveAttribute('href', '/perfil');
+        } finally {
+            await i18n.changeLanguage('es');
+        }
     });
 });

@@ -85,6 +85,7 @@ describe('ParticipantesEvento', () => {
         const encabezado = screen.getByRole('heading', { level: 1, name: 'Participantes' });
         expect(await screen.findByRole('heading', { name: 'Feria de proyectos' })).toBe(encabezado);
         expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
+        expect(screen.getByRole('table', { name: 'Participantes' })).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Editar evento' })).toHaveAttribute(
             'href',
             '/organizador/eventos/5/editar',

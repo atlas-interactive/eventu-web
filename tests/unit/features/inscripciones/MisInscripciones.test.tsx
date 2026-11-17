@@ -112,6 +112,15 @@ describe('MisInscripciones', () => {
         expect(screen.queryByRole('button', { name: 'Cancelar inscripción a Feria cultural' })).not.toBeInTheDocument();
         expect(screen.queryByText(/NO-RENDERIZAR/)).not.toBeInTheDocument();
         expect(screen.queryByText(/TAMPOCO-RENDERIZAR/)).not.toBeInTheDocument();
+        const calendario = screen.getByRole('table', {
+            name: new Intl.DateTimeFormat('es-CO', { month: 'long', year: 'numeric' }).format(new Date()),
+        });
+        expect(within(calendario).getByRole('columnheader', { name: 'lunes' })).toHaveAttribute('scope', 'col');
+        expect(within(calendario).getAllByRole('columnheader')).toHaveLength(7);
+        for (const semana of within(calendario).getAllByRole('row').slice(1)) {
+            expect(within(semana).getAllByRole('cell')).toHaveLength(7);
+        }
+        expect(within(calendario).getByRole('button', { current: 'date' })).toBeInTheDocument();
     });
 
     it('filtra las inscripciones según el estado', async () => {
@@ -187,10 +196,14 @@ describe('MisInscripciones', () => {
             'href',
             '/eventos/5',
         );
-        const diaCalendario = screen.getByRole('gridcell', {
+        const diaCalendario = screen.getByRole('button', {
             name: new RegExp(`${Number(fechaEvento.slice(8, 10))}.*3 eventos`),
         });
         await user.click(diaCalendario);
+        expect(diaCalendario).toHaveAttribute('aria-pressed', 'true');
+        await user.keyboard(' ');
+        expect(diaCalendario).toHaveAttribute('aria-pressed', 'false');
+        await user.keyboard('{Enter}');
         expect(diaCalendario).toHaveAttribute('aria-pressed', 'true');
         expect(screen.getByText('Eventos en el día seleccionado')).toBeInTheDocument();
         expect(screen.getByRole('link', { name: /Taller de innovación/ })).toBeInTheDocument();
@@ -216,10 +229,10 @@ describe('MisInscripciones', () => {
             year: 'numeric',
         }).format(hoy);
         await user.click(screen.getByRole('button', { name: 'Mes siguiente' }));
-        expect(screen.getByRole('grid', {
+        expect(screen.getByRole('table', {
             name: new Intl.DateTimeFormat('es-CO', { month: 'long', year: 'numeric' }).format(mesSiguiente),
         })).toBeInTheDocument();
-        expect(screen.queryByRole('grid', { name: nombreMesActual })).not.toBeInTheDocument();
+        expect(screen.queryByRole('table', { name: nombreMesActual })).not.toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Próximo evento inscrito' })).toBeInTheDocument();
         expect(screen.queryByText('No tienes eventos este mes')).not.toBeInTheDocument();
     });
@@ -230,12 +243,12 @@ describe('MisInscripciones', () => {
         renderizar();
 
         expect(await screen.findByText('No tienes eventos publicados para mostrar')).toBeInTheDocument();
-        expect(screen.getByRole('grid', { name: new Intl.DateTimeFormat('es-CO', { month: 'long', year: 'numeric' }).format(new Date()) })).toBeInTheDocument();
+        expect(screen.getByRole('table', { name: new Intl.DateTimeFormat('es-CO', { month: 'long', year: 'numeric' }).format(new Date()) })).toBeInTheDocument();
         await user.click(screen.getByRole('button', { name: 'Mes siguiente' }));
         expect(screen.getByRole('status')).toHaveTextContent('No tienes eventos publicados para mostrar');
         await user.click(screen.getByRole('button', { name: 'Hoy' }));
         expect(screen.getByRole('status')).toHaveTextContent('No tienes eventos publicados para mostrar');
-        expect(screen.getByRole('grid')).toBeInTheDocument();
+        expect(screen.getByRole('table')).toBeInTheDocument();
     });
 
     it('permite abrir y descargar el QR desde la tarjeta de una inscripción activa', async () => {

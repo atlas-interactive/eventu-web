@@ -56,6 +56,9 @@ describe('CatalogoEventos (HU-08)', () => {
 
         expect(await screen.findByRole('heading', { name: 'Eventos en campus' })).toBeInTheDocument();
         expect(await screen.findByRole('heading', { name: 'Feria de proyectos' })).toBeInTheDocument();
+        expect(screen.getByRole('group', { name: 'Filtrar por categoría' })).toBeInTheDocument();
+        expect(screen.getByRole('group', { name: 'Rangos de fecha rápidos' })).toBeInTheDocument();
+        expect(screen.getByRole('group', { name: 'Fecha:' })).toBeInTheDocument();
         expect(screen.queryByText('Certificable')).not.toBeInTheDocument();
         expect(listarCategoriasMock).toHaveBeenCalledWith(true);
         expect(screen.getByRole('button', { name: 'Académico' })).toBeInTheDocument();

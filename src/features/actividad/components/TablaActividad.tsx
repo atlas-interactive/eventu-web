@@ -18,6 +18,7 @@ export function TablaActividad({ registros, mensajeVacio, filtrosAplicados }: Ta
     return (
         <section className="actividad-tabla-contenedor" aria-label={t('actividad.tablaAria')}>
             <table className="actividad-tabla">
+                <caption className="sr-only">{t('actividad.tablaAria')}</caption>
                 <thead className="actividad-tabla-encabezado">
                     <tr>
                         <th scope="col">{t('actividad.fechaHora')}</th>

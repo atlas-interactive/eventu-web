@@ -219,12 +219,17 @@ export function LayoutAplicacion() {
                         )}
                     </div>
                     {sesion && (
-                        <div ref={menuRef} className="relative sm:ml-auto sm:flex-none max-[639px]:shrink-0">
+                        <div
+                            ref={menuRef}
+                            onBlur={(evento) => {
+                                if (!evento.currentTarget.contains(evento.relatedTarget)) setMenuAbierto(false);
+                            }}
+                            className="relative sm:ml-auto sm:flex-none max-[639px]:shrink-0"
+                        >
                             <button
                                 ref={botonMenuRef}
                                 type="button"
                                 aria-label={t('layout.menuPerfil', { nombre: nombreUsuario })}
-                                aria-haspopup="menu"
                                 aria-expanded={menuAbierto}
                                 aria-controls="menu-perfil"
                                 onClick={() => setMenuAbierto((abierto) => !abierto)}
@@ -259,13 +264,12 @@ export function LayoutAplicacion() {
                             {menuAbierto && (
                                 <div
                                     id="menu-perfil"
-                                    role="menu"
+                                    role="group"
                                     aria-label={t('layout.opcionesPerfil')}
                                     className="absolute right-0 top-full z-50 mt-2 w-48 max-w-[calc(100vw-1.5rem)] rounded-md border border-eventu-border bg-eventu-white-surface p-1 shadow-lg"
                                 >
                                     <NavLink
                                         to="/perfil"
-                                        role="menuitem"
                                         onClick={() => setMenuAbierto(false)}
                                         className="flex w-full items-center gap-2 rounded px-3 py-2 text-left text-sm text-eventu-main-ink hover:bg-eventu-page-background focus-visible:bg-eventu-page-background focus-visible:outline-none"
                                     >
@@ -274,8 +278,7 @@ export function LayoutAplicacion() {
                                     </NavLink>
                                     <button
                                         type="button"
-                                        role="menuitemcheckbox"
-                                        aria-checked={preferencias.tema === 'oscuro'}
+                                        aria-pressed={preferencias.tema === 'oscuro'}
                                         onClick={() =>
                                             actualizarPreferencia(
                                                 'tema',
@@ -307,7 +310,6 @@ export function LayoutAplicacion() {
                                     </button>
                                     <button
                                         type="button"
-                                        role="menuitem"
                                         aria-haspopup="dialog"
                                         onClick={() => {
                                             setElementoFocoAccesibilidad(botonMenuRef.current);
@@ -319,7 +321,7 @@ export function LayoutAplicacion() {
                                         <PersonStanding className="h-4 w-4" aria-hidden="true" />
                                         {t('layout.accesibilidad')}
                                     </button>
-                                    <div role="separator" className="mx-2 my-1 border-t border-eventu-border" />
+                                    <hr className="mx-2 my-1 border-t border-eventu-border" />
                                     <div role="group" aria-label={t('layout.idioma')} className="px-1 py-1">
                                         <p className="px-2 pb-1 text-xs font-medium text-eventu-secondary-text">
                                             {t('layout.idioma')}
@@ -328,8 +330,7 @@ export function LayoutAplicacion() {
                                             <button
                                                 key={idioma}
                                                 type="button"
-                                                role="menuitemradio"
-                                                aria-checked={idiomaActual === idioma}
+                                                aria-pressed={idiomaActual === idioma}
                                                 onClick={() => cambiarIdioma(idioma)}
                                                 className="flex w-full items-center justify-between gap-2 rounded px-2 py-1.5 text-left text-sm text-eventu-main-ink hover:bg-eventu-page-background focus-visible:bg-eventu-page-background focus-visible:outline-none"
                                             >
@@ -340,10 +341,9 @@ export function LayoutAplicacion() {
                                             </button>
                                         ))}
                                     </div>
-                                    <div role="separator" className="mx-2 my-1 border-t border-eventu-border" />
+                                    <hr className="mx-2 my-1 border-t border-eventu-border" />
                                     <button
                                         type="button"
-                                        role="menuitem"
                                         onClick={salir}
                                         className="flex w-full items-center gap-2 rounded px-3 py-2 text-left text-sm text-eventu-main-ink hover:bg-eventu-page-background focus-visible:bg-eventu-page-background focus-visible:outline-none"
                                     >

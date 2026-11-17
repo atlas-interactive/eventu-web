@@ -18,7 +18,8 @@ export function TablaActividadSkeleton() {
             etiqueta={t('actividad.cargando')}
             className="actividad-tabla-contenedor"
         >
-            <table className="actividad-tabla" aria-label={t('actividad.tablaAria')}>
+            <table className="actividad-tabla">
+                <caption className="sr-only">{t('actividad.tablaAria')}</caption>
                 <thead>
                     <tr>
                         {columnas.map((columna) => (
