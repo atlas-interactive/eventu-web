@@ -21,6 +21,9 @@
     "noCancelarInscripcionIniciada": "Registration cannot be canceled after the event starts."
   },
   "layout": {
+    "preferenciasVisuales": "Display preferences",
+    "activarTemaClaro": "Switch to light theme",
+    "activarTemaOscuro": "Switch to dark theme",
     "abrirNavegacion": "Open navigation",
     "cerrarNavegacion": "Close navigation",
     "navegacionPrincipal": "Main",

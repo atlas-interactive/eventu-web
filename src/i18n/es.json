@@ -21,6 +21,9 @@
     "noCancelarInscripcionIniciada": "No se puede cancelar la inscripción después de que inicia el evento."
   },
   "layout": {
+    "preferenciasVisuales": "Preferencias visuales",
+    "activarTemaClaro": "Activar tema claro",
+    "activarTemaOscuro": "Activar tema oscuro",
     "abrirNavegacion": "Abrir navegación",
     "cerrarNavegacion": "Cerrar navegación",
     "navegacionPrincipal": "Principal",
