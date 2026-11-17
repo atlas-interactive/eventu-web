@@ -1,4 +1,4 @@
-import { EnlaceVolver } from '../../components/ui/EnlaceVolver';
+import { Link } from 'react-router-dom';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -93,9 +93,9 @@ export function FormularioRecuperacionContrasena() {
             </form>
 
             <p className="register-login-link mt-2 text-center text-sm leading-5">
-                <EnlaceVolver to="/login">
+                <Link to="/login" className="link_form">
                     {t('auth.recuperacion.volverLogin')}
-                </EnlaceVolver>
+                </Link>
             </p>
         </section>
     );

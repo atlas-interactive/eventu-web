@@ -1,9 +1,8 @@
-import { EnlaceVolver } from '../../components/ui/EnlaceVolver';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import { useEffect, useRef, useState } from 'react';
 import { MailCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { IconoAviso } from '../../components/ui/IconoAviso';
 import { mensajeDeError } from '../../api/mensajeDeError';
 import '../../styles/auth.css';
@@ -87,9 +86,9 @@ export function ConfirmarCorreo() {
             )}
 
             <p className="register-login-link mt-3 text-center text-sm leading-5">
-                <EnlaceVolver to="/login">
+                <Link to="/login" className="link_form">
                     {t('auth.confirmacion.volverLogin')}
-                </EnlaceVolver>
+                </Link>
             </p>
         </section>
     );
