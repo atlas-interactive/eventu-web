@@ -186,6 +186,7 @@ export const FormularioLogin: React.FC = () => {
                     etiqueta={t('auth.login.contrasena')}
                     autoComplete="current-password"
                     type="password"
+                    permitirMostrarContrasena
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
