@@ -1,3 +1,4 @@
+import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import React, { useEffect, useState } from 'react';
 import type { ChangeEvent, SubmitEvent } from 'react';
 import { isAxiosError } from 'axios';
@@ -16,6 +17,7 @@ const correoInstitucionalRegex = /^[a-zA-Z0-9._%+-]+@unillanos\.edu\.co$/;
 
 export const FormularioLogin: React.FC = () => {
     const { t } = useTranslation();
+    useDocumentTitle(`${t('auth.login.titulo')} | EventU`);
     const navigate = useNavigate();
     const location = useLocation();
     const mensajeRecuperacion =

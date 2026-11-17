@@ -1,3 +1,4 @@
+import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import { useEffect, useState } from 'react';
 import { CalendarCheck, ChartPie, Tags, Ticket, UserCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -16,6 +17,7 @@ const formatoPorcentaje = new Intl.NumberFormat('es-CO', { maximumFractionDigits
 // HU-16: el organizador ve los indicadores de sus eventos; el administrador, los de toda la plataforma y los rankings
 export function DashboardEstadisticas() {
     const { t } = useTranslation();
+    useDocumentTitle(`${t('estadisticas.titulo')} | EventU`);
     const admin = esAdministrador(obtenerSesion());
     const [estadisticas, setEstadisticas] = useState<Estadisticas | null>(null);
     const [cargando, setCargando] = useState(true);

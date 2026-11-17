@@ -1,3 +1,4 @@
+import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import { useEffect, useState } from 'react';
 import { isAxiosError } from 'axios';
 import {
@@ -68,6 +69,7 @@ const descargarCalendario = (evento: Evento) => {
 
 export function DetalleEvento() {
     const { t } = useTranslation();
+    useDocumentTitle(`${t('titulos.detalleEvento')} | EventU`);
     const { id } = useParams();
     const idEvento = Number(id);
     const ahora = useAhoraBogota();

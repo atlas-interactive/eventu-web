@@ -1,3 +1,4 @@
+import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import { useState, type SubmitEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
@@ -10,6 +11,7 @@ import { validarLongitudContrasena } from './validacionAuth';
 
 export function FormularioRestablecerContrasena() {
     const { t } = useTranslation();
+    useDocumentTitle(`${t('auth.restablecer.titulo')} | EventU`);
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const token = searchParams.get('token')?.trim() ?? '';

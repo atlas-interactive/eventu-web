@@ -1,4 +1,7 @@
 {
+  "titulos": {
+    "detalleEvento": "Detalle del evento"
+  },
   "comun": {
     "roles": {
       "admin": "Administrador",

@@ -1,3 +1,4 @@
+import { useDocumentTitle } from '../../../hooks/useDocumentTitle';
 import { useMemo, useState } from 'react';
 import { CalendarDays, Check, Download, MapPin, Pencil, Search, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -39,6 +40,7 @@ const iniciales = (nombre: string) =>
 
 export function ParticipantesEvento() {
     const { t } = useTranslation();
+    useDocumentTitle(`${t('participantes.listadoAria')} | EventU`);
     const { id } = useParams();
     const consulta = useParticipantesEvento(Number(id));
     const [busqueda, setBusqueda] = useState('');

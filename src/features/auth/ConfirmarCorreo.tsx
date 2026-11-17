@@ -1,3 +1,4 @@
+import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import { useEffect, useRef, useState } from 'react';
 import { MailCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -15,6 +16,7 @@ type SolicitudConfirmacion = {
 
 export function ConfirmarCorreo() {
     const { t } = useTranslation();
+    useDocumentTitle(`${t('auth.confirmacion.titulo')} | EventU`);
     const [searchParams] = useSearchParams();
     const token = searchParams.get('token')?.trim() ?? '';
     const solicitudRef = useRef<SolicitudConfirmacion | null>(null);

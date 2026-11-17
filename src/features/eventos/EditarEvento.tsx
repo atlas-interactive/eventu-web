@@ -1,3 +1,4 @@
+import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -12,6 +13,7 @@ import '../../styles/events.css';
 // HU-06: el organizador dueño (o un administrador) edita un evento publicado
 export function EditarEvento() {
     const { t } = useTranslation();
+    useDocumentTitle(`${t('editarEvento.titulo')} | EventU`);
     const { id } = useParams();
     const navigate = useNavigate();
     const [evento, setEvento] = useState<Evento | null>(null);

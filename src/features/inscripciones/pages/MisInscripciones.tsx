@@ -1,3 +1,4 @@
+import { useDocumentTitle } from '../../../hooks/useDocumentTitle';
 import { useTranslation } from 'react-i18next';
 import { IconoAviso } from '../../../components/ui/IconoAviso';
 import { Skeleton, SkeletonEstado } from '../../../components/ui/Skeleton';
@@ -15,6 +16,7 @@ const filtros: { valor: FiltroInscripcion; clave: string }[] = [
 
 export function MisInscripciones() {
     const { t } = useTranslation();
+    useDocumentTitle(`${t('inscripciones.titulo')} | EventU`);
     const misInscripciones = useMisInscripciones();
 
     return (

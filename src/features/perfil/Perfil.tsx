@@ -1,3 +1,4 @@
+import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import { useEffect, useState } from 'react';
 import type { SubmitEvent } from 'react';
 import { CalendarDays, KeyRound, Mail, Pencil, ShieldAlert } from 'lucide-react';
@@ -41,6 +42,7 @@ const fechaRegistro = (fecha: string | null): string => {
 
 export function Perfil() {
     const { t } = useTranslation();
+    useDocumentTitle(`${t('perfil.titulo')} | EventU`);
     const navigate = useNavigate();
     const [perfil, setPerfil] = useState<PerfilUsuario | null>(null);
     const [recarga, setRecarga] = useState(0);

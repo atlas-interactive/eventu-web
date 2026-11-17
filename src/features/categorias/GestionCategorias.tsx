@@ -1,3 +1,4 @@
+import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import { isAxiosError } from 'axios';
 import { Pencil, Plus, Power, PowerOff, Tags } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -35,6 +36,7 @@ const textoEventos = (cantidad: number) => i18n.t('categorias.eventosCount', { c
 
 export function GestionCategorias() {
     const { t } = useTranslation();
+    useDocumentTitle(`${t('categorias.titulo')} | EventU`);
     const [categorias, setCategorias] = useState<Categoria[]>([]);
     const [cargando, setCargando] = useState(true);
     const [errorCarga, setErrorCarga] = useState('');

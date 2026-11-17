@@ -1,3 +1,4 @@
+import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { FiltrosActividad as FiltrosActividadType, OpcionesFiltroActividad, PaginaActividad } from '../../types/actividad';
@@ -29,6 +30,7 @@ const PAGINA_VACIA: PaginaActividad = {
 
 export function RegistroActividad() {
     const { t } = useTranslation();
+    useDocumentTitle(`${t('actividad.titulo')} | EventU`);
     const [filtros, setFiltros] = useState(FILTROS_VACIOS);
     const [pagina, setPagina] = useState(0);
     const [datos, setDatos] = useState(PAGINA_VACIA);

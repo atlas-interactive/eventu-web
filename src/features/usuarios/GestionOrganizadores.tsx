@@ -1,3 +1,4 @@
+import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import { useEffect, useState } from 'react';
 import { Search, UserCog, UserMinus, UserPlus } from 'lucide-react';
 import { isAxiosError } from 'axios';
@@ -31,6 +32,7 @@ const iniciales = (nombre: string) =>
 // HU-03: el administrador busca un usuario ya registrado y le asigna o le revoca el rol de organizador
 export function GestionOrganizadores() {
     const { t } = useTranslation();
+    useDocumentTitle(`${t('organizadores.titulo')} | EventU`);
     const [criterio, setCriterio] = useState('');
     const [resultados, setResultados] = useState<UsuarioBuscado[]>([]);
     const [buscando, setBuscando] = useState(false);
