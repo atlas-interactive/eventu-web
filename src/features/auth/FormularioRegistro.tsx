@@ -132,6 +132,7 @@ export const FormularioRegistro: React.FC = () => {
                     etiqueta={t('auth.registro.contrasena')}
                     autoComplete="new-password"
                     type="password"
+                    permitirMostrarContrasena
                     name="password"
                     value={formData.password}
                     onChange={handleChange}

@@ -68,6 +68,10 @@
     "advertenciaInvalida": "The saved preferences were not valid; the initial values were restored."
   },
   "auth": {
+    "campos": {
+      "mostrarContrasena": "Show password",
+      "ocultarContrasena": "Hide password"
+    },
     "login": {
       "titulo": "Sign in",
       "subtitulo": "Sign in with your institutional email",
