@@ -1,3 +1,5 @@
+import { CampoAutenticacion } from './components/CampoAutenticacion';
+import { CabeceraAutenticacion } from './components/CabeceraAutenticacion';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import React, { useEffect, useState } from 'react';
 import type { ChangeEvent, SubmitEvent } from 'react';
@@ -7,7 +9,6 @@ import { IconoAviso } from '../../components/ui/IconoAviso';
 import '../../styles/auth.css';
 import { mensajeDeError } from '../../api/mensajeDeError';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import iconoEventU from '../../assets/icons/iconoEventU.png';
 import { autenticarUsuario, reenviarConfirmacion } from './services/authService';
 import { obtenerRutaInicio, guardarSesion } from '../sesion/sesion';
 import { ModalAccesible } from '../../components/ui/ModalAccesible';
@@ -149,12 +150,10 @@ export const FormularioLogin: React.FC = () => {
 
     return (
         <section className="login-form register-form w-full max-w-[34rem] border-[0.125rem] px-5 py-6 sm:px-8">
-            <header className="mb-3 text-center">
-                <img src={iconoEventU} alt="" aria-hidden="true" className="mx-auto mb-2 h-9 w-9" />
-                <p className="text-2xl font-semibold leading-5">Event<span className="text-eventu-institutional-red">U</span> </p>
-                <h1 className="mt-2 text-base font-semibold leading-7">{t('auth.login.titulo')}</h1>
-                <p className="register-subtitle mt-0.5 text-sm leading-5">{t('auth.login.subtitulo')}</p>
-            </header>
+            <CabeceraAutenticacion
+                titulo={t('auth.login.titulo')}
+                subtitulo={t('auth.login.subtitulo')}
+            />
 
             {mensajeError && (
                 <div role="alert" className="register-alert-error mb-2 flex items-start gap-2 rounded border p-2 text-sm">
@@ -171,41 +170,31 @@ export const FormularioLogin: React.FC = () => {
             )}
 
             <form onSubmit={handleSubmit} className="space-y-1">
-                <div>
-                    <label htmlFor="correo" className="register-label block text-sm font-medium leading-5">
-                        {t('auth.login.correo')}
-                    </label>
-                    <input
-                        type="email"
-                        id="correo"
-                        name="correo"
-                        value={formData.correo}
-                        onChange={handleChange}
-                        aria-invalid={mostrarCampoInvalido('correo') || undefined}
-                        className={`register-input mt-1 h-11 w-full rounded-md border px-2.5 text-base leading-6 outline-none${mostrarCampoInvalido('correo') ? ' register-input-invalid' : ''}`}
-                        placeholder={t('auth.login.placeholderCorreo')}
-                        required
-                    />
-                </div>
+                <CampoAutenticacion
+                    etiqueta={t('auth.login.correo')}
+                    autoComplete="username"
+                    type="email"
+                    name="correo"
+                    value={formData.correo}
+                    onChange={handleChange}
+                    aria-invalid={mostrarCampoInvalido('correo') || undefined}
+                    placeholder={t('auth.login.placeholderCorreo')}
+                    required
+                />
 
-                <div>
-                    <label htmlFor="password" className="register-label block text-sm font-medium leading-5">
-                        {t('auth.login.contrasena')}
-                    </label>
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        aria-invalid={mostrarCampoInvalido('password') || undefined}
-                        className={`register-input mt-1 h-11 w-full rounded-md border px-2.5 text-base leading-6 outline-none${mostrarCampoInvalido('password') ? ' register-input-invalid' : ''}`}
-                        placeholder={t('auth.login.placeholderContrasena')}
-                        minLength={8}
-                        maxLength={72}
-                        required
-                    />
-                </div>
+                <CampoAutenticacion
+                    etiqueta={t('auth.login.contrasena')}
+                    autoComplete="current-password"
+                    type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    aria-invalid={mostrarCampoInvalido('password') || undefined}
+                    placeholder={t('auth.login.placeholderContrasena')}
+                    minLength={8}
+                    maxLength={72}
+                    required
+                />
 
                 <button
                     type="submit"
