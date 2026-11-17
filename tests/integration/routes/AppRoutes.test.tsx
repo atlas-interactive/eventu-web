@@ -10,6 +10,27 @@ import { server } from '../../mocks/server';
 describe('AppRoutes', () => {
     beforeEach(() => localStorage.clear());
 
+    it.each([
+        ['/login', 'Inicia sesión'],
+        ['/registro', 'Crea tu cuenta'],
+        ['/recuperar-contrasena', 'Recupera tu contraseña'],
+        ['/restablecer-contrasena', 'Enlace no válido'],
+        ['/confirmar-correo', 'Enlace no válido'],
+    ])('mantiene un único contenido principal en %s', async (ruta, titulo) => {
+        render(
+            <MemoryRouter initialEntries={[ruta]}>
+                <AppRoutes />
+            </MemoryRouter>,
+        );
+
+        expect(screen.getAllByRole('main')).toHaveLength(1);
+        const encabezado = await screen.findByRole('heading', { level: 1, name: titulo });
+        const principal = screen.getByRole('main');
+        expect(principal).toContainElement(encabezado);
+        expect(principal.querySelector('main')).toBeNull();
+        expect(principal).not.toContainElement(screen.getByRole('button', { name: 'Accesibilidad' }));
+    });
+
     it('muestra la vista de actividad a los administradores', async () => {
         server.use(
             http.get('*/logs/opciones', () =>
@@ -40,6 +61,7 @@ describe('AppRoutes', () => {
         );
 
         expect(await screen.findByRole('heading', { name: 'Registro de actividad' })).toBeInTheDocument();
+        expect(screen.getAllByRole('main')).toHaveLength(1);
         expect(screen.getByRole('navigation', { name: 'Paginación de actividad' })).toHaveTextContent(
             '20 por página',
         );

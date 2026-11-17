@@ -27,15 +27,17 @@ export function SkeletonEstado({ children, etiqueta, className = '' }: SkeletonE
 export function SkeletonPagina() {
     const { t } = useTranslation();
     return (
-        <SkeletonEstado etiqueta={t('comun.cargandoPantalla')} className="mx-auto w-full max-w-[70rem] px-4 py-8 sm:px-8">
-            <Skeleton className="h-7 w-48" />
-            <Skeleton className="mt-2 h-4 w-72 max-w-full" />
-            <div className="mt-6 grid gap-4 md:grid-cols-2">
-                <Skeleton className="h-40 rounded-xl" />
-                <Skeleton className="h-40 rounded-xl" />
-                <Skeleton className="h-40 rounded-xl md:col-span-2" />
-            </div>
-        </SkeletonEstado>
+        <main className="mx-auto w-full max-w-[70rem] px-4 py-8 sm:px-8">
+            <SkeletonEstado etiqueta={t('comun.cargandoPantalla')}>
+                <Skeleton className="h-7 w-48" />
+                <Skeleton className="mt-2 h-4 w-72 max-w-full" />
+                <div className="mt-6 grid gap-4 md:grid-cols-2">
+                    <Skeleton className="h-40 rounded-xl" />
+                    <Skeleton className="h-40 rounded-xl" />
+                    <Skeleton className="h-40 rounded-xl md:col-span-2" />
+                </div>
+            </SkeletonEstado>
+        </main>
     );
 }
 
